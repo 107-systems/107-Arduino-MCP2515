@@ -18,8 +18,10 @@
  * CTOR/DTOR
  **************************************************************************************/
 
-ArduinoMCP2515::ArduinoMCP2515(OnCanFrameReceiveFunc on_can_frame_rx)
-: _on_can_frame_rx{on_can_frame_rx}
+ArduinoMCP2515::ArduinoMCP2515(int const cs_pin,
+                               OnCanFrameReceiveFunc on_can_frame_rx)
+: _io{cs_pin}
+, _on_can_frame_rx{on_can_frame_rx}
 {
   
 }

@@ -28,7 +28,7 @@ static std::vector<uint8_t>  const TEST_DATA     {0xDE, 0xAD, 0xBE, 0xEF};
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-ArduinoMCP2515 MCP2515(onCanFrameReceive);
+ArduinoMCP2515 MCP2515(MKRCAN_MCP2515_CS_PIN, onCanFrameReceive);
 
 /**************************************************************************************
  * SETUP/LOOP

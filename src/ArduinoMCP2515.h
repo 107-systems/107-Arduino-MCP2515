@@ -14,6 +14,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "MCP2515/MCP2515_Io.h"
+
 #undef min
 #undef max
 #include <vector>
@@ -24,7 +26,7 @@
  * CONSTANTS
  **************************************************************************************/
 
-static size_t constexpr CAN_MAX_DATA_LEN = 8;
+static int const MKRCAN_MCP2515_CS_PIN = 3;
 
 /**************************************************************************************
  * TYPEDEF
@@ -41,7 +43,8 @@ class ArduinoMCP2515
 
 public:
 
-  ArduinoMCP2515(OnCanFrameReceiveFunc on_can_frame_rx);
+  ArduinoMCP2515(int const cs_pin,
+                 OnCanFrameReceiveFunc on_can_frame_rx);
 
 
   bool transmit(uint32_t const id, std::vector<uint8_t> const & data);
@@ -49,6 +52,7 @@ public:
 
 private:
 
+  MCP2515_Io            _io;
   OnCanFrameReceiveFunc _on_can_frame_rx;
 
 };
