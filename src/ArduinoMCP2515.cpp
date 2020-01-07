@@ -19,11 +19,13 @@
  **************************************************************************************/
 
 ArduinoMCP2515::ArduinoMCP2515(int const cs_pin,
+                               int const int_pin,
                                OnCanFrameReceiveFunc on_can_frame_rx)
 : _io{cs_pin}
 , _on_can_frame_rx{on_can_frame_rx}
 {
-  
+  pinMode(int_pin, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(int_pin), ArduinoMCP2515::onExternalEvent, FALLING);
 }
 
 /**************************************************************************************
@@ -33,6 +35,11 @@ ArduinoMCP2515::ArduinoMCP2515(int const cs_pin,
 bool ArduinoMCP2515::transmit(uint32_t const id, std::vector<uint8_t> const & data)
 {
   return false; /* TODO */
+}
+
+void ArduinoMCP2515::onExternalEvent()
+{
+  /* TODO */
 }
 
 /**************************************************************************************

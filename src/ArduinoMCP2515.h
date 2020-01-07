@@ -26,7 +26,8 @@
  * CONSTANTS
  **************************************************************************************/
 
-static int const MKRCAN_MCP2515_CS_PIN = 3;
+static int const MKRCAN_MCP2515_CS_PIN  = 3;
+static int const MKRCAN_MCP2515_INT_PIN = 7;
 
 /**************************************************************************************
  * TYPEDEF
@@ -44,10 +45,13 @@ class ArduinoMCP2515
 public:
 
   ArduinoMCP2515(int const cs_pin,
+                 int const int_pin,
                  OnCanFrameReceiveFunc on_can_frame_rx);
 
 
   bool transmit(uint32_t const id, std::vector<uint8_t> const & data);
+
+  static void onExternalEvent();
   
 
 private:
