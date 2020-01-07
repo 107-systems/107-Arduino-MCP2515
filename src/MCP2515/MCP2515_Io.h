@@ -14,6 +14,7 @@
 #include <stdint.h>
 
 #include <Arduino.h>
+#include <SPI.h>
 
 /**************************************************************************************
  * TYPEDEF
@@ -131,6 +132,8 @@ public:
   MCP2515_Io(int const cs_pin);
 
 
+  void    begin();
+
   uint8_t readRegister (Register const reg);
   void    writeRegister(Register const reg, uint8_t const data);
 
@@ -138,6 +141,9 @@ public:
 private:
 
   int const _cs_pin;
+
+  inline void init_cs () { pinMode(_cs_pin, OUTPUT); deselect(); }
+  inline void init_spi() { SPI.begin(); }
 
   inline void select  () { digitalWrite(_cs_pin, LOW);  }
   inline void deselect() { digitalWrite(_cs_pin, HIGH); }
