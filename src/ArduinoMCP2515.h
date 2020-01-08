@@ -15,6 +15,7 @@
 #include <stdbool.h>
 
 #include "MCP2515/MCP2515_Io.h"
+#include "MCP2515/MCP2515_Event.h"
 
 #undef min
 #undef max
@@ -49,14 +50,14 @@ public:
                  OnCanFrameReceiveFunc on_can_frame_rx);
 
 
+  void begin();
   bool transmit(uint32_t const id, std::vector<uint8_t> const & data);
-
-  static void onExternalEvent();
   
 
 private:
 
   MCP2515_Io            _io;
+  MCP2515_Event         _event;
   OnCanFrameReceiveFunc _on_can_frame_rx;
 
 };
