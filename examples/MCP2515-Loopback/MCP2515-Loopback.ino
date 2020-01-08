@@ -15,14 +15,15 @@
  * FUNCTION DECLARATION
  **************************************************************************************/
 
-void onCanFrameReceive(uint32_t const id, std::vector<uint8_t> const & data);
+void onCanFrameReceive(uint32_t const id, uint8_t const * data, uint8_t const len);
 
 /**************************************************************************************
  * GLOBAL CONSTANTS
  **************************************************************************************/
 
 static std::vector<uint32_t> const TEST_ID_VECTOR{0,1,2,3,4,5,6,7,8,9,10};
-static std::vector<uint8_t>  const TEST_DATA     {0xDE, 0xAD, 0xBE, 0xEF};
+static uint8_t               const TEST_DATA[]   = {0xDE, 0xAD, 0xBE, 0xEF};
+static uint8_t               const TEST_DATA_LEN = sizeof(TEST_DATA)/sizeof(uint8_t);
 
 /**************************************************************************************
  * GLOBAL VARIABLES
@@ -40,7 +41,7 @@ void setup()
                 TEST_ID_VECTOR.cend(),
                 [](uint32_t const id)
                 {
-                  if(!MCP2515.transmit(id, TEST_DATA)) {
+                  if(!MCP2515.transmit(id, TEST_DATA, TEST_DATA_LEN)) {
                     Serial.println("MCP2515.transmit() failed - transmit buffer full");
                   }
                   delay(500);
@@ -56,7 +57,7 @@ void loop()
  * FUNCTION DEFINITION
  **************************************************************************************/
 
-void onCanFrameReceive(uint32_t const id, std::vector<uint8_t> const & data)
+void onCanFrameReceive(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
-  Serial.println(toStr(id, data).c_str());
+  Serial.println(toStr(id, data, len).c_str());
 }

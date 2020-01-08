@@ -38,7 +38,7 @@ void ArduinoMCP2515::begin()
   _event.begin();
 }
 
-bool ArduinoMCP2515::transmit(uint32_t const id, std::vector<uint8_t> const & data)
+bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
   return false; /* TODO */
 }
@@ -47,13 +47,13 @@ bool ArduinoMCP2515::transmit(uint32_t const id, std::vector<uint8_t> const & da
  * PUBLIC FUNCTION DEFINITION
  **************************************************************************************/
 
-std::string toStr(uint32_t const id, std::vector<uint8_t> const & data)
+std::string toStr(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
   std::stringstream ss;
   ss << std::hex
      << "ID: " << std::setw(4) << std::setfill(' ') << id << " DATA: ";
-  std::for_each(data.cbegin(),
-                data.cend(),
+  std::for_each(data,
+                data + len,
                 [&ss](uint8_t const data)
                 {
                   ss << std::setw(2) << std::setfill('0') << data << " ";

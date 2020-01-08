@@ -34,7 +34,7 @@ static int const MKRCAN_MCP2515_INT_PIN = 7;
  * TYPEDEF
  **************************************************************************************/
 
-typedef std::function<void(uint32_t const, std::vector<uint8_t> const &)> OnCanFrameReceiveFunc;
+typedef std::function<void(uint32_t const, uint8_t const *, uint8_t const)> OnCanFrameReceiveFunc;
 
 /**************************************************************************************
  * CLASS DECLARATION
@@ -51,7 +51,7 @@ public:
 
 
   void begin();
-  bool transmit(uint32_t const id, std::vector<uint8_t> const & data);
+  bool transmit(uint32_t const id, uint8_t const * data, uint8_t const len);
   
 
 private:
@@ -66,6 +66,6 @@ private:
  * FUNCTION DECLARATION
  **************************************************************************************/
 
-std::string toStr(uint32_t const id, std::vector<uint8_t> const & data);
+std::string toStr(uint32_t const id, uint8_t const * data, uint8_t const len);
 
 #endif /* ARDUINO_MCP2515_H_ */
