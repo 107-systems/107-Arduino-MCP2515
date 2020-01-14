@@ -37,6 +37,9 @@ ArduinoMCP2515 MCP2515(MKRCAN_MCP2515_CS_PIN, MKRCAN_MCP2515_INT_PIN, onCanFrame
 
 void setup()
 {
+  MCP2515.begin();
+  MCP2515.setLoopbackMode();
+  
   std::for_each(TEST_ID_VECTOR.cbegin(),
                 TEST_ID_VECTOR.cend(),
                 [](uint32_t const id)

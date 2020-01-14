@@ -51,14 +51,35 @@ public:
 
 
   void begin();
+
+  inline bool setNormalMode    () { return setMode(Mode::Normal);     }
+  inline bool setSleepMode     () { return setMode(Mode::Sleep);      }
+  inline bool setLoopbackMode  () { return setMode(Mode::Loopback);   }
+  inline bool setListenOnlyMode() { return setMode(Mode::ListenOnly); }
+  inline bool setConfigMode    () { return setMode(Mode::Config);     }
+
   bool transmit(uint32_t const id, uint8_t const * data, uint8_t const len);
-  
+
 
 private:
 
   MCP2515_Io            _io;
   MCP2515_Event         _event;
   OnCanFrameReceiveFunc _on_can_frame_rx;
+
+  static uint8_t constexpr CANCTRL_REQOP_MASK = 0xE0;
+  static uint8_t constexpr CANSTAT_OP_MASK    = CANCTRL_REQOP_MASK;
+
+  enum class Mode : uint8_t
+  {
+    Normal     = 0x00,
+    Sleep      = 0x20,
+    Loopback   = 0x40,
+    ListenOnly = 0x60,
+    Config     = 0x80
+  };
+
+  bool setMode(Mode const mode);
 
 };
 
