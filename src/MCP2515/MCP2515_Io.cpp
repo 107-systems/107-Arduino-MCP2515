@@ -56,6 +56,19 @@ void MCP2515_Io::writeRegister(Register const reg, uint8_t const data)
   deselect();
 }
 
+void MCP2515_Io::modifyRegister(Register const reg, uint8_t const mask, uint8_t const data)
+{
+  uint8_t const instruction = static_cast<uint8_t>(Instruction::BITMOD);
+  uint8_t const reg_addr    = static_cast<uint8_t>(reg);
+
+  select();
+  SPI.transfer(instruction);
+  SPI.transfer(reg_addr);
+  SPI.transfer(mask);
+  SPI.transfer(data);
+  deselect();
+}
+
 void MCP2515_Io::setBit(Register const reg, uint8_t const bit_pos)
 {
   assert(bit_pos < 8);
