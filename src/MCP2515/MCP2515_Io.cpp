@@ -10,6 +10,8 @@
 
 #include "MCP2515_Io.h"
 
+#include <assert.h>
+
 /**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
@@ -52,4 +54,20 @@ void MCP2515_Io::writeRegister(Register const reg, uint8_t const data)
   SPI.transfer(reg_addr);
   SPI.transfer(data);
   deselect();
+}
+
+void MCP2515_Io::setBit(Register const reg, uint8_t const bit_pos)
+{
+  assert(bit_pos < 8);
+  uint8_t reg_val = readRegister(reg);
+  reg_val |= (1<<bit_pos);
+  writeRegister(reg, reg_val);
+}
+
+void MCP2515_Io::clrBit(Register const reg, uint8_t const bit_pos)
+{
+  assert(bit_pos < 8);
+  uint8_t reg_val = readRegister(reg);
+  reg_val &= ~(1<<bit_pos);
+  writeRegister(reg, reg_val);
 }

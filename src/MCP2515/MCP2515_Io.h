@@ -136,6 +136,8 @@ public:
 
   uint8_t readRegister (Register const reg);
   void    writeRegister(Register const reg, uint8_t const data);
+  void    setBit       (Register const reg, uint8_t const bit_pos);
+  void    clrBit       (Register const reg, uint8_t const bit_pos);
 
 
 private:
