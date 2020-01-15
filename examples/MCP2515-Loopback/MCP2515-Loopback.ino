@@ -63,5 +63,16 @@ void loop()
 
 void onCanFrameReceive(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
-  Serial.println(toStr(id, data, len).c_str());
+  Serial.print("ID ");
+  Serial.print(id, HEX);
+  Serial.print(" DATA[");
+  Serial.print(len);
+  Serial.print("] ");
+  std::for_each(data,
+                data+len,
+                [](uint8_t const elem) {
+                  Serial.print(elem, HEX);
+                  Serial.print(" ");
+                });
+  Serial.println();
 }

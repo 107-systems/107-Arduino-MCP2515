@@ -10,10 +10,6 @@
 
 #include <ArduinoMCP2515.h>
 
-#include <sstream>
-#include <iomanip>
-#include <algorithm>
-
 /**************************************************************************************
  * GLOBAL CONSTANTS
  **************************************************************************************/
@@ -91,22 +87,4 @@ void ArduinoMCP2515::setBitRateConfig(MCP2515_CanBitRateConfig const bit_rate_co
   _io.writeRegister(Register::CNF1, bit_rate_config.CNF1);
   _io.writeRegister(Register::CNF2, bit_rate_config.CNF2);
   _io.writeRegister(Register::CNF3, bit_rate_config.CNF3);
-}
-
-/**************************************************************************************
- * PUBLIC FUNCTION DEFINITION
- **************************************************************************************/
-
-std::string toStr(uint32_t const id, uint8_t const * data, uint8_t const len)
-{
-  std::stringstream ss;
-  ss << std::hex
-     << "ID: " << std::setw(4) << std::setfill(' ') << id << " DATA: ";
-  std::for_each(data,
-                data + len,
-                [&ss](uint8_t const data)
-                {
-                  ss << std::setw(2) << std::setfill('0') << data << " ";
-                });
-  return ss.str();
 }
