@@ -38,6 +38,6 @@ typedef struct
  **************************************************************************************/
 
 static uint8_t constexpr MCP2515_CANCTRL_REQOP_MASK = 0xE0;
-static uint8_t constexpr MCP2515_CANSTAT_OP_MASK    = MCP2515_CANCTRL_REQOP_MASK;
+static uint8_t constexpr MCP2515_CANSTAT_OP_MASK    = 0xE0;
 
 #endif /* MCP2515_MCP2515_TYPES_H_ */
