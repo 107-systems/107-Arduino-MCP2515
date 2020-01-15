@@ -16,6 +16,7 @@
 
 #include "MCP2515/MCP2515_Io.h"
 #include "MCP2515/MCP2515_Event.h"
+#include "MCP2515/MCP2515_Types.h"
 
 #undef min
 #undef max
@@ -35,11 +36,6 @@ static int const MKRCAN_MCP2515_INT_PIN = 7;
  **************************************************************************************/
 
 typedef std::function<void(uint32_t const, uint8_t const *, uint8_t const)> OnCanFrameReceiveFunc;
-
-typedef struct
-{
-  uint8_t CNF1, CNF2, CNF3;
-} CanBitRateConfig;
 
 enum class CanBitRate : size_t
 {
@@ -67,11 +63,11 @@ public:
 
   void setBitRate(CanBitRate const bit_rate);
 
-  inline bool setNormalMode    () { return setMode(Mode::Normal);     }
-  inline bool setSleepMode     () { return setMode(Mode::Sleep);      }
-  inline bool setLoopbackMode  () { return setMode(Mode::Loopback);   }
-  inline bool setListenOnlyMode() { return setMode(Mode::ListenOnly); }
-  inline bool setConfigMode    () { return setMode(Mode::Config);     }
+  inline bool setNormalMode    () { return setMode(MCP2515_Mode::Normal);     }
+  inline bool setSleepMode     () { return setMode(MCP2515_Mode::Sleep);      }
+  inline bool setLoopbackMode  () { return setMode(MCP2515_Mode::Loopback);   }
+  inline bool setListenOnlyMode() { return setMode(MCP2515_Mode::ListenOnly); }
+  inline bool setConfigMode    () { return setMode(MCP2515_Mode::Config);     }
 
   bool transmit(uint32_t const id, uint8_t const * data, uint8_t const len);
 
@@ -82,21 +78,8 @@ private:
   MCP2515_Event         _event;
   OnCanFrameReceiveFunc _on_can_frame_rx;
 
-  static uint8_t constexpr CANCTRL_REQOP_MASK = 0xE0;
-  static uint8_t constexpr CANSTAT_OP_MASK    = CANCTRL_REQOP_MASK;
-
-  enum class Mode : uint8_t
-  {
-    Normal     = 0x00,
-    Sleep      = 0x20,
-    Loopback   = 0x40,
-    ListenOnly = 0x60,
-    Config     = 0x80
-  };
-
-  bool setMode(Mode const mode);
-
-  void setBitRateConfig(CanBitRateConfig const bit_rate_config);
+  bool setMode(MCP2515_Mode const mode);
+  void setBitRateConfig(MCP2515_CanBitRateConfig const bit_rate_config);
 
 };
 
