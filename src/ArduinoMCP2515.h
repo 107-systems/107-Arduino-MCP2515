@@ -36,6 +36,19 @@ static int const MKRCAN_MCP2515_INT_PIN = 7;
 
 typedef std::function<void(uint32_t const, uint8_t const *, uint8_t const)> OnCanFrameReceiveFunc;
 
+typedef struct
+{
+  uint8_t CNF1, CNF2, CNF3;
+} CanBitRateConfig;
+
+enum class CanBitRate : size_t
+{
+  BR_125kBPS  = 0,
+  BR_250kBPS  = 1,
+  BR_500kBPS  = 2,
+  BR_1000kBPS = 3
+};
+
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
@@ -51,6 +64,8 @@ public:
 
 
   void begin();
+
+  void setBitRate(CanBitRate const bit_rate);
 
   inline bool setNormalMode    () { return setMode(Mode::Normal);     }
   inline bool setSleepMode     () { return setMode(Mode::Sleep);      }
@@ -80,6 +95,8 @@ private:
   };
 
   bool setMode(Mode const mode);
+
+  void setBitRateConfig(CanBitRateConfig const bit_rate_config);
 
 };
 

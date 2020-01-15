@@ -15,6 +15,23 @@
 #include <algorithm>
 
 /**************************************************************************************
+ * GLOBAL CONSTANTS
+ **************************************************************************************/
+
+static CanBitRateConfig constexpr BitRate_125kBPS_16MHz  = {0x03, 0xF0, 0x86};
+static CanBitRateConfig constexpr BitRate_250kBPS_16MHz  = {0x41, 0xF1, 0x85};
+static CanBitRateConfig constexpr BitRate_500kBPS_16MHz  = {0x00, 0xF0, 0x86};
+static CanBitRateConfig constexpr BitRate_1000kBPS_16MHz = {0x00, 0xD0, 0x82};
+
+static CanBitRateConfig const BIT_RATE_CONFIG_ARRAY[] =
+{
+  BitRate_125kBPS_16MHz,
+  BitRate_250kBPS_16MHz,
+  BitRate_500kBPS_16MHz,
+  BitRate_1000kBPS_16MHz
+};
+
+/**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
 
@@ -36,6 +53,11 @@ void ArduinoMCP2515::begin()
 {
   _io.begin();
   _event.begin();
+}
+
+void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
+{
+  setBitRateConfig(BIT_RATE_CONFIG_ARRAY[static_cast<size_t>(bit_rate)]);
 }
 
 bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t const len)
@@ -62,6 +84,13 @@ bool ArduinoMCP2515::setMode(Mode const mode)
   }
 
   return false;
+}
+
+void ArduinoMCP2515::setBitRateConfig(CanBitRateConfig const bit_rate_config)
+{
+  _io.writeRegister(Register::CNF1, bit_rate_config.CNF1);
+  _io.writeRegister(Register::CNF2, bit_rate_config.CNF2);
+  _io.writeRegister(Register::CNF3, bit_rate_config.CNF3);
 }
 
 /**************************************************************************************
