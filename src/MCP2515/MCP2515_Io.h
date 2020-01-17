@@ -140,6 +140,7 @@ public:
   void    setBit        (Register const reg, uint8_t const bit_pos);
   void    clrBit        (Register const reg, uint8_t const bit_pos);
 
+  void    reset();
 
 private:
 

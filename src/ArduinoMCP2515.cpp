@@ -49,6 +49,8 @@ void ArduinoMCP2515::begin()
 {
   _io.begin();
   _event.begin();
+
+  _io.reset();
 }
 
 void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)

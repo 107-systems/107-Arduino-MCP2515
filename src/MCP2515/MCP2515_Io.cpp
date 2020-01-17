@@ -84,3 +84,14 @@ void MCP2515_Io::clrBit(Register const reg, uint8_t const bit_pos)
   reg_val &= ~(1<<bit_pos);
   writeRegister(reg, reg_val);
 }
+
+void MCP2515_Io::reset()
+{
+  uint8_t const instruction = static_cast<uint8_t>(Instruction::RESET);
+
+  select();
+  SPI.transfer(instruction);
+  deselect();
+
+  delay(10);
+}
