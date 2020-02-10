@@ -40,7 +40,7 @@ void setup()
   MCP2515.begin();
   MCP2515.setBitRate(CanBitRate::BR_250kBPS);
   MCP2515.setLoopbackMode();
-  
+
   std::for_each(TEST_ID_VECTOR.cbegin(),
                 TEST_ID_VECTOR.cend(),
                 [](uint32_t const id)
@@ -54,7 +54,7 @@ void setup()
 
 void loop()
 {
-  
+
 }
 
 /**************************************************************************************
