@@ -20,7 +20,7 @@ public:
 
          void begin();
   static void onExternalEvent();
-  
+
 
 private:
 
