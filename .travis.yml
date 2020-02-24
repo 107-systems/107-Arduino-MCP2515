@@ -44,7 +44,7 @@ matrix:
       # https://github.com/codespell-project/codespell
       - pip install codespell
     script:
-      - codespell --skip="${TRAVIS_BUILD_DIR}/.git" --ignore-words="${TRAVIS_BUILD_DIR}/etc/codespell-ignore-words-list.txt" "${TRAVIS_BUILD_DIR}"
+      - codespell --skip="${TRAVIS_BUILD_DIR}/.git" --ignore-words="${TRAVIS_BUILD_DIR}/extras/codespell-ignore-words-list.txt" "${TRAVIS_BUILD_DIR}"
 
 
   - name: 'File formatting checks'
