@@ -13,6 +13,10 @@
 
 #include <stdint.h>
 
+#undef max
+#undef min
+#include <array>
+
 #include <Arduino.h>
 #include <SPI.h>
 
@@ -120,6 +124,28 @@ enum class Instruction : uint8_t
   RESET       = 0xC0
 };
 
+typedef struct TxBuffer
+{
+  Register CTRL, SIDH, SIDL, EID8, EID0, DLC, DATA;
+};
+
+enum class TXBnCTRL : uint8_t
+{
+  TXREQ = 0x08,
+};
+
+/**************************************************************************************
+ * CONSTANTS
+ **************************************************************************************/
+
+static size_t constexpr MCP2515_NUM_TX_BUFFERS = 3;
+
+TxBuffer constexpr MCP2515_TX_BUFFER_0 = {Register::TXB0CTRL, Register::TXB0SIDH, Register::TXB0SIDL, Register::TXB0EID8, Register::TXB0EID0, Register::TXB0DLC, Register::TXB0DATA};
+TxBuffer constexpr MCP2515_TX_BUFFER_1 = {Register::TXB1CTRL, Register::TXB1SIDH, Register::TXB1SIDL, Register::TXB1EID8, Register::TXB1EID0, Register::TXB1DLC, Register::TXB1DATA};
+TxBuffer constexpr MCP2515_TX_BUFFER_2 = {Register::TXB2CTRL, Register::TXB2SIDH, Register::TXB2SIDL, Register::TXB2EID8, Register::TXB2EID0, Register::TXB2DLC, Register::TXB2DATA};
+
+std::array<TxBuffer, MCP2515_NUM_TX_BUFFERS> constexpr MCP2515_TX_BUFFERS = {MCP2515_TX_BUFFER_0, MCP2515_TX_BUFFER_1, MCP2515_TX_BUFFER_2};
+
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
@@ -153,5 +179,19 @@ private:
   inline void deselect() { digitalWrite(_cs_pin, HIGH); }
 
 };
+
+/**************************************************************************************
+ * FUNCTION DECLARATION
+ **************************************************************************************/
+
+inline bool isBitSet(uint8_t const reg_val, uint8_t const bit_mask)
+{
+  return ((reg_val & bit_mask) == bit_mask);
+}
+
+inline bool isBitClr(uint8_t const reg_val, uint8_t const bit_mask)
+{
+  return !isBitSet(reg_val, bit_mask);
+}
 
 #endif /* MCP2515_MCP2515_IO_H_ */

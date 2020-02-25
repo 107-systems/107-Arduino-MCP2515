@@ -10,6 +10,8 @@
 
 #include <ArduinoMCP2515.h>
 
+#include <algorithm>
+
 /**************************************************************************************
  * GLOBAL CONSTANTS
  **************************************************************************************/
@@ -60,7 +62,17 @@ void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
 
 bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
-  return false; /* TODO */
+  std::for_each(MCP2515_TX_BUFFERS.cbegin(),
+                MCP2515_TX_BUFFERS.cend(),
+                [=](TxBuffer const tx_buf)
+                {
+                  uint8_t const ctrl_val = _io.readRegister(tx_buf.CTRL);
+                  if(isBitClr(ctrl_val, static_cast<uint8_t>(TXBnCTRL::TXREQ))) {
+                    return transmit(tx_buf, id, data, len);
+                  }
+                });
+
+  return false;
 }
 
 /**************************************************************************************
@@ -89,4 +101,9 @@ void ArduinoMCP2515::setBitRateConfig(MCP2515_CanBitRateConfig const bit_rate_co
   _io.writeRegister(Register::CNF1, bit_rate_config.CNF1);
   _io.writeRegister(Register::CNF2, bit_rate_config.CNF2);
   _io.writeRegister(Register::CNF3, bit_rate_config.CNF3);
+}
+
+bool ArduinoMCP2515::transmit(TxBuffer const tx_buf, uint32_t const id, uint8_t const * data, uint8_t const len)
+{
+  /* TODO */ return false;
 }

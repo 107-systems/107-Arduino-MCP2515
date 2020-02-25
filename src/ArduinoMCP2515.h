@@ -81,6 +81,8 @@ private:
   bool setMode(MCP2515_Mode const mode);
   void setBitRateConfig(MCP2515_CanBitRateConfig const bit_rate_config);
 
+  bool transmit(TxBuffer const tx_buf, uint32_t const id, uint8_t const * data, uint8_t const len);
+
 };
 
 #endif /* ARDUINO_MCP2515_H_ */
