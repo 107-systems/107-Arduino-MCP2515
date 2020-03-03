@@ -12,6 +12,7 @@
  **************************************************************************************/
 
 #include <stdint.h>
+#include <stdlib.h>
 
 #undef max
 #undef min
@@ -134,11 +135,21 @@ enum class TXBnCTRL : uint8_t
   TXREQ = 0x08,
 };
 
+enum class TXBnDLC : uint8_t
+{
+  RTR = 0x04,
+};
+
+enum class TXBnSIDL : uint8_t
+{
+  EXIDE = 0x08,
+};
+
 /**************************************************************************************
  * CONSTANTS
  **************************************************************************************/
 
-static size_t constexpr MCP2515_NUM_TX_BUFFERS = 3;
+size_t constexpr MCP2515_NUM_TX_BUFFERS = 3;
 
 TxBuffer constexpr MCP2515_TX_BUFFER_0 = {Register::TXB0CTRL, Register::TXB0SIDH, Register::TXB0SIDL, Register::TXB0EID8, Register::TXB0EID0, Register::TXB0DLC, Register::TXB0DATA};
 TxBuffer constexpr MCP2515_TX_BUFFER_1 = {Register::TXB1CTRL, Register::TXB1SIDH, Register::TXB1SIDL, Register::TXB1EID8, Register::TXB1EID0, Register::TXB1DLC, Register::TXB1DATA};
