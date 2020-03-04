@@ -137,6 +137,8 @@ typedef struct TxBuffer
   Register CTRL, SIDH, SIDL, EID8, EID0, DLC, DATA;
 };
 
+typedef TxBuffer RxBuffer;
+
 enum class TXBnCTRL : uint8_t
 {
   TXREQ = 0x08,
@@ -152,17 +154,24 @@ enum class TXBnSIDL : uint8_t
   EXIDE = 0x08,
 };
 
+enum class STATUS : uint8_t
+{
+  RX0IF = 0x01,
+  RX1IF = 0x02,
+};
+
 /**************************************************************************************
  * CONSTANTS
  **************************************************************************************/
 
-size_t constexpr NUM_TX_BUFFERS = 3;
+size_t                               constexpr NUM_TX_BUFFERS = 3;
+TxBuffer                             constexpr TX_BUFFER_0    = {Register::TXB0CTRL, Register::TXB0SIDH, Register::TXB0SIDL, Register::TXB0EID8, Register::TXB0EID0, Register::TXB0DLC, Register::TXB0DATA};
+TxBuffer                             constexpr TX_BUFFER_1    = {Register::TXB1CTRL, Register::TXB1SIDH, Register::TXB1SIDL, Register::TXB1EID8, Register::TXB1EID0, Register::TXB1DLC, Register::TXB1DATA};
+TxBuffer                             constexpr TX_BUFFER_2    = {Register::TXB2CTRL, Register::TXB2SIDH, Register::TXB2SIDL, Register::TXB2EID8, Register::TXB2EID0, Register::TXB2DLC, Register::TXB2DATA};
+std::array<TxBuffer, NUM_TX_BUFFERS> constexpr TX_BUFFERS     = {TX_BUFFER_0, TX_BUFFER_1, TX_BUFFER_2};
 
-TxBuffer constexpr TX_BUFFER_0 = {Register::TXB0CTRL, Register::TXB0SIDH, Register::TXB0SIDL, Register::TXB0EID8, Register::TXB0EID0, Register::TXB0DLC, Register::TXB0DATA};
-TxBuffer constexpr TX_BUFFER_1 = {Register::TXB1CTRL, Register::TXB1SIDH, Register::TXB1SIDL, Register::TXB1EID8, Register::TXB1EID0, Register::TXB1DLC, Register::TXB1DATA};
-TxBuffer constexpr TX_BUFFER_2 = {Register::TXB2CTRL, Register::TXB2SIDH, Register::TXB2SIDL, Register::TXB2EID8, Register::TXB2EID0, Register::TXB2DLC, Register::TXB2DATA};
-
-std::array<TxBuffer, NUM_TX_BUFFERS> constexpr TX_BUFFERS = {TX_BUFFER_0, TX_BUFFER_1, TX_BUFFER_2};
+RxBuffer                             constexpr RX_BUFFER_0    = {Register::RXB0CTRL, Register::RXB0SIDH, Register::RXB0SIDL, Register::RXB0EID8, Register::RXB0EID0, Register::RXB0DLC, Register::RXB0DATA};
+RxBuffer                             constexpr RX_BUFFER_1    = {Register::RXB1CTRL, Register::RXB1SIDH, Register::RXB1SIDL, Register::RXB1EID8, Register::RXB1EID0, Register::RXB1DLC, Register::RXB1DATA};
 
 /**************************************************************************************
  * CLASS DECLARATION
@@ -186,6 +195,7 @@ public:
   void    clrBit        (Register const reg, uint8_t const bit_pos);
 
   void    reset();
+  uint8_t status();
 
 private:
 

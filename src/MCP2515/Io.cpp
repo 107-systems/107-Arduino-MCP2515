@@ -118,6 +118,18 @@ void Io::reset()
   delay(10);
 }
 
+uint8_t Io::status()
+{
+  uint8_t const instruction = static_cast<uint8_t>(Instruction::READ_STATUS);
+
+  select();
+                         SPI.transfer(instruction);
+  uint8_t const status = SPI.transfer(0);
+  deselect();
+
+  return status;
+}
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
