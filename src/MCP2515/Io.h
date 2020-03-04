@@ -141,23 +141,29 @@ typedef TxBuffer RxBuffer;
 
 enum class TXBnCTRL : uint8_t
 {
-  TXREQ = 0x08,
+  TXREQ = 3,
 };
 
 enum class TXBnDLC : uint8_t
 {
-  RTR = 0x04,
+  RTR = 2,
 };
 
 enum class TXBnSIDL : uint8_t
 {
-  EXIDE = 0x08,
+  EXIDE = 3,
 };
 
 enum class STATUS : uint8_t
 {
-  RX0IF = 0x01,
-  RX1IF = 0x02,
+  RX0IF = 0,
+  RX1IF = 1,
+};
+
+enum class CANINTE : uint8_t
+{
+  RX0IE = 0,
+  RX1IE = 1,
 };
 
 /**************************************************************************************
