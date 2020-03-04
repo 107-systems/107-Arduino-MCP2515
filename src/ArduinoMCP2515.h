@@ -74,6 +74,7 @@ public:
   inline bool setConfigMode    () { return setMode(MCP2515::Mode::Config);     }
 
   bool transmit(uint32_t const id, uint8_t const * data, uint8_t const len);
+  bool receive (uint32_t * id, uint8_t * data, uint8_t * len);
 
 
 private:
@@ -86,6 +87,7 @@ private:
   void setBitRateConfig(MCP2515::CanBitRateConfig const bit_rate_config);
 
   bool transmit(MCP2515::TxBuffer const tx_buf, uint32_t const id, uint8_t const * data, uint8_t const len);
+  bool receive (MCP2515::RxBuffer const rx_buf, uint32_t * id, uint8_t * data, uint8_t * len);
 
 };
 

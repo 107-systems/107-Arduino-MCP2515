@@ -89,6 +89,21 @@ bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t c
   return false;
 }
 
+bool ArduinoMCP2515::receive(uint32_t * id, uint8_t * data, uint8_t * len)
+{
+  uint8_t const status = _io.status();
+
+  if     (isBitSet(status, static_cast<uint8_t>(MCP2515::STATUS::RX0IF))) {
+    return receive(MCP2515::RX_BUFFER_0, id, data, len);
+  }
+  else if(isBitSet(status, static_cast<uint8_t>(MCP2515::STATUS::RX1IF))) {
+    return receive(MCP2515::RX_BUFFER_1, id, data, len);
+  }
+  else {
+    return false;
+  }
+}
+
 /**************************************************************************************
  * PRIVATE FUNCTION DEFINITION
  **************************************************************************************/
@@ -156,4 +171,9 @@ bool ArduinoMCP2515::transmit(MCP2515::TxBuffer const tx_buf, uint32_t const id,
   _io.setBit(tx_buf.CTRL, static_cast<uint8_t>(MCP2515::TXBnCTRL::TXREQ));
 
   return true;
+}
+
+bool ArduinoMCP2515::receive(MCP2515::RxBuffer const rx_buf, uint32_t * id, uint8_t * data, uint8_t * len)
+{
+  /* TODO */ return false;
 }
