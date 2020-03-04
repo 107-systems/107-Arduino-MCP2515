@@ -33,14 +33,14 @@ static MCP2515::CanBitRateConfig const BIT_RATE_CONFIG_ARRAY[] =
  * INLINE FUNCTIONS
  **************************************************************************************/
 
-inline bool isBitSet(uint8_t const reg_val, uint8_t const bit_mask)
+inline bool isBitSet(uint8_t const reg_val, uint8_t const bit_pos)
 {
-  return ((reg_val & bit_mask) == bit_mask);
+  return ((reg_val & (1<<bit_pos)) == (1<<bit_pos));
 }
 
-inline bool isBitClr(uint8_t const reg_val, uint8_t const bit_mask)
+inline bool isBitClr(uint8_t const reg_val, uint8_t const bit_pos)
 {
-  return !isBitSet(reg_val, bit_mask);
+  return !isBitSet(reg_val, bit_pos);
 }
 
 /**************************************************************************************
@@ -67,6 +67,13 @@ void ArduinoMCP2515::begin()
   _event.begin();
 
   _io.reset();
+
+  /* Enable interrupts:
+   *   Receive Buffer 0 Full
+   *   Receive Buffer 1 Full
+   */
+  _io.setBit(MCP2515::Register::CANINTE, static_cast<uint8_t>(MCP2515::CANINTE::RX0IE));
+  _io.setBit(MCP2515::Register::CANINTE, static_cast<uint8_t>(MCP2515::CANINTE::RX1IE));
 }
 
 void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
@@ -149,7 +156,7 @@ bool ArduinoMCP2515::transmit(MCP2515::TxBuffer const tx_buf, uint32_t const id,
   if(is_ext)
   {
     sidl |= static_cast<uint8_t>((id & 0x18000000) >> 27);
-    sidl |= static_cast<uint8_t>(MCP2515::TXBnSIDL::EXIDE);
+    sidl |= (1 << static_cast<uint8_t>(MCP2515::TXBnSIDL::EXIDE));
     _io.writeRegister(tx_buf.EID0, static_cast<uint8_t>((id & 0x0007F800) >> 11));
     _io.writeRegister(tx_buf.EID8, static_cast<uint8_t>((id & 0x07F80000) >> 19));
   }
@@ -161,7 +168,7 @@ bool ArduinoMCP2515::transmit(MCP2515::TxBuffer const tx_buf, uint32_t const id,
   _io.writeRegister(tx_buf.SIDL, sidl);
 
   /* Load data length register */
-  uint8_t const dlc = is_rtr ? (len | static_cast<uint8_t>(MCP2515::TXBnDLC::RTR)) : len;
+  uint8_t const dlc = is_rtr ? (len | (1 << static_cast<uint8_t>(MCP2515::TXBnDLC::RTR))) : len;
   _io.writeRegister(tx_buf.DLC, dlc);
 
   /* Load data buffer */
