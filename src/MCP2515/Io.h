@@ -168,12 +168,12 @@ std::array<TxBuffer, NUM_TX_BUFFERS> constexpr TX_BUFFERS = {TX_BUFFER_0, TX_BUF
  * CLASS DECLARATION
  **************************************************************************************/
 
-class MCP2515_Io
+class Io
 {
 
 public:
 
-  MCP2515_Io(int const cs_pin);
+  Io(int const cs_pin);
 
 
   void    begin();

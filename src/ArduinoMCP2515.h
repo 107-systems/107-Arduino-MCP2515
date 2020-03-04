@@ -14,9 +14,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "MCP2515/MCP2515_Io.h"
-#include "MCP2515/MCP2515_Event.h"
-#include "MCP2515/MCP2515_Types.h"
+#include "MCP2515/Io.h"
+#include "MCP2515/Event.h"
+#include "MCP2515/Types.h"
 
 #undef min
 #undef max
@@ -78,8 +78,8 @@ public:
 
 private:
 
-  MCP2515::MCP2515_Io    _io;
-  MCP2515::MCP2515_Event _event;
+  MCP2515::Io            _io;
+  MCP2515::Event         _event;
   OnCanFrameReceiveFunc  _on_can_frame_rx;
 
   bool setMode(MCP2515::Mode const mode);
