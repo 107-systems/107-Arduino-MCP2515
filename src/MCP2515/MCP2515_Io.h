@@ -22,6 +22,13 @@
 #include <SPI.h>
 
 /**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+namespace MCP2515
+{
+
+/**************************************************************************************
  * TYPEDEF
  **************************************************************************************/
 
@@ -149,13 +156,13 @@ enum class TXBnSIDL : uint8_t
  * CONSTANTS
  **************************************************************************************/
 
-size_t constexpr MCP2515_NUM_TX_BUFFERS = 3;
+size_t constexpr NUM_TX_BUFFERS = 3;
 
-TxBuffer constexpr MCP2515_TX_BUFFER_0 = {Register::TXB0CTRL, Register::TXB0SIDH, Register::TXB0SIDL, Register::TXB0EID8, Register::TXB0EID0, Register::TXB0DLC, Register::TXB0DATA};
-TxBuffer constexpr MCP2515_TX_BUFFER_1 = {Register::TXB1CTRL, Register::TXB1SIDH, Register::TXB1SIDL, Register::TXB1EID8, Register::TXB1EID0, Register::TXB1DLC, Register::TXB1DATA};
-TxBuffer constexpr MCP2515_TX_BUFFER_2 = {Register::TXB2CTRL, Register::TXB2SIDH, Register::TXB2SIDL, Register::TXB2EID8, Register::TXB2EID0, Register::TXB2DLC, Register::TXB2DATA};
+TxBuffer constexpr TX_BUFFER_0 = {Register::TXB0CTRL, Register::TXB0SIDH, Register::TXB0SIDL, Register::TXB0EID8, Register::TXB0EID0, Register::TXB0DLC, Register::TXB0DATA};
+TxBuffer constexpr TX_BUFFER_1 = {Register::TXB1CTRL, Register::TXB1SIDH, Register::TXB1SIDL, Register::TXB1EID8, Register::TXB1EID0, Register::TXB1DLC, Register::TXB1DATA};
+TxBuffer constexpr TX_BUFFER_2 = {Register::TXB2CTRL, Register::TXB2SIDH, Register::TXB2SIDL, Register::TXB2EID8, Register::TXB2EID0, Register::TXB2DLC, Register::TXB2DATA};
 
-std::array<TxBuffer, MCP2515_NUM_TX_BUFFERS> constexpr MCP2515_TX_BUFFERS = {MCP2515_TX_BUFFER_0, MCP2515_TX_BUFFER_1, MCP2515_TX_BUFFER_2};
+std::array<TxBuffer, NUM_TX_BUFFERS> constexpr TX_BUFFERS = {TX_BUFFER_0, TX_BUFFER_1, TX_BUFFER_2};
 
 /**************************************************************************************
  * CLASS DECLARATION
@@ -193,17 +200,9 @@ private:
 };
 
 /**************************************************************************************
- * FUNCTION DECLARATION
+ * NAMESPACE
  **************************************************************************************/
 
-inline bool isBitSet(uint8_t const reg_val, uint8_t const bit_mask)
-{
-  return ((reg_val & bit_mask) == bit_mask);
-}
-
-inline bool isBitClr(uint8_t const reg_val, uint8_t const bit_mask)
-{
-  return !isBitSet(reg_val, bit_mask);
-}
+} /* MCP2515 */
 
 #endif /* MCP2515_MCP2515_IO_H_ */
