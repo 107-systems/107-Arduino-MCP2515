@@ -4,13 +4,8 @@
  * @license LGPL 3.0
  */
 
-/**************************************************************************************
- * INCLUDE
- **************************************************************************************/
-
-#include "MCP2515_Event.h"
-
-#include <Arduino.h>
+#ifndef MCP2515_MCP2515_EVENT_H_
+#define MCP2515_MCP2515_EVENT_H_
 
 /**************************************************************************************
  * NAMESPACE
@@ -20,32 +15,30 @@ namespace MCP2515
 {
 
 /**************************************************************************************
- * CTOR/DTOR
+ * CLASS DECLARATION
  **************************************************************************************/
 
-MCP2515_Event::MCP2515_Event(int const int_pin)
-: _int_pin{int_pin}
+class Event
 {
 
-}
+public:
 
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
+  Event(int const int_pin);
 
-void MCP2515_Event::begin()
-{
-  pinMode(_int_pin, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(_int_pin), MCP2515_Event::onExternalEvent, FALLING);
-}
+         void begin();
+  static void onExternalEvent();
 
-void MCP2515_Event::onExternalEvent()
-{
-  /* TODO */
-}
+
+private:
+
+  int const _int_pin;
+
+};
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* MCP2515 */
+
+#endif /* MCP2515_MCP2515_EVENT_H_ */

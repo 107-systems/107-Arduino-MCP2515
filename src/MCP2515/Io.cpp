@@ -8,7 +8,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include "MCP2515_Io.h"
+#include "Io.h"
 
 #include <assert.h>
 
@@ -23,7 +23,7 @@ namespace MCP2515
  * CTOR/DTOR
  **************************************************************************************/
 
-MCP2515_Io::MCP2515_Io(int const cs_pin)
+Io::Io(int const cs_pin)
 : _cs_pin{cs_pin}
 {
 
@@ -33,13 +33,13 @@ MCP2515_Io::MCP2515_Io(int const cs_pin)
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void MCP2515_Io::begin()
+void Io::begin()
 {
   init_cs ();
   init_spi();
 }
 
-uint8_t MCP2515_Io::readRegister(Register const reg)
+uint8_t Io::readRegister(Register const reg)
 {
   uint8_t const instruction = static_cast<uint8_t>(Instruction::READ);
   uint8_t const reg_addr    = static_cast<uint8_t>(reg);
@@ -51,7 +51,7 @@ uint8_t MCP2515_Io::readRegister(Register const reg)
   deselect();
 }
 
-void MCP2515_Io::writeRegister(Register const reg, uint8_t const data)
+void Io::writeRegister(Register const reg, uint8_t const data)
 {
   uint8_t const instruction = static_cast<uint8_t>(Instruction::WRITE);
   uint8_t const reg_addr    = static_cast<uint8_t>(reg);
@@ -63,7 +63,7 @@ void MCP2515_Io::writeRegister(Register const reg, uint8_t const data)
   deselect();
 }
 
-void MCP2515_Io::writeRegister(Register const reg, uint8_t const * data, uint8_t const len)
+void Io::writeRegister(Register const reg, uint8_t const * data, uint8_t const len)
 {
   uint8_t const instruction = static_cast<uint8_t>(Instruction::WRITE);
   uint8_t const reg_addr    = static_cast<uint8_t>(reg);
@@ -78,7 +78,7 @@ void MCP2515_Io::writeRegister(Register const reg, uint8_t const * data, uint8_t
   deselect();
 }
 
-void MCP2515_Io::modifyRegister(Register const reg, uint8_t const mask, uint8_t const data)
+void Io::modifyRegister(Register const reg, uint8_t const mask, uint8_t const data)
 {
   uint8_t const instruction = static_cast<uint8_t>(Instruction::BITMOD);
   uint8_t const reg_addr    = static_cast<uint8_t>(reg);
@@ -91,7 +91,7 @@ void MCP2515_Io::modifyRegister(Register const reg, uint8_t const mask, uint8_t 
   deselect();
 }
 
-void MCP2515_Io::setBit(Register const reg, uint8_t const bit_pos)
+void Io::setBit(Register const reg, uint8_t const bit_pos)
 {
   assert(bit_pos < 8);
   uint8_t reg_val = readRegister(reg);
@@ -99,7 +99,7 @@ void MCP2515_Io::setBit(Register const reg, uint8_t const bit_pos)
   writeRegister(reg, reg_val);
 }
 
-void MCP2515_Io::clrBit(Register const reg, uint8_t const bit_pos)
+void Io::clrBit(Register const reg, uint8_t const bit_pos)
 {
   assert(bit_pos < 8);
   uint8_t reg_val = readRegister(reg);
@@ -107,7 +107,7 @@ void MCP2515_Io::clrBit(Register const reg, uint8_t const bit_pos)
   writeRegister(reg, reg_val);
 }
 
-void MCP2515_Io::reset()
+void Io::reset()
 {
   uint8_t const instruction = static_cast<uint8_t>(Instruction::RESET);
 
