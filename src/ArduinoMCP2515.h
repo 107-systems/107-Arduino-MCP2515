@@ -31,6 +31,10 @@
 static int const MKRCAN_MCP2515_CS_PIN  = 3;
 static int const MKRCAN_MCP2515_INT_PIN = 7;
 
+static uint32_t constexpr CAN_EFF_BITMASK  = 0x80000000;
+static uint32_t constexpr CAN_RTR_BITMASK  = 0x40000000;
+static uint32_t constexpr CAN_ERR_BITMASK  = 0x20000000;
+
 /**************************************************************************************
  * TYPEDEF
  **************************************************************************************/
@@ -80,6 +84,8 @@ private:
 
   bool setMode(MCP2515_Mode const mode);
   void setBitRateConfig(MCP2515_CanBitRateConfig const bit_rate_config);
+
+  bool transmit(TxBuffer const tx_buf, uint32_t const id, uint8_t const * data, uint8_t const len);
 
 };
 

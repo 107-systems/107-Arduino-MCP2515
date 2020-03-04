@@ -21,9 +21,9 @@ void onCanFrameReceive(uint32_t const id, uint8_t const * data, uint8_t const le
  * GLOBAL CONSTANTS
  **************************************************************************************/
 
-static std::vector<uint32_t> const TEST_ID_VECTOR{0,1,2,3,4,5,6,7,8,9,10};
-static uint8_t               const TEST_DATA[]   = {0xDE, 0xAD, 0xBE, 0xEF};
-static uint8_t               const TEST_DATA_LEN = sizeof(TEST_DATA)/sizeof(uint8_t);
+static std::array<uint32_t, 10> const TEST_ID_VECTOR{0,1,2,3,4,5,6,7,8,9};
+static uint8_t                  const TEST_DATA[]   = {0xDE, 0xAD, 0xBE, 0xEF};
+static uint8_t                  const TEST_DATA_LEN = sizeof(TEST_DATA)/sizeof(uint8_t);
 
 /**************************************************************************************
  * GLOBAL VARIABLES

@@ -10,6 +10,8 @@
 
 #include <ArduinoMCP2515.h>
 
+#include <algorithm>
+
 /**************************************************************************************
  * GLOBAL CONSTANTS
  **************************************************************************************/
@@ -60,7 +62,17 @@ void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
 
 bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
-  return false; /* TODO */
+  std::for_each(MCP2515_TX_BUFFERS.cbegin(),
+                MCP2515_TX_BUFFERS.cend(),
+                [=](TxBuffer const tx_buf)
+                {
+                  uint8_t const ctrl_val = _io.readRegister(tx_buf.CTRL);
+                  if(isBitClr(ctrl_val, static_cast<uint8_t>(TXBnCTRL::TXREQ))) {
+                    return transmit(tx_buf, id, data, len);
+                  }
+                });
+
+  return false;
 }
 
 /**************************************************************************************
@@ -89,4 +101,45 @@ void ArduinoMCP2515::setBitRateConfig(MCP2515_CanBitRateConfig const bit_rate_co
   _io.writeRegister(Register::CNF1, bit_rate_config.CNF1);
   _io.writeRegister(Register::CNF2, bit_rate_config.CNF2);
   _io.writeRegister(Register::CNF3, bit_rate_config.CNF3);
+}
+
+bool ArduinoMCP2515::transmit(TxBuffer const tx_buf, uint32_t const id, uint8_t const * data, uint8_t const len)
+{
+  bool const is_ext = (id & CAN_EFF_BITMASK) == CAN_EFF_BITMASK;
+  bool const is_rtr = (id & CAN_RTR_BITMASK) == CAN_RTR_BITMASK;
+
+  /* Load address registers */
+  /*  ID[28:27] = EID[17:16]
+   *  ID[26:19] = EID[15: 8]
+   *  ID[18:11] = EID[ 7: 0]
+   *  ID[10: 3] = SID[10: 3]
+   *  ID[ 3: 0] = SID[ 3: 0]
+   */
+  uint8_t sidl = static_cast<uint8_t>((id & 0x00000007) << 5);
+  _io.writeRegister(tx_buf.SIDH, static_cast<uint8_t>((id & 0x000007F8) >> 3));
+  if(is_ext)
+  {
+    sidl |= static_cast<uint8_t>((id & 0x18000000) >> 27);
+    sidl |= static_cast<uint8_t>(TXBnSIDL::EXIDE);
+    _io.writeRegister(tx_buf.EID0, static_cast<uint8_t>((id & 0x0007F800) >> 11));
+    _io.writeRegister(tx_buf.EID8, static_cast<uint8_t>((id & 0x07F80000) >> 19));
+  }
+  else
+  {
+    _io.writeRegister(tx_buf.EID0, 0);
+    _io.writeRegister(tx_buf.EID8, 0);
+  }
+  _io.writeRegister(tx_buf.SIDL, sidl);
+
+  /* Load data length register */
+  uint8_t const dlc = is_rtr ? (len | static_cast<uint8_t>(TXBnDLC::RTR)) : len;
+  _io.writeRegister(tx_buf.DLC, dlc);
+
+  /* Load data buffer */
+  _io.writeRegister(tx_buf.DATA, data, len);
+
+  /* Request transmission */
+  _io.setBit(tx_buf.CTRL, static_cast<uint8_t>(TXBnCTRL::TXREQ));
+
+  return true;
 }
