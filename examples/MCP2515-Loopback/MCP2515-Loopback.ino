@@ -29,7 +29,7 @@ static uint8_t                  const TEST_DATA_LEN = sizeof(TEST_DATA)/sizeof(u
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-ArduinoMCP2515 MCP2515(MKRCAN_MCP2515_CS_PIN, MKRCAN_MCP2515_INT_PIN, onCanFrameReceive);
+ArduinoMCP2515 mcp2515(MKRCAN_MCP2515_CS_PIN, MKRCAN_MCP2515_INT_PIN, onCanFrameReceive);
 
 /**************************************************************************************
  * SETUP/LOOP
@@ -37,15 +37,15 @@ ArduinoMCP2515 MCP2515(MKRCAN_MCP2515_CS_PIN, MKRCAN_MCP2515_INT_PIN, onCanFrame
 
 void setup()
 {
-  MCP2515.begin();
-  MCP2515.setBitRate(CanBitRate::BR_250kBPS);
-  MCP2515.setLoopbackMode();
+  mcp2515.begin();
+  mcp2515.setBitRate(CanBitRate::BR_250kBPS);
+  mcp2515.setLoopbackMode();
 
   std::for_each(TEST_ID_VECTOR.cbegin(),
                 TEST_ID_VECTOR.cend(),
                 [](uint32_t const id)
                 {
-                  if(!MCP2515.transmit(id, TEST_DATA, TEST_DATA_LEN)) {
+                  if(!mcp2515.transmit(id, TEST_DATA, TEST_DATA_LEN)) {
                     Serial.println("MCP2515.transmit() failed - transmit buffer full");
                   }
                   delay(500);

@@ -16,18 +16,32 @@
  * GLOBAL CONSTANTS
  **************************************************************************************/
 
-static MCP2515_CanBitRateConfig constexpr BitRate_125kBPS_16MHz  = {0x03, 0xF0, 0x86};
-static MCP2515_CanBitRateConfig constexpr BitRate_250kBPS_16MHz  = {0x41, 0xF1, 0x85};
-static MCP2515_CanBitRateConfig constexpr BitRate_500kBPS_16MHz  = {0x00, 0xF0, 0x86};
-static MCP2515_CanBitRateConfig constexpr BitRate_1000kBPS_16MHz = {0x00, 0xD0, 0x82};
+static MCP2515::CanBitRateConfig constexpr BitRate_125kBPS_16MHz  = {0x03, 0xF0, 0x86};
+static MCP2515::CanBitRateConfig constexpr BitRate_250kBPS_16MHz  = {0x41, 0xF1, 0x85};
+static MCP2515::CanBitRateConfig constexpr BitRate_500kBPS_16MHz  = {0x00, 0xF0, 0x86};
+static MCP2515::CanBitRateConfig constexpr BitRate_1000kBPS_16MHz = {0x00, 0xD0, 0x82};
 
-static MCP2515_CanBitRateConfig const BIT_RATE_CONFIG_ARRAY[] =
+static MCP2515::CanBitRateConfig const BIT_RATE_CONFIG_ARRAY[] =
 {
   BitRate_125kBPS_16MHz,
   BitRate_250kBPS_16MHz,
   BitRate_500kBPS_16MHz,
   BitRate_1000kBPS_16MHz
 };
+
+/**************************************************************************************
+ * INLINE FUNCTIONS
+ **************************************************************************************/
+
+inline bool isBitSet(uint8_t const reg_val, uint8_t const bit_mask)
+{
+  return ((reg_val & bit_mask) == bit_mask);
+}
+
+inline bool isBitClr(uint8_t const reg_val, uint8_t const bit_mask)
+{
+  return !isBitSet(reg_val, bit_mask);
+}
 
 /**************************************************************************************
  * CTOR/DTOR
@@ -62,12 +76,12 @@ void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
 
 bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
-  std::for_each(MCP2515_TX_BUFFERS.cbegin(),
-                MCP2515_TX_BUFFERS.cend(),
-                [=](TxBuffer const tx_buf)
+  std::for_each(MCP2515::TX_BUFFERS.cbegin(),
+                MCP2515::TX_BUFFERS.cend(),
+                [=](MCP2515::TxBuffer const tx_buf)
                 {
                   uint8_t const ctrl_val = _io.readRegister(tx_buf.CTRL);
-                  if(isBitClr(ctrl_val, static_cast<uint8_t>(TXBnCTRL::TXREQ))) {
+                  if(isBitClr(ctrl_val, static_cast<uint8_t>(MCP2515::TXBnCTRL::TXREQ))) {
                     return transmit(tx_buf, id, data, len);
                   }
                 });
@@ -79,15 +93,15 @@ bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t c
  * PRIVATE FUNCTION DEFINITION
  **************************************************************************************/
 
-bool ArduinoMCP2515::setMode(MCP2515_Mode const mode)
+bool ArduinoMCP2515::setMode(MCP2515::Mode const mode)
 {
   uint8_t const mode_val = static_cast<uint8_t>(mode);
 
-  _io.modifyRegister(Register::CANCTRL, MCP2515_CANCTRL_REQOP_MASK, mode_val);
+  _io.modifyRegister(MCP2515::Register::CANCTRL, MCP2515::CANCTRL_REQOP_MASK, mode_val);
 
   for(unsigned long const start = millis(); (millis() - start) < 10; )
   {
-    uint8_t const canstat_op_mode = (_io.readRegister(Register::CANSTAT) & MCP2515_CANSTAT_OP_MASK);
+    uint8_t const canstat_op_mode = (_io.readRegister(MCP2515::Register::CANSTAT) & MCP2515::CANSTAT_OP_MASK);
     if(canstat_op_mode == mode_val) {
       return true;
     }
@@ -96,14 +110,14 @@ bool ArduinoMCP2515::setMode(MCP2515_Mode const mode)
   return false;
 }
 
-void ArduinoMCP2515::setBitRateConfig(MCP2515_CanBitRateConfig const bit_rate_config)
+void ArduinoMCP2515::setBitRateConfig(MCP2515::CanBitRateConfig const bit_rate_config)
 {
-  _io.writeRegister(Register::CNF1, bit_rate_config.CNF1);
-  _io.writeRegister(Register::CNF2, bit_rate_config.CNF2);
-  _io.writeRegister(Register::CNF3, bit_rate_config.CNF3);
+  _io.writeRegister(MCP2515::Register::CNF1, bit_rate_config.CNF1);
+  _io.writeRegister(MCP2515::Register::CNF2, bit_rate_config.CNF2);
+  _io.writeRegister(MCP2515::Register::CNF3, bit_rate_config.CNF3);
 }
 
-bool ArduinoMCP2515::transmit(TxBuffer const tx_buf, uint32_t const id, uint8_t const * data, uint8_t const len)
+bool ArduinoMCP2515::transmit(MCP2515::TxBuffer const tx_buf, uint32_t const id, uint8_t const * data, uint8_t const len)
 {
   bool const is_ext = (id & CAN_EFF_BITMASK) == CAN_EFF_BITMASK;
   bool const is_rtr = (id & CAN_RTR_BITMASK) == CAN_RTR_BITMASK;
@@ -120,7 +134,7 @@ bool ArduinoMCP2515::transmit(TxBuffer const tx_buf, uint32_t const id, uint8_t 
   if(is_ext)
   {
     sidl |= static_cast<uint8_t>((id & 0x18000000) >> 27);
-    sidl |= static_cast<uint8_t>(TXBnSIDL::EXIDE);
+    sidl |= static_cast<uint8_t>(MCP2515::TXBnSIDL::EXIDE);
     _io.writeRegister(tx_buf.EID0, static_cast<uint8_t>((id & 0x0007F800) >> 11));
     _io.writeRegister(tx_buf.EID8, static_cast<uint8_t>((id & 0x07F80000) >> 19));
   }
@@ -132,14 +146,14 @@ bool ArduinoMCP2515::transmit(TxBuffer const tx_buf, uint32_t const id, uint8_t 
   _io.writeRegister(tx_buf.SIDL, sidl);
 
   /* Load data length register */
-  uint8_t const dlc = is_rtr ? (len | static_cast<uint8_t>(TXBnDLC::RTR)) : len;
+  uint8_t const dlc = is_rtr ? (len | static_cast<uint8_t>(MCP2515::TXBnDLC::RTR)) : len;
   _io.writeRegister(tx_buf.DLC, dlc);
 
   /* Load data buffer */
   _io.writeRegister(tx_buf.DATA, data, len);
 
   /* Request transmission */
-  _io.setBit(tx_buf.CTRL, static_cast<uint8_t>(TXBnCTRL::TXREQ));
+  _io.setBit(tx_buf.CTRL, static_cast<uint8_t>(MCP2515::TXBnCTRL::TXREQ));
 
   return true;
 }
