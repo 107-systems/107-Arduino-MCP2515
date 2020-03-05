@@ -15,7 +15,6 @@
 #include <stdbool.h>
 
 #include "MCP2515/Io.h"
-#include "MCP2515/Types.h"
 
 #undef min
 #undef max
@@ -66,14 +65,13 @@ public:
 
   void setBitRate(CanBitRate const bit_rate);
 
-  inline bool setNormalMode    () { return setMode(MCP2515::Mode::Normal);     }
-  inline bool setSleepMode     () { return setMode(MCP2515::Mode::Sleep);      }
-  inline bool setLoopbackMode  () { return setMode(MCP2515::Mode::Loopback);   }
-  inline bool setListenOnlyMode() { return setMode(MCP2515::Mode::ListenOnly); }
-  inline bool setConfigMode    () { return setMode(MCP2515::Mode::Config);     }
+  inline bool setNormalMode    () { return setMode(Mode::Normal);     }
+  inline bool setSleepMode     () { return setMode(Mode::Sleep);      }
+  inline bool setLoopbackMode  () { return setMode(Mode::Loopback);   }
+  inline bool setListenOnlyMode() { return setMode(Mode::ListenOnly); }
+  inline bool setConfigMode    () { return setMode(Mode::Config);     }
 
   bool transmit(uint32_t const id, uint8_t const * data, uint8_t const len);
-  bool receive (uint32_t * id, uint8_t * data, uint8_t * len);
 
   static void onExternalEvent();
 
@@ -84,13 +82,24 @@ private:
   int const              _int_pin;
   OnCanFrameReceiveFunc  _on_can_frame_rx;
 
-  void setupEventCallback();
+  void configureEventCallback();
+  void configureMCP2515();
 
-  bool setMode(MCP2515::Mode const mode);
-  void setBitRateConfig(MCP2515::CanBitRateConfig const bit_rate_config);
+  enum class Mode : uint8_t
+  {
+    Normal     = 0x00,
+    Sleep      = 0x20,
+    Loopback   = 0x40,
+    ListenOnly = 0x60,
+    Config     = 0x80
+  };
 
-  bool transmit(MCP2515::TxBuffer const tx_buf, uint32_t const id, uint8_t const * data, uint8_t const len);
-  bool receive (MCP2515::RxBuffer const rx_buf, uint32_t * id, uint8_t * data, uint8_t * len);
+  bool setMode(Mode const mode);
+
+  void transmit(MCP2515::Register const tx_buf_sidh, MCP2515::Register const tx_buf_ctrl, uint32_t const id, uint8_t const * data, uint8_t const len);
+  void receive (MCP2515::Register const rx_buf_ctrl);
+
+  void onExternalEventHandler();
 
 };
 

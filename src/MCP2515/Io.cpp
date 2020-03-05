@@ -53,6 +53,21 @@ uint8_t Io::readRegister(Register const reg)
   return data;
 }
 
+void Io::readRegister(Register const reg, uint8_t * data, uint8_t const len)
+{
+  uint8_t const instruction = static_cast<uint8_t>(Instruction::READ);
+  uint8_t const reg_addr    = static_cast<uint8_t>(reg);
+
+  select();
+  SPI.transfer(instruction);
+  SPI.transfer(reg_addr);
+  for(uint8_t b = 0; b < len; b++)
+  {
+    data[b] = SPI.transfer(0);
+  }
+  deselect();
+}
+
 void Io::writeRegister(Register const reg, uint8_t const data)
 {
   uint8_t const instruction = static_cast<uint8_t>(Instruction::WRITE);
@@ -96,17 +111,15 @@ void Io::modifyRegister(Register const reg, uint8_t const mask, uint8_t const da
 void Io::setBit(Register const reg, uint8_t const bit_pos)
 {
   assert(bit_pos < 8);
-  uint8_t reg_val = readRegister(reg);
-  reg_val |= (1<<bit_pos);
-  writeRegister(reg, reg_val);
+  uint8_t const bit_mask = (1<<bit_pos);
+  modifyRegister(reg, bit_mask, bit_mask);
 }
 
 void Io::clrBit(Register const reg, uint8_t const bit_pos)
 {
   assert(bit_pos < 8);
-  uint8_t reg_val = readRegister(reg);
-  reg_val &= ~(1<<bit_pos);
-  writeRegister(reg, reg_val);
+  uint8_t const bit_mask = (1<<bit_pos);
+  modifyRegister(reg, bit_mask, 0);
 }
 
 void Io::reset()

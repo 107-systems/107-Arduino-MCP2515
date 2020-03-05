@@ -134,7 +134,7 @@ enum class Instruction : uint8_t
 
 typedef struct TxBuffer
 {
-  Register CTRL, SIDH, SIDL, EID8, EID0, DLC, DATA;
+  Register CTRL, SIDH;
 };
 
 typedef TxBuffer RxBuffer;
@@ -166,18 +166,50 @@ enum class CANINTE : uint8_t
   RX1IE = 1,
 };
 
+enum class CANINTF : uint8_t
+{
+  MERRF = 7,
+  WAKIF = 6,
+  ERRIF = 5,
+  TX2IF = 4,
+  TX1IF = 3,
+  TX0IF = 2,
+  RX1IF = 1,
+  RX0IF = 0
+};
+
+enum class RXB0CTRL : uint8_t
+{
+  RXM1    = 6,
+  RXM0    = 5,
+  RXRTR   = 3,
+  BUKT    = 2,
+  BUKT1   = 1,
+  FILHIT0 = 0
+};
+
+enum class RXB1CTRL : uint8_t
+{
+  RXM1    = 6,
+  RXM0    = 5,
+  RXRTR   = 3,
+  FILHIT2 = 2,
+  FILHIT1 = 1,
+  FILHIT0 = 0
+};
+
 /**************************************************************************************
  * CONSTANTS
  **************************************************************************************/
 
-size_t                               constexpr NUM_TX_BUFFERS = 3;
-TxBuffer                             constexpr TX_BUFFER_0    = {Register::TXB0CTRL, Register::TXB0SIDH, Register::TXB0SIDL, Register::TXB0EID8, Register::TXB0EID0, Register::TXB0DLC, Register::TXB0DATA};
-TxBuffer                             constexpr TX_BUFFER_1    = {Register::TXB1CTRL, Register::TXB1SIDH, Register::TXB1SIDL, Register::TXB1EID8, Register::TXB1EID0, Register::TXB1DLC, Register::TXB1DATA};
-TxBuffer                             constexpr TX_BUFFER_2    = {Register::TXB2CTRL, Register::TXB2SIDH, Register::TXB2SIDL, Register::TXB2EID8, Register::TXB2EID0, Register::TXB2DLC, Register::TXB2DATA};
-std::array<TxBuffer, NUM_TX_BUFFERS> constexpr TX_BUFFERS     = {TX_BUFFER_0, TX_BUFFER_1, TX_BUFFER_2};
+static uint8_t constexpr CANCTRL_REQOP_MASK = 0xE0;
+static uint8_t constexpr CANSTAT_OP_MASK    = 0xE0;
 
-RxBuffer                             constexpr RX_BUFFER_0    = {Register::RXB0CTRL, Register::RXB0SIDH, Register::RXB0SIDL, Register::RXB0EID8, Register::RXB0EID0, Register::RXB0DLC, Register::RXB0DATA};
-RxBuffer                             constexpr RX_BUFFER_1    = {Register::RXB1CTRL, Register::RXB1SIDH, Register::RXB1SIDL, Register::RXB1EID8, Register::RXB1EID0, Register::RXB1DLC, Register::RXB1DATA};
+size_t                               constexpr NUM_TX_BUFFERS = 3;
+TxBuffer                             constexpr TX_BUFFER_0    = {Register::TXB0CTRL, Register::TXB0SIDH};
+TxBuffer                             constexpr TX_BUFFER_1    = {Register::TXB1CTRL, Register::TXB1SIDH};
+TxBuffer                             constexpr TX_BUFFER_2    = {Register::TXB2CTRL, Register::TXB2SIDH};
+std::array<TxBuffer, NUM_TX_BUFFERS> constexpr TX_BUFFERS     = {TX_BUFFER_0, TX_BUFFER_1, TX_BUFFER_2};
 
 /**************************************************************************************
  * CLASS DECLARATION
@@ -194,6 +226,7 @@ public:
   void    begin();
 
   uint8_t readRegister  (Register const reg);
+  void    readRegister  (Register const reg, uint8_t * data, uint8_t const len);
   void    writeRegister (Register const reg, uint8_t const data);
   void    writeRegister (Register const reg, uint8_t const * data, uint8_t const len);
   void    modifyRegister(Register const reg, uint8_t const mask, uint8_t const data);

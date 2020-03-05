@@ -49,9 +49,9 @@ void setup()
                 [](uint32_t const id)
                 {
                   if(!mcp2515.transmit(id, TEST_DATA, TEST_DATA_LEN)) {
-                    Serial.println("MCP2515.transmit() failed - transmit buffer full");
+                    Serial.println("ERROR TX");
                   }
-                  delay(100);
+                  delay(1000);
                 });
 }
 
