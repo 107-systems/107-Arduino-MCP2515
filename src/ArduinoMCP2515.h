@@ -15,7 +15,6 @@
 #include <stdbool.h>
 
 #include "MCP2515/Io.h"
-#include "MCP2515/Event.h"
 #include "MCP2515/Types.h"
 
 #undef min
@@ -76,12 +75,16 @@ public:
   bool transmit(uint32_t const id, uint8_t const * data, uint8_t const len);
   bool receive (uint32_t * id, uint8_t * data, uint8_t * len);
 
+  static void onExternalEvent();
+
 
 private:
 
   MCP2515::Io            _io;
-  MCP2515::Event         _event;
+  int const              _int_pin;
   OnCanFrameReceiveFunc  _on_can_frame_rx;
+
+  void setupEventCallback();
 
   bool setMode(MCP2515::Mode const mode);
   void setBitRateConfig(MCP2515::CanBitRateConfig const bit_rate_config);

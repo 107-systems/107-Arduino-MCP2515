@@ -37,6 +37,9 @@ ArduinoMCP2515 mcp2515(MKRCAN_MCP2515_CS_PIN, MKRCAN_MCP2515_INT_PIN, onCanFrame
 
 void setup()
 {
+  Serial.begin(9600);
+  while(!Serial) { }
+
   mcp2515.begin();
   mcp2515.setBitRate(CanBitRate::BR_250kBPS);
   mcp2515.setLoopbackMode();
@@ -48,7 +51,7 @@ void setup()
                   if(!mcp2515.transmit(id, TEST_DATA, TEST_DATA_LEN)) {
                     Serial.println("MCP2515.transmit() failed - transmit buffer full");
                   }
-                  delay(500);
+                  delay(100);
                 });
 }
 

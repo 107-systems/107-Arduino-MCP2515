@@ -12,6 +12,8 @@
 
 #include <algorithm>
 
+static ArduinoMCP2515 * this_ptr = nullptr;
+
 /**************************************************************************************
  * GLOBAL CONSTANTS
  **************************************************************************************/
@@ -51,10 +53,10 @@ ArduinoMCP2515::ArduinoMCP2515(int const cs_pin,
                                int const int_pin,
                                OnCanFrameReceiveFunc on_can_frame_rx)
 : _io{cs_pin}
-, _event{int_pin}
+, _int_pin{int_pin}
 , _on_can_frame_rx{on_can_frame_rx}
 {
-
+  this_ptr = this;
 }
 
 /**************************************************************************************
@@ -63,9 +65,8 @@ ArduinoMCP2515::ArduinoMCP2515(int const cs_pin,
 
 void ArduinoMCP2515::begin()
 {
+  setupEventCallback();
   _io.begin();
-  _event.begin();
-
   _io.reset();
 
   /* Enable interrupts:
@@ -74,6 +75,10 @@ void ArduinoMCP2515::begin()
    */
   _io.setBit(MCP2515::Register::CANINTE, static_cast<uint8_t>(MCP2515::CANINTE::RX0IE));
   _io.setBit(MCP2515::Register::CANINTE, static_cast<uint8_t>(MCP2515::CANINTE::RX1IE));
+
+  Serial.print("CANINTE = 0x");
+  Serial.print(_io.readRegister(MCP2515::Register::CANINTE), HEX);
+  Serial.println();
 }
 
 void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
@@ -100,6 +105,10 @@ bool ArduinoMCP2515::receive(uint32_t * id, uint8_t * data, uint8_t * len)
 {
   uint8_t const status = _io.status();
 
+  Serial.print("STATUS = 0x");
+  Serial.print(status, HEX);
+  Serial.println();
+
   if     (isBitSet(status, static_cast<uint8_t>(MCP2515::STATUS::RX0IF))) {
     return receive(MCP2515::RX_BUFFER_0, id, data, len);
   }
@@ -111,9 +120,20 @@ bool ArduinoMCP2515::receive(uint32_t * id, uint8_t * data, uint8_t * len)
   }
 }
 
+void ArduinoMCP2515::onExternalEvent()
+{
+  this_ptr->receive(0,0,0);
+}
+
 /**************************************************************************************
  * PRIVATE FUNCTION DEFINITION
  **************************************************************************************/
+
+void ArduinoMCP2515::setupEventCallback()
+{
+  pinMode(_int_pin, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(_int_pin), ArduinoMCP2515::onExternalEvent, FALLING);
+}
 
 bool ArduinoMCP2515::setMode(MCP2515::Mode const mode)
 {
