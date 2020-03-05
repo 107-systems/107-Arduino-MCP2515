@@ -49,6 +49,8 @@ uint8_t Io::readRegister(Register const reg)
                        SPI.transfer(reg_addr);
   uint8_t const data = SPI.transfer(0);
   deselect();
+
+  return data;
 }
 
 void Io::writeRegister(Register const reg, uint8_t const data)
