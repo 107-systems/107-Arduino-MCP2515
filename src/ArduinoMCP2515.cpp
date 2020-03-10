@@ -19,12 +19,6 @@
 using namespace MCP2515;
 
 /**************************************************************************************
- * STATIC MEMBER INITIALISATION
- **************************************************************************************/
-
-static ArduinoMCP2515 * this_ptr = nullptr;
-
-/**************************************************************************************
  * TYPEDEF
  **************************************************************************************/
 
@@ -70,15 +64,12 @@ inline bool isBitClr(uint8_t const reg_val, uint8_t const bit_pos)
  * CTOR/DTOR
  **************************************************************************************/
 
-ArduinoMCP2515::ArduinoMCP2515(int const cs_pin,
-                               int const int_pin,
-                               OnCanFrameReceiveFunc on_can_frame_rx)
+ArduinoMCP2515::ArduinoMCP2515(int const cs_pin, OnCanFrameReceiveFunc on_can_frame_rx)
 : _io{cs_pin}
 , _ctrl{_io}
-, _int_pin{int_pin}
 , _on_can_frame_rx{on_can_frame_rx}
 {
-  this_ptr = this;
+
 }
 
 /**************************************************************************************
@@ -89,7 +80,6 @@ void ArduinoMCP2515::begin()
 {
   _io.begin();
   _io.reset();
-  configureEventCallback();
   configureMCP2515();
 }
 
@@ -121,20 +111,26 @@ bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t c
   }
 }
 
-void ArduinoMCP2515::onExternalEvent()
+void ArduinoMCP2515::onExternalEventHandler()
 {
-  this_ptr->onExternalEventHandler();
+  uint8_t const status  = _io.status();
+
+  if(isBitSet(status, static_cast<uint8_t>(STATUS::RX0IF)))
+  {
+    receive(RxB::RxB0);
+    clrBit(_io, Register::CANINTF, bp(CANINTF::RX0IF));
+  }
+
+  if(isBitSet(status, static_cast<uint8_t>(STATUS::RX1IF)))
+  {
+    receive(RxB::RxB1);
+    clrBit(_io, Register::CANINTF, bp(CANINTF::RX1IF));
+  }
 }
 
 /**************************************************************************************
  * PRIVATE FUNCTION DEFINITION
  **************************************************************************************/
-
-void ArduinoMCP2515::configureEventCallback()
-{
-  pinMode(_int_pin, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(_int_pin), ArduinoMCP2515::onExternalEvent, FALLING);
-}
 
 void ArduinoMCP2515::configureMCP2515()
 {
@@ -210,21 +206,4 @@ void ArduinoMCP2515::receive(RxB const rxb)
 
   /* Call registered callback with received data */
   _on_can_frame_rx(id, rx_buffer.reg.data, len);
-}
-
-void ArduinoMCP2515::onExternalEventHandler()
-{
-  uint8_t const status  = _io.status();
-
-  if(isBitSet(status, static_cast<uint8_t>(STATUS::RX0IF)))
-  {
-    receive(RxB::RxB0);
-    clrBit(_io, Register::CANINTF, bp(CANINTF::RX0IF));
-  }
-
-  if(isBitSet(status, static_cast<uint8_t>(STATUS::RX1IF)))
-  {
-    receive(RxB::RxB1);
-    clrBit(_io, Register::CANINTF, bp(CANINTF::RX1IF));
-  }
 }

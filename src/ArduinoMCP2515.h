@@ -57,9 +57,7 @@ class ArduinoMCP2515
 
 public:
 
-  ArduinoMCP2515(int const cs_pin,
-                 int const int_pin,
-                 OnCanFrameReceiveFunc on_can_frame_rx);
+  ArduinoMCP2515(int const cs_pin, OnCanFrameReceiveFunc on_can_frame_rx);
 
 
   void begin();
@@ -74,23 +72,19 @@ public:
 
   bool transmit(uint32_t const id, uint8_t const * data, uint8_t const len);
 
-  static void onExternalEvent();
+  void onExternalEventHandler();
 
 
 private:
 
   MCP2515::MCP2515_Io _io;
   MCP2515::MCP2515_Control _ctrl;
-  int const              _int_pin;
-  OnCanFrameReceiveFunc  _on_can_frame_rx;
+  OnCanFrameReceiveFunc _on_can_frame_rx;
 
-  void configureEventCallback();
   void configureMCP2515();
 
   void transmit(MCP2515::TxB const txb, uint32_t const id, uint8_t const * data, uint8_t const len);
   void receive (MCP2515::RxB const rxb);
-
-  void onExternalEventHandler();
 
 };
 

@@ -29,7 +29,16 @@ static uint8_t                  const TEST_DATA_LEN = sizeof(TEST_DATA)/sizeof(u
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-ArduinoMCP2515 mcp2515(MKRCAN_MCP2515_CS_PIN, MKRCAN_MCP2515_INT_PIN, onCanFrameReceive);
+ArduinoMCP2515 mcp2515(MKRCAN_MCP2515_CS_PIN, onCanFrameReceive);
+
+/**************************************************************************************
+ * CALLBACK FUNCTIONS
+ **************************************************************************************/
+
+void onMCP2515ExternalEvent()
+{
+  mcp2515.onExternalEventHandler();
+}
 
 /**************************************************************************************
  * SETUP/LOOP
@@ -39,6 +48,10 @@ void setup()
 {
   Serial.begin(9600);
   while(!Serial) { }
+
+  /* Attach interrupt handler to register MCP2515 signaled by taking INT low */
+  pinMode(MKRCAN_MCP2515_INT_PIN, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(MKRCAN_MCP2515_INT_PIN), onMCP2515ExternalEvent, FALLING);
 
   mcp2515.begin();
   mcp2515.setBitRate(CanBitRate::BR_250kBPS);
