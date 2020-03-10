@@ -11,7 +11,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include "Io.h"
+#include "MCP2515_Io.h"
 
 /**************************************************************************************
  * NAMESPACE
@@ -42,7 +42,7 @@ class MCP2515_Control
 
 public:
 
-  MCP2515_Control(Io & io);
+  MCP2515_Control(MCP2515_Io & io);
 
 
   bool setMode(Mode const mode);
@@ -50,7 +50,7 @@ public:
 
 private:
 
-  Io & _io;
+  MCP2515_Io & _io;
 
 };
 

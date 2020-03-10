@@ -29,12 +29,12 @@ namespace MCP2515
  * CLASS DECLARATION
  **************************************************************************************/
 
-class Io
+class MCP2515_Io
 {
 
 public:
 
-  Io(int const cs_pin);
+  MCP2515_Io(int const cs_pin);
 
 
   void    begin();
@@ -64,8 +64,8 @@ private:
  * FREE FUNCTION DECLARATION
  **************************************************************************************/
 
-void setBit(Io & io, Register const reg, uint8_t const bit_pos);
-void clrBit(Io & io, Register const reg, uint8_t const bit_pos);
+void setBit(MCP2515_Io & io, Register const reg, uint8_t const bit_pos);
+void clrBit(MCP2515_Io & io, Register const reg, uint8_t const bit_pos);
 
 /**************************************************************************************
  * NAMESPACE

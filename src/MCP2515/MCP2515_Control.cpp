@@ -21,7 +21,7 @@ namespace MCP2515
  * CTOR/DTOR
  **************************************************************************************/
 
-MCP2515_Control::MCP2515_Control(Io & io)
+MCP2515_Control::MCP2515_Control(MCP2515_Io & io)
 : _io{io}
 {
 
