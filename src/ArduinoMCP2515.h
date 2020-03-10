@@ -15,6 +15,7 @@
 #include <stdbool.h>
 
 #include "MCP2515/Io.h"
+#include "MCP2515/MCP2515_Control.h"
 
 #undef min
 #undef max
@@ -65,11 +66,11 @@ public:
 
   void setBitRate(CanBitRate const bit_rate);
 
-  inline bool setNormalMode    () { return setMode(Mode::Normal);     }
-  inline bool setSleepMode     () { return setMode(Mode::Sleep);      }
-  inline bool setLoopbackMode  () { return setMode(Mode::Loopback);   }
-  inline bool setListenOnlyMode() { return setMode(Mode::ListenOnly); }
-  inline bool setConfigMode    () { return setMode(Mode::Config);     }
+  inline bool setNormalMode    () { return _ctrl.setMode(MCP2515::Mode::Normal);     }
+  inline bool setSleepMode     () { return _ctrl.setMode(MCP2515::Mode::Sleep);      }
+  inline bool setLoopbackMode  () { return _ctrl.setMode(MCP2515::Mode::Loopback);   }
+  inline bool setListenOnlyMode() { return _ctrl.setMode(MCP2515::Mode::ListenOnly); }
+  inline bool setConfigMode    () { return _ctrl.setMode(MCP2515::Mode::Config);     }
 
   bool transmit(uint32_t const id, uint8_t const * data, uint8_t const len);
 
@@ -79,22 +80,12 @@ public:
 private:
 
   MCP2515::Io            _io;
+  MCP2515::MCP2515_Control _ctrl;
   int const              _int_pin;
   OnCanFrameReceiveFunc  _on_can_frame_rx;
 
   void configureEventCallback();
   void configureMCP2515();
-
-  enum class Mode : uint8_t
-  {
-    Normal     = 0x00,
-    Sleep      = 0x20,
-    Loopback   = 0x40,
-    ListenOnly = 0x60,
-    Config     = 0x80
-  };
-
-  bool setMode(Mode const mode);
 
   void transmit(MCP2515::Register const tx_buf_sidh, MCP2515::Register const tx_buf_ctrl, uint32_t const id, uint8_t const * data, uint8_t const len);
   void receive (MCP2515::Register const rx_buf_ctrl);

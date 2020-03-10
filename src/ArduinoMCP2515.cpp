@@ -68,6 +68,7 @@ ArduinoMCP2515::ArduinoMCP2515(int const cs_pin,
                                int const int_pin,
                                OnCanFrameReceiveFunc on_can_frame_rx)
 : _io{cs_pin}
+, _ctrl{_io}
 , _int_pin{int_pin}
 , _on_can_frame_rx{on_can_frame_rx}
 {
@@ -151,23 +152,6 @@ void ArduinoMCP2515::configureMCP2515()
   _io.setBit(MCP2515::Register::RXB1CTRL, static_cast<uint8_t>(MCP2515::RXB1CTRL::RXM0));
   /* Enable roll-over to RXB1 if RXB0 is full */
   //_io.setBit(MCP2515::Register::RXB0CTRL, static_cast<uint8_t>(MCP2515::RXB0CTRL::BUKT));
-}
-
-bool ArduinoMCP2515::setMode(Mode const mode)
-{
-  uint8_t const mode_val = static_cast<uint8_t>(mode);
-
-  _io.modifyRegister(MCP2515::Register::CANCTRL, MCP2515::CANCTRL_REQOP_MASK, mode_val);
-
-  for(unsigned long const start = millis(); (millis() - start) < 10; )
-  {
-    uint8_t const canstat_op_mode = (_io.readRegister(MCP2515::Register::CANSTAT) & MCP2515::CANSTAT_OP_MASK);
-    if(canstat_op_mode == mode_val) {
-      return true;
-    }
-  }
-
-  return false;
 }
 
 void ArduinoMCP2515::transmit(MCP2515::Register const tx_buf_sidh, MCP2515::Register const tx_buf_ctrl, uint32_t const id, uint8_t const * data, uint8_t const len)
