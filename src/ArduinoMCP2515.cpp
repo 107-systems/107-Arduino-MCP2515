@@ -128,22 +128,13 @@ void ArduinoMCP2515::configureEventCallback()
   attachInterrupt(digitalPinToInterrupt(_int_pin), ArduinoMCP2515::onExternalEvent, FALLING);
 }
 
-/* See https://stackoverflow.com/questions/11421432/how-can-i-output-the-value-of-an-enum-class-in-c11 */
-template <typename Enumeration>
-auto _(Enumeration const value)
-    -> typename std::underlying_type<Enumeration>::type
-{
-    return static_cast<typename std::underlying_type<Enumeration>::type>(value);
-}
-
-
 void ArduinoMCP2515::configureMCP2515()
 {
   /* Enable interrupts:
    *   Receive Buffer 0 Full
    *   Receive Buffer 1 Full
    */
-  _io.setBit(MCP2515::Register::CANINTE, _(MCP2515::CANINTE::RX0IE));
+  _io.setBit(MCP2515::Register::CANINTE, static_cast<uint8_t>(MCP2515::CANINTE::RX0IE));
   _io.setBit(MCP2515::Register::CANINTE, static_cast<uint8_t>(MCP2515::CANINTE::RX1IE));
   /* Turn masks/filters off */
   _io.setBit(MCP2515::Register::RXB0CTRL, static_cast<uint8_t>(MCP2515::RXB0CTRL::RXM1));

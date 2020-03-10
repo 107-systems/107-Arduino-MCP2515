@@ -198,6 +198,18 @@ enum class RXB1CTRL : uint8_t
   FILHIT0 = 0
 };
 
+template <typename Enumeration>
+auto bp(Enumeration const value) -> typename std::underlying_type<Enumeration>::type
+{
+    return static_cast<typename std::underlying_type<Enumeration>::type>(value);
+}
+
+template <typename Enumeration>
+auto bm(Enumeration const value) -> typename std::underlying_type<Enumeration>::type
+{
+    return (1 << bp(value));
+}
+
 /**************************************************************************************
  * CONSTANTS
  **************************************************************************************/
