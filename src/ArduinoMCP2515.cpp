@@ -155,22 +155,7 @@ void ArduinoMCP2515::configureMCP2515()
 
 void ArduinoMCP2515::transmit(TxB const txb, uint32_t const id, uint8_t const * data, uint8_t const len)
 {
-  union TxBuffer
-  {
-    struct
-    {
-      uint8_t sidh;
-      uint8_t sidl;
-      uint8_t eid8;
-      uint8_t eid0;
-      uint8_t dlc;
-      uint8_t data[8];
-    } reg;
-    uint8_t buf[5+8];
-  };
-  static_assert(sizeof(TxBuffer) == MCP2515_Io::TX_BUF_SIZE, "Union TxBuffer exceeds expected size of MCP2515_Io::TX_BUF_SIZE bytes");
-
-  TxBuffer tx_buffer;
+  RxTxBuffer tx_buffer;
 
   bool const is_ext = (id & CAN_EFF_BITMASK) == CAN_EFF_BITMASK;
   bool const is_rtr = (id & CAN_RTR_BITMASK) == CAN_RTR_BITMASK;
@@ -212,23 +197,9 @@ void ArduinoMCP2515::transmit(TxB const txb, uint32_t const id, uint8_t const * 
 
 void ArduinoMCP2515::receive(RxB const rxb)
 {
-  union RxBuffer
-  {
-    struct
-    {
-      uint8_t sidh;
-      uint8_t sidl;
-      uint8_t eid8;
-      uint8_t eid0;
-      uint8_t dlc;
-      uint8_t data[8];
-    } reg;
-    uint8_t buf[5+8];
-  };
-  static_assert(sizeof(RxBuffer) == MCP2515_Io::RX_BUF_SIZE, "Union RxBuffer exceeds expected size of MCP2515_Io::RX_BUF_SIZE bytes");
+  RxTxBuffer rx_buffer;
 
   /* Read content of receive buffer */
-  RxBuffer rx_buffer;
   _io.readRxBuffer(rxb, rx_buffer.buf);
 
   /* Assemble ID from registers */

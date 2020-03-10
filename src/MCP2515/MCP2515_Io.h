@@ -42,6 +42,20 @@ enum class RxB : uint8_t
   RxB1 = 1
 };
 
+union RxTxBuffer
+{
+  struct
+  {
+    uint8_t sidh;
+    uint8_t sidl;
+    uint8_t eid8;
+    uint8_t eid0;
+    uint8_t dlc;
+    uint8_t data[8];
+  } reg;
+  uint8_t buf[5+8];
+};
+
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
@@ -81,6 +95,8 @@ private:
   inline void deselect() { digitalWrite(_cs_pin, HIGH); }
 
 };
+
+static_assert(sizeof(RxTxBuffer) == MCP2515_Io::TX_BUF_SIZE, "Union RxTxBuffer exceeds expected size of MCP2515_Io::TX/RX_BUF_SIZE bytes");
 
 /**************************************************************************************
  * FREE FUNCTION DECLARATION
