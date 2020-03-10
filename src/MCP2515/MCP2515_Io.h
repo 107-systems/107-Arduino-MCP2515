@@ -68,21 +68,21 @@ public:
   MCP2515_Io(int const cs_pin);
 
 
-  void    begin();
-
-  uint8_t readRegister  (Register const reg);
-  void    writeRegister (Register const reg, uint8_t const data);
-  void    modifyRegister(Register const reg, uint8_t const mask, uint8_t const data);
-
   static uint8_t constexpr TX_BUF_SIZE = 5 + 8;
   static uint8_t constexpr RX_BUF_SIZE = TX_BUF_SIZE;
 
+
+  void    begin();
+
+  void    reset();
+  uint8_t status();
+  uint8_t readRegister  (Register const reg);
+  void    writeRegister (Register const reg, uint8_t const data);
+  void    modifyRegister(Register const reg, uint8_t const mask, uint8_t const data);
   void    loadTxBuffer  (TxB const txb, uint8_t const * tx_buf_data); /* tx_buf_data = {SIDH, SIDL, EID8, EID0, DLC, DATA[0-8 Byte] } */
   void    requestTx     (TxB const txb);
   void    readRxBuffer  (RxB const rxb, uint8_t * rx_buf_data);       /* rx_buf_data = {SIDH, SIDL, EID8, EID0, DLC, DATA[0-8 Byte] } */
 
-  void    reset();
-  uint8_t status();
 
 private:
 

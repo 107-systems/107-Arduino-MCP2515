@@ -63,6 +63,29 @@ void MCP2515_Io::begin()
   init_spi();
 }
 
+void MCP2515_Io::reset()
+{
+  uint8_t const instruction = static_cast<uint8_t>(Instruction::RESET);
+
+  select();
+  SPI.transfer(instruction);
+  deselect();
+
+  delay(10);
+}
+
+uint8_t MCP2515_Io::status()
+{
+  uint8_t const instruction = static_cast<uint8_t>(Instruction::READ_STATUS);
+
+  select();
+                         SPI.transfer(instruction);
+  uint8_t const status = SPI.transfer(0);
+  deselect();
+
+  return status;
+}
+
 uint8_t MCP2515_Io::readRegister(Register const reg)
 {
   uint8_t const instruction = static_cast<uint8_t>(Instruction::READ);
@@ -135,29 +158,6 @@ void MCP2515_Io::readRxBuffer(RxB const rxb, uint8_t * rx_buf_data)
     rx_buf_data[b] = SPI.transfer(0);
   }
   deselect();
-}
-
-void MCP2515_Io::reset()
-{
-  uint8_t const instruction = static_cast<uint8_t>(Instruction::RESET);
-
-  select();
-  SPI.transfer(instruction);
-  deselect();
-
-  delay(10);
-}
-
-uint8_t MCP2515_Io::status()
-{
-  uint8_t const instruction = static_cast<uint8_t>(Instruction::READ_STATUS);
-
-  select();
-                         SPI.transfer(instruction);
-  uint8_t const status = SPI.transfer(0);
-  deselect();
-
-  return status;
 }
 
 /**************************************************************************************
