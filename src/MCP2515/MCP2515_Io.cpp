@@ -20,6 +20,24 @@ namespace MCP2515
 {
 
 /**************************************************************************************
+ * CONSTANTS
+ **************************************************************************************/
+
+static Instruction const TABLE_LOAD_TX_BUFFER[] =
+{
+  Instruction::LOAD_TX0,
+  Instruction::LOAD_TX1,
+  Instruction::LOAD_TX2
+};
+
+static Instruction const TABLE_REQUEST_TO_SEND[] =
+{
+  Instruction::RTS_TX0,
+  Instruction::RTS_TX1,
+  Instruction::RTS_TX2
+};
+
+/**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
 
@@ -105,6 +123,28 @@ void MCP2515_Io::modifyRegister(Register const reg, uint8_t const mask, uint8_t 
   SPI.transfer(reg_addr);
   SPI.transfer(mask);
   SPI.transfer(data);
+  deselect();
+}
+
+void MCP2515_Io::loadTxBuffer(TxB const txb, uint8_t const * tx_buf_data)
+{
+  uint8_t const instruction = static_cast<uint8_t>(TABLE_LOAD_TX_BUFFER[static_cast<uint8_t>(txb)]);
+
+  select();
+  SPI.transfer(instruction);
+  for(uint8_t b = 0; b < TX_BUF_SIZE; b++)
+  {
+    SPI.transfer(tx_buf_data[b]);
+  }
+  deselect();
+}
+
+void MCP2515_Io::requestTx(TxB const txb)
+{
+  uint8_t const instruction = static_cast<uint8_t>(TABLE_REQUEST_TO_SEND[static_cast<uint8_t>(txb)]);
+
+  select();
+  SPI.transfer(instruction);
   deselect();
 }
 

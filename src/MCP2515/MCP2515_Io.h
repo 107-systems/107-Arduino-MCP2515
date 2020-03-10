@@ -26,6 +26,17 @@ namespace MCP2515
 {
 
 /**************************************************************************************
+ * TYPEDEF
+ **************************************************************************************/
+
+enum class TxB : uint8_t
+{
+  TxB0 = 0,
+  TxB1 = 1,
+  TxB2 = 2
+};
+
+/**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
@@ -44,6 +55,11 @@ public:
   void    writeRegister (Register const reg, uint8_t const data);
   void    writeRegister (Register const reg, uint8_t const * data, uint8_t const len);
   void    modifyRegister(Register const reg, uint8_t const mask, uint8_t const data);
+
+  static uint8_t constexpr TX_BUF_SIZE = 5 + 8;
+
+  void    loadTxBuffer  (TxB const txb, uint8_t const * tx_buf_data); /* tx_buf = {SIDH, SIDL, EID8, EID0, DLC, DATA[0-8 Byte] } */
+  void    requestTx     (TxB const txb);
 
   void    reset();
   uint8_t status();

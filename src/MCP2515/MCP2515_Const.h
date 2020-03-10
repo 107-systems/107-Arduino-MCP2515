@@ -123,13 +123,6 @@ enum class Instruction : uint8_t
   RESET       = 0xC0
 };
 
-typedef struct TxBuffer
-{
-  Register CTRL, SIDH;
-};
-
-typedef TxBuffer RxBuffer;
-
 enum class TXBnCTRL : uint8_t
 {
   TXREQ = 3,
@@ -195,12 +188,6 @@ enum class RXB1CTRL : uint8_t
 
 static uint8_t constexpr CANCTRL_REQOP_MASK = 0xE0;
 static uint8_t constexpr CANSTAT_OP_MASK    = 0xE0;
-
-size_t                               constexpr NUM_TX_BUFFERS = 3;
-TxBuffer                             constexpr TX_BUFFER_0    = {Register::TXB0CTRL, Register::TXB0SIDH};
-TxBuffer                             constexpr TX_BUFFER_1    = {Register::TXB1CTRL, Register::TXB1SIDH};
-TxBuffer                             constexpr TX_BUFFER_2    = {Register::TXB2CTRL, Register::TXB2SIDH};
-std::array<TxBuffer, NUM_TX_BUFFERS> constexpr TX_BUFFERS     = {TX_BUFFER_0, TX_BUFFER_1, TX_BUFFER_2};
 
 /**************************************************************************************
  * CONVERSION FUNCTIONS

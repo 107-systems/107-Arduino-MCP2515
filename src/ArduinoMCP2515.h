@@ -87,7 +87,7 @@ private:
   void configureEventCallback();
   void configureMCP2515();
 
-  void transmit(MCP2515::Register const tx_buf_sidh, MCP2515::Register const tx_buf_ctrl, uint32_t const id, uint8_t const * data, uint8_t const len);
+  void transmit(MCP2515::TxB const txb, uint32_t const id, uint8_t const * data, uint8_t const len);
   void receive (MCP2515::Register const rx_buf_ctrl);
 
   void onExternalEventHandler();

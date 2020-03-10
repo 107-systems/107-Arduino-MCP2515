@@ -102,15 +102,26 @@ void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
 
 bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
+  typedef struct
+  {
+    TxB txb;
+    Register ctrl;
+  } sTxBuffer;
+
+  static sTxBuffer const sTxB0 = {TxB::TxB0, Register::TXB0CTRL};
+  static sTxBuffer const sTxB1 = {TxB::TxB1, Register::TXB1CTRL};
+  static sTxBuffer const sTxB2 = {TxB::TxB2, Register::TXB2CTRL};
+  static std::array<sTxBuffer, 3> const TX_BUFFERS = {sTxB0, sTxB1, sTxB2};
+
   bool msg_tx_success = false;
 
   std::for_each(TX_BUFFERS.cbegin(),
                 TX_BUFFERS.cend(),
-                [&](TxBuffer const tx_buf)
+                [&](sTxBuffer const tx_buf)
                 {
-                  uint8_t const ctrl_val = _io.readRegister(tx_buf.CTRL);
-                  if(isBitClr(ctrl_val, static_cast<uint8_t>(TXBnCTRL::TXREQ))) {
-                    transmit(tx_buf.SIDH, tx_buf.CTRL, id, data, len);
+                  uint8_t const ctrl_val = _io.readRegister(tx_buf.ctrl);
+                  if(isBitClr(ctrl_val, bp(TXBnCTRL::TXREQ))) {
+                    transmit(tx_buf.txb, id, data, len);
                     msg_tx_success = true;
                     return;
                   }
@@ -151,7 +162,7 @@ void ArduinoMCP2515::configureMCP2515()
   //setBit(_io, Register::RXB0CTRL, bp(RXB0CTRL::BUKT));
 }
 
-void ArduinoMCP2515::transmit(Register const tx_buf_sidh, Register const tx_buf_ctrl, uint32_t const id, uint8_t const * data, uint8_t const len)
+void ArduinoMCP2515::transmit(TxB const txb, uint32_t const id, uint8_t const * data, uint8_t const len)
 {
   union TxBuffer
   {
@@ -166,7 +177,7 @@ void ArduinoMCP2515::transmit(Register const tx_buf_sidh, Register const tx_buf_
     } reg;
     uint8_t buf[5+8];
   };
-  static_assert(sizeof(TxBuffer) == 13, "Union TxBuffer exceeds expected size of 13 bytes");
+  static_assert(sizeof(TxBuffer) == MCP2515_Io::TX_BUF_SIZE, "Union TxBuffer exceeds expected size of MCP2515_Io::TX_BUF_SIZE bytes");
 
   TxBuffer tx_buffer;
 
@@ -202,10 +213,10 @@ void ArduinoMCP2515::transmit(Register const tx_buf_sidh, Register const tx_buf_
   memcpy(tx_buffer.reg.data, data, len);
 
   /* Write to transmit buffer */
-  _io.writeRegister(tx_buf_sidh, tx_buffer.buf, sizeof(tx_buffer));
+  _io.loadTxBuffer(txb, tx_buffer.buf);
 
   /* Request transmission */
-  setBit(_io, tx_buf_ctrl, bp(TXBnCTRL::TXREQ));
+  _io.requestTx(txb);
 }
 
 void ArduinoMCP2515::receive(Register const rx_buf_ctrl)
