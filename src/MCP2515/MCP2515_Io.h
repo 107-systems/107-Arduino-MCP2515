@@ -53,7 +53,6 @@ public:
   uint8_t readRegister  (Register const reg);
   void    readRegister  (Register const reg, uint8_t * data, uint8_t const len);
   void    writeRegister (Register const reg, uint8_t const data);
-  void    writeRegister (Register const reg, uint8_t const * data, uint8_t const len);
   void    modifyRegister(Register const reg, uint8_t const mask, uint8_t const data);
 
   static uint8_t constexpr TX_BUF_SIZE = 5 + 8;
