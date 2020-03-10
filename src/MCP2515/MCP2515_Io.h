@@ -36,6 +36,12 @@ enum class TxB : uint8_t
   TxB2 = 2
 };
 
+enum class RxB : uint8_t
+{
+  RxB0 = 0,
+  RxB1 = 1
+};
+
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
@@ -51,14 +57,15 @@ public:
   void    begin();
 
   uint8_t readRegister  (Register const reg);
-  void    readRegister  (Register const reg, uint8_t * data, uint8_t const len);
   void    writeRegister (Register const reg, uint8_t const data);
   void    modifyRegister(Register const reg, uint8_t const mask, uint8_t const data);
 
   static uint8_t constexpr TX_BUF_SIZE = 5 + 8;
+  static uint8_t constexpr RX_BUF_SIZE = TX_BUF_SIZE;
 
-  void    loadTxBuffer  (TxB const txb, uint8_t const * tx_buf_data); /* tx_buf = {SIDH, SIDL, EID8, EID0, DLC, DATA[0-8 Byte] } */
+  void    loadTxBuffer  (TxB const txb, uint8_t const * tx_buf_data); /* tx_buf_data = {SIDH, SIDL, EID8, EID0, DLC, DATA[0-8 Byte] } */
   void    requestTx     (TxB const txb);
+  void    readRxBuffer  (RxB const rxb, uint8_t * rx_buf_data);       /* rx_buf_data = {SIDH, SIDL, EID8, EID0, DLC, DATA[0-8 Byte] } */
 
   void    reset();
   uint8_t status();

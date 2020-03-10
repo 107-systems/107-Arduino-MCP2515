@@ -37,6 +37,12 @@ static Instruction const TABLE_REQUEST_TO_SEND[] =
   Instruction::RTS_TX2
 };
 
+static Instruction const TABLE_READ_RX_BUFFER[] =
+{
+  Instruction::READ_RX0,
+  Instruction::READ_RX1
+};
+
 /**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
@@ -69,21 +75,6 @@ uint8_t MCP2515_Io::readRegister(Register const reg)
   deselect();
 
   return data;
-}
-
-void MCP2515_Io::readRegister(Register const reg, uint8_t * data, uint8_t const len)
-{
-  uint8_t const instruction = static_cast<uint8_t>(Instruction::READ);
-  uint8_t const reg_addr    = static_cast<uint8_t>(reg);
-
-  select();
-  SPI.transfer(instruction);
-  SPI.transfer(reg_addr);
-  for(uint8_t b = 0; b < len; b++)
-  {
-    data[b] = SPI.transfer(0);
-  }
-  deselect();
 }
 
 void MCP2515_Io::writeRegister(Register const reg, uint8_t const data)
@@ -130,6 +121,19 @@ void MCP2515_Io::requestTx(TxB const txb)
 
   select();
   SPI.transfer(instruction);
+  deselect();
+}
+
+void MCP2515_Io::readRxBuffer(RxB const rxb, uint8_t * rx_buf_data)
+{
+  uint8_t const instruction = static_cast<uint8_t>(TABLE_READ_RX_BUFFER[static_cast<uint8_t>(rxb)]);
+
+  select();
+  SPI.transfer(instruction);
+  for(uint8_t b = 0; b < RX_BUF_SIZE; b++)
+  {
+    rx_buf_data[b] = SPI.transfer(0);
+  }
   deselect();
 }
 

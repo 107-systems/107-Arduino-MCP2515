@@ -210,13 +210,12 @@ void ArduinoMCP2515::transmit(TxB const txb, uint32_t const id, uint8_t const * 
   _io.requestTx(txb);
 }
 
-void ArduinoMCP2515::receive(Register const rx_buf_ctrl)
+void ArduinoMCP2515::receive(RxB const rxb)
 {
   union RxBuffer
   {
     struct
     {
-      uint8_t ctrl;
       uint8_t sidh;
       uint8_t sidl;
       uint8_t eid8;
@@ -224,13 +223,13 @@ void ArduinoMCP2515::receive(Register const rx_buf_ctrl)
       uint8_t dlc;
       uint8_t data[8];
     } reg;
-    uint8_t buf[6+8];
+    uint8_t buf[5+8];
   };
-  static_assert(sizeof(RxBuffer) == 14, "Union RxBuffer exceeds expected size of 14 bytes");
+  static_assert(sizeof(RxBuffer) == MCP2515_Io::RX_BUF_SIZE, "Union RxBuffer exceeds expected size of MCP2515_Io::RX_BUF_SIZE bytes");
 
   /* Read content of receive buffer */
   RxBuffer rx_buffer;
-  _io.readRegister(rx_buf_ctrl, rx_buffer.buf, sizeof(rx_buffer));
+  _io.readRxBuffer(rxb, rx_buffer.buf);
 
   /* Assemble ID from registers */
   uint32_t id = (static_cast<uint32_t>(rx_buffer.reg.sidh) << 3) + (static_cast<uint32_t>(rx_buffer.reg.sidl) >> 5);
@@ -248,13 +247,13 @@ void ArduinoMCP2515::onExternalEventHandler()
 
   if(isBitSet(status, static_cast<uint8_t>(STATUS::RX0IF)))
   {
-    receive(Register::RXB0CTRL);
+    receive(RxB::RxB0);
     clrBit(_io, Register::CANINTF, bp(CANINTF::RX0IF));
   }
 
   if(isBitSet(status, static_cast<uint8_t>(STATUS::RX1IF)))
   {
-    receive(Register::RXB1CTRL);
+    receive(RxB::RxB1);
     clrBit(_io, Register::CANINTF, bp(CANINTF::RX1IF));
   }
 }
