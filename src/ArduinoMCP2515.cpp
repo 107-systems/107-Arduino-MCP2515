@@ -13,6 +13,12 @@
 #include <algorithm>
 
 /**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+using namespace MCP2515;
+
+/**************************************************************************************
  * STATIC MEMBER INITIALISATION
  **************************************************************************************/
 
@@ -89,21 +95,21 @@ void ArduinoMCP2515::begin()
 
 void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
 {
-  _io.writeRegister(MCP2515::Register::CNF1, BIT_RATE_CONFIG_ARRAY[static_cast<size_t>(bit_rate)].CNF1);
-  _io.writeRegister(MCP2515::Register::CNF2, BIT_RATE_CONFIG_ARRAY[static_cast<size_t>(bit_rate)].CNF2);
-  _io.writeRegister(MCP2515::Register::CNF3, BIT_RATE_CONFIG_ARRAY[static_cast<size_t>(bit_rate)].CNF3);
+  _io.writeRegister(Register::CNF1, BIT_RATE_CONFIG_ARRAY[static_cast<size_t>(bit_rate)].CNF1);
+  _io.writeRegister(Register::CNF2, BIT_RATE_CONFIG_ARRAY[static_cast<size_t>(bit_rate)].CNF2);
+  _io.writeRegister(Register::CNF3, BIT_RATE_CONFIG_ARRAY[static_cast<size_t>(bit_rate)].CNF3);
 }
 
 bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
   bool msg_tx_success = false;
 
-  std::for_each(MCP2515::TX_BUFFERS.cbegin(),
-                MCP2515::TX_BUFFERS.cend(),
-                [&](MCP2515::TxBuffer const tx_buf)
+  std::for_each(TX_BUFFERS.cbegin(),
+                TX_BUFFERS.cend(),
+                [&](TxBuffer const tx_buf)
                 {
                   uint8_t const ctrl_val = _io.readRegister(tx_buf.CTRL);
-                  if(isBitClr(ctrl_val, static_cast<uint8_t>(MCP2515::TXBnCTRL::TXREQ))) {
+                  if(isBitClr(ctrl_val, static_cast<uint8_t>(TXBnCTRL::TXREQ))) {
                     transmit(tx_buf.SIDH, tx_buf.CTRL, id, data, len);
                     msg_tx_success = true;
                     return;
@@ -134,18 +140,18 @@ void ArduinoMCP2515::configureMCP2515()
    *   Receive Buffer 0 Full
    *   Receive Buffer 1 Full
    */
-  MCP2515::setBit(_io, MCP2515::Register::CANINTE, MCP2515::bp(MCP2515::CANINTE::RX0IE));
-  MCP2515::setBit(_io, MCP2515::Register::CANINTE, MCP2515::bp(MCP2515::CANINTE::RX1IE));
+  setBit(_io, Register::CANINTE, bp(CANINTE::RX0IE));
+  setBit(_io, Register::CANINTE, bp(CANINTE::RX1IE));
   /* Turn masks/filters off */
-  MCP2515::setBit(_io, MCP2515::Register::RXB0CTRL, MCP2515::bp(MCP2515::RXB0CTRL::RXM1));
-  MCP2515::setBit(_io, MCP2515::Register::RXB0CTRL, MCP2515::bp(MCP2515::RXB0CTRL::RXM0));
-  MCP2515::setBit(_io, MCP2515::Register::RXB1CTRL, MCP2515::bp(MCP2515::RXB1CTRL::RXM1));
-  MCP2515::setBit(_io, MCP2515::Register::RXB1CTRL, MCP2515::bp(MCP2515::RXB1CTRL::RXM0));
+  setBit(_io, Register::RXB0CTRL, bp(RXB0CTRL::RXM1));
+  setBit(_io, Register::RXB0CTRL, bp(RXB0CTRL::RXM0));
+  setBit(_io, Register::RXB1CTRL, bp(RXB1CTRL::RXM1));
+  setBit(_io, Register::RXB1CTRL, bp(RXB1CTRL::RXM0));
   /* Enable roll-over to RXB1 if RXB0 is full */
-  //MCP2515::setBit(_io, MCP2515::Register::RXB0CTRL, MCP2515::bp(MCP2515::RXB0CTRL::BUKT));
+  //setBit(_io, Register::RXB0CTRL, bp(RXB0CTRL::BUKT));
 }
 
-void ArduinoMCP2515::transmit(MCP2515::Register const tx_buf_sidh, MCP2515::Register const tx_buf_ctrl, uint32_t const id, uint8_t const * data, uint8_t const len)
+void ArduinoMCP2515::transmit(Register const tx_buf_sidh, Register const tx_buf_ctrl, uint32_t const id, uint8_t const * data, uint8_t const len)
 {
   union TxBuffer
   {
@@ -179,7 +185,7 @@ void ArduinoMCP2515::transmit(MCP2515::Register const tx_buf_sidh, MCP2515::Regi
   if(is_ext)
   {
     tx_buffer.reg.sidl |= static_cast<uint8_t>((id & 0x18000000) >> 27);
-    tx_buffer.reg.sidl |= (1 << static_cast<uint8_t>(MCP2515::TXBnSIDL::EXIDE));
+    tx_buffer.reg.sidl |= (1 << static_cast<uint8_t>(TXBnSIDL::EXIDE));
     tx_buffer.reg.eid0  = static_cast<uint8_t>((id & 0x0007F800) >> 11);
     tx_buffer.reg.eid8  = static_cast<uint8_t>((id & 0x07F80000) >> 19);
   }
@@ -190,7 +196,7 @@ void ArduinoMCP2515::transmit(MCP2515::Register const tx_buf_sidh, MCP2515::Regi
   }
 
   /* Load data length register */
-  tx_buffer.reg.dlc = is_rtr ? (len | (1 << static_cast<uint8_t>(MCP2515::TXBnDLC::RTR))) : len;
+  tx_buffer.reg.dlc = is_rtr ? (len | (1 << static_cast<uint8_t>(TXBnDLC::RTR))) : len;
 
   /* Load data buffer */
   memcpy(tx_buffer.reg.data, data, len);
@@ -199,10 +205,10 @@ void ArduinoMCP2515::transmit(MCP2515::Register const tx_buf_sidh, MCP2515::Regi
   _io.writeRegister(tx_buf_sidh, tx_buffer.buf, sizeof(tx_buffer));
 
   /* Request transmission */
-  MCP2515::setBit(_io, tx_buf_ctrl, MCP2515::bp(MCP2515::TXBnCTRL::TXREQ));
+  setBit(_io, tx_buf_ctrl, bp(TXBnCTRL::TXREQ));
 }
 
-void ArduinoMCP2515::receive(MCP2515::Register const rx_buf_ctrl)
+void ArduinoMCP2515::receive(Register const rx_buf_ctrl)
 {
   union RxBuffer
   {
@@ -238,20 +244,20 @@ void ArduinoMCP2515::onExternalEventHandler()
 {
   uint8_t const status  = _io.status();
 
-  if(isBitSet(status, static_cast<uint8_t>(MCP2515::STATUS::RX0IF)))
+  if(isBitSet(status, static_cast<uint8_t>(STATUS::RX0IF)))
   {
-    receive(MCP2515::Register::RXB0CTRL);
-    MCP2515::clrBit(_io, MCP2515::Register::CANINTF, MCP2515::bp(MCP2515::CANINTF::RX0IF));
+    receive(Register::RXB0CTRL);
+    clrBit(_io, Register::CANINTF, bp(CANINTF::RX0IF));
   }
 
-  if(isBitSet(status, static_cast<uint8_t>(MCP2515::STATUS::RX1IF)))
+  if(isBitSet(status, static_cast<uint8_t>(STATUS::RX1IF)))
   {
-    receive(MCP2515::Register::RXB1CTRL);
-    MCP2515::clrBit(_io, MCP2515::Register::CANINTF, MCP2515::bp(MCP2515::CANINTF::RX1IF));
+    receive(Register::RXB1CTRL);
+    clrBit(_io, Register::CANINTF, bp(CANINTF::RX1IF));
   }
 /*
-  uint8_t const canintf = _io.readRegister(MCP2515::Register::CANINTF);
-  uint8_t const eflg    = _io.readRegister(MCP2515::Register::EFLG);
+  uint8_t const canintf = _io.readRegister(Register::CANINTF);
+  uint8_t const eflg    = _io.readRegister(Register::EFLG);
 
   Serial.print("CANINTF = ");
   Serial.println(canintf, HEX);
