@@ -123,11 +123,6 @@ enum class Instruction : uint8_t
   RESET       = 0xC0
 };
 
-enum class TXBnCTRL : uint8_t
-{
-  TXREQ = 3,
-};
-
 enum class TXBnDLC : uint8_t
 {
   RTR = 2,

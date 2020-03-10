@@ -257,13 +257,4 @@ void ArduinoMCP2515::onExternalEventHandler()
     receive(Register::RXB1CTRL);
     clrBit(_io, Register::CANINTF, bp(CANINTF::RX1IF));
   }
-/*
-  uint8_t const canintf = _io.readRegister(Register::CANINTF);
-  uint8_t const eflg    = _io.readRegister(Register::EFLG);
-
-  Serial.print("CANINTF = ");
-  Serial.println(canintf, HEX);
-  Serial.print("EFLG    = ");
-  Serial.println(eflg, HEX);
-*/
 }
