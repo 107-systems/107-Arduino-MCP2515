@@ -51,7 +51,7 @@ void setup()
                   if(!mcp2515.transmit(id, TEST_DATA, TEST_DATA_LEN)) {
                     Serial.println("ERROR TX");
                   }
-                  delay(1000);
+                  delay(10);
                 });
 }
 
