@@ -44,8 +44,6 @@ public:
   void    writeRegister (Register const reg, uint8_t const data);
   void    writeRegister (Register const reg, uint8_t const * data, uint8_t const len);
   void    modifyRegister(Register const reg, uint8_t const mask, uint8_t const data);
-  void    setBit        (Register const reg, uint8_t const bit_pos);
-  void    clrBit        (Register const reg, uint8_t const bit_pos);
 
   void    reset();
   uint8_t status();
@@ -61,6 +59,13 @@ private:
   inline void deselect() { digitalWrite(_cs_pin, HIGH); }
 
 };
+
+/**************************************************************************************
+ * FREE FUNCTION DECLARATION
+ **************************************************************************************/
+
+void setBit(Io & io, Register const reg, uint8_t const bit_pos);
+void clrBit(Io & io, Register const reg, uint8_t const bit_pos);
 
 /**************************************************************************************
  * NAMESPACE

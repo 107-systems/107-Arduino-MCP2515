@@ -134,15 +134,15 @@ void ArduinoMCP2515::configureMCP2515()
    *   Receive Buffer 0 Full
    *   Receive Buffer 1 Full
    */
-  _io.setBit(MCP2515::Register::CANINTE, static_cast<uint8_t>(MCP2515::CANINTE::RX0IE));
-  _io.setBit(MCP2515::Register::CANINTE, static_cast<uint8_t>(MCP2515::CANINTE::RX1IE));
+  MCP2515::setBit(_io, MCP2515::Register::CANINTE, MCP2515::bp(MCP2515::CANINTE::RX0IE));
+  MCP2515::setBit(_io, MCP2515::Register::CANINTE, MCP2515::bp(MCP2515::CANINTE::RX1IE));
   /* Turn masks/filters off */
-  _io.setBit(MCP2515::Register::RXB0CTRL, static_cast<uint8_t>(MCP2515::RXB0CTRL::RXM1));
-  _io.setBit(MCP2515::Register::RXB0CTRL, static_cast<uint8_t>(MCP2515::RXB0CTRL::RXM0));
-  _io.setBit(MCP2515::Register::RXB1CTRL, static_cast<uint8_t>(MCP2515::RXB1CTRL::RXM1));
-  _io.setBit(MCP2515::Register::RXB1CTRL, static_cast<uint8_t>(MCP2515::RXB1CTRL::RXM0));
+  MCP2515::setBit(_io, MCP2515::Register::RXB0CTRL, MCP2515::bp(MCP2515::RXB0CTRL::RXM1));
+  MCP2515::setBit(_io, MCP2515::Register::RXB0CTRL, MCP2515::bp(MCP2515::RXB0CTRL::RXM0));
+  MCP2515::setBit(_io, MCP2515::Register::RXB1CTRL, MCP2515::bp(MCP2515::RXB1CTRL::RXM1));
+  MCP2515::setBit(_io, MCP2515::Register::RXB1CTRL, MCP2515::bp(MCP2515::RXB1CTRL::RXM0));
   /* Enable roll-over to RXB1 if RXB0 is full */
-  //_io.setBit(MCP2515::Register::RXB0CTRL, static_cast<uint8_t>(MCP2515::RXB0CTRL::BUKT));
+  //MCP2515::setBit(_io, MCP2515::Register::RXB0CTRL, MCP2515::bp(MCP2515::RXB0CTRL::BUKT));
 }
 
 void ArduinoMCP2515::transmit(MCP2515::Register const tx_buf_sidh, MCP2515::Register const tx_buf_ctrl, uint32_t const id, uint8_t const * data, uint8_t const len)
@@ -199,7 +199,7 @@ void ArduinoMCP2515::transmit(MCP2515::Register const tx_buf_sidh, MCP2515::Regi
   _io.writeRegister(tx_buf_sidh, tx_buffer.buf, sizeof(tx_buffer));
 
   /* Request transmission */
-  _io.setBit(tx_buf_ctrl, static_cast<uint8_t>(MCP2515::TXBnCTRL::TXREQ));
+  MCP2515::setBit(_io, tx_buf_ctrl, MCP2515::bp(MCP2515::TXBnCTRL::TXREQ));
 }
 
 void ArduinoMCP2515::receive(MCP2515::Register const rx_buf_ctrl)
@@ -241,13 +241,13 @@ void ArduinoMCP2515::onExternalEventHandler()
   if(isBitSet(status, static_cast<uint8_t>(MCP2515::STATUS::RX0IF)))
   {
     receive(MCP2515::Register::RXB0CTRL);
-    _io.clrBit(MCP2515::Register::CANINTF, static_cast<uint8_t>(MCP2515::CANINTF::RX0IF));
+    MCP2515::clrBit(_io, MCP2515::Register::CANINTF, MCP2515::bp(MCP2515::CANINTF::RX0IF));
   }
 
   if(isBitSet(status, static_cast<uint8_t>(MCP2515::STATUS::RX1IF)))
   {
     receive(MCP2515::Register::RXB1CTRL);
-    _io.clrBit(MCP2515::Register::CANINTF, static_cast<uint8_t>(MCP2515::CANINTF::RX1IF));
+    MCP2515::clrBit(_io, MCP2515::Register::CANINTF, MCP2515::bp(MCP2515::CANINTF::RX1IF));
   }
 /*
   uint8_t const canintf = _io.readRegister(MCP2515::Register::CANINTF);

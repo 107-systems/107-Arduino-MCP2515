@@ -108,20 +108,6 @@ void Io::modifyRegister(Register const reg, uint8_t const mask, uint8_t const da
   deselect();
 }
 
-void Io::setBit(Register const reg, uint8_t const bit_pos)
-{
-  assert(bit_pos < 8);
-  uint8_t const bit_mask = (1<<bit_pos);
-  modifyRegister(reg, bit_mask, bit_mask);
-}
-
-void Io::clrBit(Register const reg, uint8_t const bit_pos)
-{
-  assert(bit_pos < 8);
-  uint8_t const bit_mask = (1<<bit_pos);
-  modifyRegister(reg, bit_mask, 0);
-}
-
 void Io::reset()
 {
   uint8_t const instruction = static_cast<uint8_t>(Instruction::RESET);
@@ -143,6 +129,24 @@ uint8_t Io::status()
   deselect();
 
   return status;
+}
+
+/**************************************************************************************
+ * FREE FUNCTION DEFINITION
+ **************************************************************************************/
+
+void setBit(Io & io, Register const reg, uint8_t const bit_pos)
+{
+  assert(bit_pos < 8);
+  uint8_t const bit_mask = (1<<bit_pos);
+  io.modifyRegister(reg, bit_mask, bit_mask);
+}
+
+void clrBit(Io & io, Register const reg, uint8_t const bit_pos)
+{
+  assert(bit_pos < 8);
+  uint8_t const bit_mask = (1<<bit_pos);
+  io.modifyRegister(reg, bit_mask, 0);
 }
 
 /**************************************************************************************
