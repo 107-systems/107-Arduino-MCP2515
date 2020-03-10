@@ -140,8 +140,14 @@ enum class TXBnSIDL : uint8_t
 
 enum class STATUS : uint8_t
 {
-  RX0IF = 0,
-  RX1IF = 1,
+  TX2IF  = 7,
+  TX2REQ = 6,
+  TX1IF  = 5,
+  TX1REQ = 4,
+  TX0IF  = 3,
+  TX0REQ = 2,
+  RX1IF  = 1,
+  RX0IF  = 0,
 };
 
 enum class CANINTE : uint8_t

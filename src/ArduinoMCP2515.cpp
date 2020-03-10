@@ -102,32 +102,23 @@ void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
 
 bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
-  typedef struct
+  uint8_t const status  = _io.status();
+
+  if (isBitClr(status, bp(STATUS::TX0REQ)))
   {
-    TxB txb;
-    Register ctrl;
-  } sTxBuffer;
-
-  static sTxBuffer const sTxB0 = {TxB::TxB0, Register::TXB0CTRL};
-  static sTxBuffer const sTxB1 = {TxB::TxB1, Register::TXB1CTRL};
-  static sTxBuffer const sTxB2 = {TxB::TxB2, Register::TXB2CTRL};
-  static std::array<sTxBuffer, 3> const TX_BUFFERS = {sTxB0, sTxB1, sTxB2};
-
-  bool msg_tx_success = false;
-
-  std::for_each(TX_BUFFERS.cbegin(),
-                TX_BUFFERS.cend(),
-                [&](sTxBuffer const tx_buf)
-                {
-                  uint8_t const ctrl_val = _io.readRegister(tx_buf.ctrl);
-                  if(isBitClr(ctrl_val, bp(TXBnCTRL::TXREQ))) {
-                    transmit(tx_buf.txb, id, data, len);
-                    msg_tx_success = true;
-                    return;
-                  }
-                });
-
-  return msg_tx_success;
+    transmit(TxB::TxB0, id, data, len);
+    return true;
+  }
+  else if (isBitClr(status, bp(STATUS::TX1REQ)))
+  {
+    transmit(TxB::TxB1, id, data, len);
+    return true;
+  }
+  else if (isBitClr(status, bp(STATUS::TX2REQ)))
+  {
+    transmit(TxB::TxB2, id, data, len);
+    return true;
+  }
 }
 
 void ArduinoMCP2515::onExternalEvent()
