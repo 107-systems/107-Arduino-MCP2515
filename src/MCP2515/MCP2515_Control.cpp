@@ -57,6 +57,29 @@ void MCP2515_Control::setBitRateConfig(CanBitRateConfig const bit_rate_config)
   _io.writeRegister(Register::CNF3, bit_rate_config.CNF3);
 }
 
+void MCP2515_Control::clearIntFlag(CANINTF const int_flag)
+{
+  clrBit(_io, Register::CANINTF, bp(int_flag));
+}
+
+void MCP2515_Control::receive(RxB const rxb, OnCanFrameReceiveFunc on_can_frame_rx)
+{
+  RxTxBuffer rx_buffer;
+
+  /* Read content of receive buffer */
+  _io.readRxBuffer(rxb, rx_buffer.buf);
+
+  /* Assemble ID from registers */
+  uint32_t id = (static_cast<uint32_t>(rx_buffer.reg.sidh) << 3) + (static_cast<uint32_t>(rx_buffer.reg.sidl) >> 5);
+
+  /* Read amount of bytes received */
+  uint8_t const len = rx_buffer.reg.dlc & 0x0F;
+
+  /* Call registered callback with received data */
+  on_can_frame_rx(id, rx_buffer.reg.data, len);
+}
+
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/

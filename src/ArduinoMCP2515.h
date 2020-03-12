@@ -38,8 +38,6 @@ static uint32_t constexpr CAN_ERR_BITMASK  = 0x20000000;
  * TYPEDEF
  **************************************************************************************/
 
-typedef std::function<void(uint32_t const, uint8_t const *, uint8_t const)> OnCanFrameReceiveFunc;
-
 enum class CanBitRate : size_t
 {
   BR_125kBPS  = 0,
@@ -57,7 +55,7 @@ class ArduinoMCP2515
 
 public:
 
-  ArduinoMCP2515(MCP2515::SpiSelectFunc select, MCP2515::SpiDeselectFunc deselect, MCP2515::SpiTransferFunc transfer, OnCanFrameReceiveFunc on_can_frame_rx);
+  ArduinoMCP2515(MCP2515::SpiSelectFunc select, MCP2515::SpiDeselectFunc deselect, MCP2515::SpiTransferFunc transfer, MCP2515::OnCanFrameReceiveFunc on_can_frame_rx);
 
 
   void begin();
@@ -79,12 +77,11 @@ private:
 
   MCP2515::MCP2515_Io _io;
   MCP2515::MCP2515_Control _ctrl;
-  OnCanFrameReceiveFunc _on_can_frame_rx;
+  MCP2515::OnCanFrameReceiveFunc _on_can_frame_rx;
 
   void configureMCP2515();
 
   void transmit(MCP2515::TxB const txb, uint32_t const id, uint8_t const * data, uint8_t const len);
-  void receive (MCP2515::RxB const rxb);
 
 };
 

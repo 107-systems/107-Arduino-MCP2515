@@ -40,6 +40,8 @@ typedef struct
   uint8_t CNF3;
 } CanBitRateConfig;
 
+typedef std::function<void(uint32_t const, uint8_t const *, uint8_t const)> OnCanFrameReceiveFunc;
+
 /**************************************************************************************
  * GLOBAL CONSTANTS
  **************************************************************************************/
@@ -63,7 +65,9 @@ public:
 
   bool setMode         (Mode const mode);
   void setBitRateConfig(CanBitRateConfig const bit_rate_config);
+  void clearIntFlag    (CANINTF const int_flag);
 
+  void receive         (RxB const rxb, OnCanFrameReceiveFunc on_can_frame_rx);
 
 private:
 

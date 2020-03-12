@@ -100,14 +100,14 @@ void ArduinoMCP2515::onExternalEventHandler()
 
   if(isBitSet(status, bp(STATUS::RX0IF)))
   {
-    receive(RxB::RxB0);
-    clrBit(_io, Register::CANINTF, bp(CANINTF::RX0IF));
+    _ctrl.receive(RxB::RxB0, _on_can_frame_rx);
+    _ctrl.clearIntFlag(CANINTF::RX0IF);
   }
 
   if(isBitSet(status, bp(STATUS::RX1IF)))
   {
-    receive(RxB::RxB1);
-    clrBit(_io, Register::CANINTF, bp(CANINTF::RX1IF));
+    _ctrl.receive(RxB::RxB1, _on_can_frame_rx);
+    _ctrl.clearIntFlag(CANINTF::RX1IF);
   }
 }
 
@@ -172,21 +172,4 @@ void ArduinoMCP2515::transmit(TxB const txb, uint32_t const id, uint8_t const * 
 
   /* Request transmission */
   _io.requestTx(txb);
-}
-
-void ArduinoMCP2515::receive(RxB const rxb)
-{
-  RxTxBuffer rx_buffer;
-
-  /* Read content of receive buffer */
-  _io.readRxBuffer(rxb, rx_buffer.buf);
-
-  /* Assemble ID from registers */
-  uint32_t id = (static_cast<uint32_t>(rx_buffer.reg.sidh) << 3) + (static_cast<uint32_t>(rx_buffer.reg.sidl) >> 5);
-
-  /* Read amount of bytes received */
-  uint8_t const len = rx_buffer.reg.dlc & 0x0F;
-
-  /* Call registered callback with received data */
-  _on_can_frame_rx(id, rx_buffer.reg.data, len);
 }
