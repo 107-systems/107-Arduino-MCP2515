@@ -19,7 +19,10 @@
  * FUNCTION DECLARATION
  **************************************************************************************/
 
-void onCanFrameReceive(uint32_t const id, uint8_t const * data, uint8_t const len);
+void mcp2515_spi_select();
+void mcp2515_spi_deselect();
+uint8_t spi_transfer(uint8_t const data);
+void mcp2515_on_can_frame_rx(uint32_t const id, uint8_t const * data, uint8_t const len);
 
 /**************************************************************************************
  * GLOBAL CONSTANTS
@@ -29,26 +32,11 @@ static std::array<uint32_t, 10> const TEST_ID_VECTOR{0,1,2,3,4,5,6,7,8,9};
 static uint8_t                  const TEST_DATA[]   = {0xDE, 0xAD, 0xBE, 0xEF};
 static uint8_t                  const TEST_DATA_LEN = sizeof(TEST_DATA)/sizeof(uint8_t);
 
-void mcp2515_spi_select()
-{
-  digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW);
-}
-
-void mcp2515_spi_deselect()
-{
-  digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH);
-}
-
-uint8_t spi_transfer(uint8_t const data)
-{
-  return SPI.transfer(data);
-}
-
 /**************************************************************************************
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-ArduinoMCP2515 mcp2515(mcp2515_spi_select, mcp2515_spi_deselect,  spi_transfer, onCanFrameReceive);
+ArduinoMCP2515 mcp2515(mcp2515_spi_select, mcp2515_spi_deselect, spi_transfer, mcp2515_on_can_frame_rx);
 
 /**************************************************************************************
  * CALLBACK FUNCTIONS
@@ -101,7 +89,22 @@ void loop()
  * FUNCTION DEFINITION
  **************************************************************************************/
 
-void onCanFrameReceive(uint32_t const id, uint8_t const * data, uint8_t const len)
+void mcp2515_spi_select()
+{
+  digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW);
+}
+
+void mcp2515_spi_deselect()
+{
+  digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH);
+}
+
+uint8_t spi_transfer(uint8_t const data)
+{
+  return SPI.transfer(data);
+}
+
+void mcp2515_on_can_frame_rx(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
   Serial.print("ID ");
   Serial.print(id, HEX);
