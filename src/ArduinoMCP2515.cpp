@@ -115,13 +115,13 @@ void ArduinoMCP2515::onExternalEventHandler()
 {
   uint8_t const status  = _io.status();
 
-  if(isBitSet(status, static_cast<uint8_t>(STATUS::RX0IF)))
+  if(isBitSet(status, bp(STATUS::RX0IF)))
   {
     receive(RxB::RxB0);
     clrBit(_io, Register::CANINTF, bp(CANINTF::RX0IF));
   }
 
-  if(isBitSet(status, static_cast<uint8_t>(STATUS::RX1IF)))
+  if(isBitSet(status, bp(STATUS::RX1IF)))
   {
     receive(RxB::RxB1);
     clrBit(_io, Register::CANINTF, bp(CANINTF::RX1IF));
@@ -146,7 +146,7 @@ void ArduinoMCP2515::configureMCP2515()
   setBit(_io, Register::RXB1CTRL, bp(RXB1CTRL::RXM1));
   setBit(_io, Register::RXB1CTRL, bp(RXB1CTRL::RXM0));
   /* Enable roll-over to RXB1 if RXB0 is full */
-  //setBit(_io, Register::RXB0CTRL, bp(RXB0CTRL::BUKT));
+  setBit(_io, Register::RXB0CTRL, bp(RXB0CTRL::BUKT));
 }
 
 void ArduinoMCP2515::transmit(TxB const txb, uint32_t const id, uint8_t const * data, uint8_t const len)
