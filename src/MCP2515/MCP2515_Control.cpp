@@ -57,6 +57,11 @@ void MCP2515_Control::setBitRateConfig(CanBitRateConfig const bit_rate_config)
   _io.writeRegister(Register::CNF3, bit_rate_config.CNF3);
 }
 
+uint8_t MCP2515_Control::status()
+{
+  return _io.status();
+}
+
 void MCP2515_Control::clearIntFlag(CANINTF const int_flag)
 {
   clrBit(_io, Register::CANINTF, bp(int_flag));

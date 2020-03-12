@@ -65,6 +65,7 @@ public:
 
   bool setMode         (Mode const mode);
   void setBitRateConfig(CanBitRateConfig const bit_rate_config);
+  uint8_t status();
   void clearIntFlag    (CANINTF const int_flag);
 
   void transmit        (TxB const txb, uint32_t const id, uint8_t const * data, uint8_t const len);

@@ -73,7 +73,7 @@ void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
 
 bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
-  uint8_t const status  = _io.status();
+  uint8_t const status = _ctrl.status();
 
   if (isBitClr(status, bp(STATUS::TX0REQ)))
   {
@@ -94,7 +94,7 @@ bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t c
 
 void ArduinoMCP2515::onExternalEventHandler()
 {
-  uint8_t const status  = _io.status();
+  uint8_t const status = _ctrl.status();
 
   if(isBitSet(status, bp(STATUS::RX0IF)))
   {
