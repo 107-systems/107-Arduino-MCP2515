@@ -33,21 +33,6 @@ MCP2515_Control::MCP2515_Control(MCP2515_Io & io)
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void MCP2515_Control::reset()
-{
-  _io.reset();
-}
-
-uint8_t MCP2515_Control::status()
-{
-  return _io.status();
-}
-
-void MCP2515_Control::clearIntFlag(CANINTF const int_flag)
-{
-  clrBit(_io, Register::CANINTF, bp(int_flag));
-}
-
 void MCP2515_Control::transmit(TxB const txb, uint32_t const id, uint8_t const * data, uint8_t const len)
 {
   RxTxBuffer tx_buffer;

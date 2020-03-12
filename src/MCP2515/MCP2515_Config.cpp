@@ -57,28 +57,6 @@ void MCP2515_Config::setBitRateConfig(CanBitRateConfig const bit_rate_config)
   _io.writeRegister(Register::CNF3, bit_rate_config.CNF3);
 }
 
-void MCP2515_Config::enableIntFlag(CANINTE const int_flag)
-{
-  setBit(_io, Register::CANINTE, bp(int_flag));
-}
-
-void MCP2515_Config::disableFilter_RxB0()
-{
-  setBit(_io, Register::RXB0CTRL, bp(RXB0CTRL::RXM1));
-  setBit(_io, Register::RXB0CTRL, bp(RXB0CTRL::RXM0));
-}
-
-void MCP2515_Config::disableFilter_RxB1()
-{
-  setBit(_io, Register::RXB1CTRL, bp(RXB1CTRL::RXM1));
-  setBit(_io, Register::RXB1CTRL, bp(RXB1CTRL::RXM0));
-}
-
-void MCP2515_Config::enableRollover_RxB0()
-{
-  setBit(_io, Register::RXB0CTRL, bp(RXB0CTRL::BUKT));
-}
-
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/

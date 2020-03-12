@@ -61,12 +61,13 @@ public:
   MCP2515_Config(MCP2515_Io & io);
 
 
-  bool setMode            (Mode const mode);
-  void setBitRateConfig   (CanBitRateConfig const bit_rate_config);
-  void enableIntFlag      (CANINTE const int_enable);
-  void disableFilter_RxB0 ();
-  void disableFilter_RxB1 ();
-  void enableRollover_RxB0();
+         bool setMode            (Mode const mode);
+         void setBitRateConfig   (CanBitRateConfig const bit_rate_config);
+  
+  inline void enableIntFlag      (CANINTE const int_flag) { setBit(_io, Register::CANINTE, bp(int_flag)); }
+  inline void disableFilter_RxB0 ()                       { _io.modifyRegister(Register::RXB0CTRL, RXB0CTRL_RXM_MASK, RXB0CTRL_RXM_MASK); }
+  inline void disableFilter_RxB1 ()                       { _io.modifyRegister(Register::RXB1CTRL, RXB1CTRL_RXM_MASK, RXB1CTRL_RXM_MASK); }
+  inline void enableRollover_RxB0()                       { setBit(_io, Register::RXB0CTRL, bp(RXB0CTRL::BUKT)); }
   
 
 private:

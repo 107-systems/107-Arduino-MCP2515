@@ -219,6 +219,8 @@ constexpr auto bm(Enumeration const value) -> typename std::underlying_type<Enum
 
 static uint8_t constexpr CANCTRL_REQOP_MASK = bm(CANCTRL::REQOP2) | bm(CANCTRL::REQOP1) | bm(CANCTRL::REQOP0);
 static uint8_t constexpr CANSTAT_OP_MASK    = bm(CANSTAT::OPMOD2) | bm(CANSTAT::OPMOD1) | bm(CANSTAT::OPMOD0);
+static uint8_t constexpr RXB0CTRL_RXM_MASK  = bm(RXB0CTRL::RXM1)  | bm(RXB0CTRL::RXM0);
+static uint8_t constexpr RXB1CTRL_RXM_MASK  = bm(RXB1CTRL::RXM1)  | bm(RXB1CTRL::RXM0);
 
 static uint32_t constexpr CAN_EFF_BITMASK   = 0x80000000;
 static uint32_t constexpr CAN_RTR_BITMASK   = 0x40000000;

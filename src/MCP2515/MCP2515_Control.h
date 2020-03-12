@@ -37,11 +37,13 @@ public:
 
   MCP2515_Control(MCP2515_Io & io);
 
-  void    reset       ();
-  uint8_t status      ();
-  void    clearIntFlag(CANINTF const int_flag);
-  void    transmit    (TxB const txb, uint32_t const id, uint8_t const * data, uint8_t const len);
-  void    receive     (RxB const rxb, OnCanFrameReceiveFunc on_can_frame_rx);
+
+  void           transmit    (TxB const txb, uint32_t const id, uint8_t const * data, uint8_t const len);
+  void           receive     (RxB const rxb, OnCanFrameReceiveFunc on_can_frame_rx);
+
+  inline void    reset       ()                       { _io.reset(); }
+  inline uint8_t status      ()                       { return _io.status(); }
+  inline void    clearIntFlag(CANINTF const int_flag) {  clrBit(_io, Register::CANINTF, bp(int_flag)); }
 
 
 private:
