@@ -14,6 +14,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "MCP2515/MCP2515_Io.h"
+#include "MCP2515/MCP2515_Config.h"
 #include "MCP2515/MCP2515_Control.h"
 
 #undef min
@@ -57,11 +59,11 @@ public:
 
   void setBitRate(CanBitRate const bit_rate);
 
-  inline bool setNormalMode    () { return _ctrl.setMode(MCP2515::Mode::Normal);     }
-  inline bool setSleepMode     () { return _ctrl.setMode(MCP2515::Mode::Sleep);      }
-  inline bool setLoopbackMode  () { return _ctrl.setMode(MCP2515::Mode::Loopback);   }
-  inline bool setListenOnlyMode() { return _ctrl.setMode(MCP2515::Mode::ListenOnly); }
-  inline bool setConfigMode    () { return _ctrl.setMode(MCP2515::Mode::Config);     }
+  inline bool setNormalMode    () { return _cfg.setMode(MCP2515::Mode::Normal);     }
+  inline bool setSleepMode     () { return _cfg.setMode(MCP2515::Mode::Sleep);      }
+  inline bool setLoopbackMode  () { return _cfg.setMode(MCP2515::Mode::Loopback);   }
+  inline bool setListenOnlyMode() { return _cfg.setMode(MCP2515::Mode::ListenOnly); }
+  inline bool setConfigMode    () { return _cfg.setMode(MCP2515::Mode::Config);     }
 
   bool transmit(uint32_t const id, uint8_t const * data, uint8_t const len);
 
@@ -70,6 +72,8 @@ public:
 
 private:
 
+  MCP2515::MCP2515_Io _io;
+  MCP2515::MCP2515_Config _cfg;
   MCP2515::MCP2515_Control _ctrl;
   MCP2515::OnCanFrameReceiveFunc _on_can_frame_rx;
 

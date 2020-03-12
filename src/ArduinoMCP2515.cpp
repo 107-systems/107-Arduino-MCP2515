@@ -49,7 +49,9 @@ inline bool isBitClr(uint8_t const reg_val, uint8_t const bit_pos)
  **************************************************************************************/
 
 ArduinoMCP2515::ArduinoMCP2515(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransferFunc transfer, OnCanFrameReceiveFunc on_can_frame_rx)
-: _ctrl{select, deselect, transfer}
+: _io{select, deselect, transfer}
+, _cfg{_io}
+, _ctrl{_io}
 , _on_can_frame_rx{on_can_frame_rx}
 {
 
@@ -62,16 +64,16 @@ ArduinoMCP2515::ArduinoMCP2515(SpiSelectFunc select, SpiDeselectFunc deselect, S
 void ArduinoMCP2515::begin()
 {
   _ctrl.reset();
-  _ctrl.disableFilter(RxB::RxB0);
-  _ctrl.disableFilter(RxB::RxB1);
-  _ctrl.enableRxBuffer0Rollover();
-  _ctrl.enableIntFlag(CANINTE::RX0IE);
-  _ctrl.enableIntFlag(CANINTE::RX1IE);
+  _cfg.disableFilter_RxB0();
+  _cfg.disableFilter_RxB1();
+  _cfg.enableRollover_RxB0();
+  _cfg.enableIntFlag(CANINTE::RX0IE);
+  _cfg.enableIntFlag(CANINTE::RX1IE);
 }
 
 void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
 {
-  _ctrl.setBitRateConfig(BIT_RATE_CONFIG_ARRAY[static_cast<size_t>(bit_rate)]);
+  _cfg.setBitRateConfig(BIT_RATE_CONFIG_ARRAY[static_cast<size_t>(bit_rate)]);
 }
 
 bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t const len)
