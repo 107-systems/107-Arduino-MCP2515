@@ -60,11 +60,15 @@ class MCP2515_Control
 
 public:
 
-  MCP2515_Control(MCP2515_Io & io);
+  MCP2515_Control(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransferFunc transfer);
 
 
   bool setMode         (Mode const mode);
   void setBitRateConfig(CanBitRateConfig const bit_rate_config);
+  void disableFilter   (RxB const rxb);
+  void enableRxBuffer0Rollover();
+  void enableIntFlag   (CANINTE const int_enable);
+  void reset();
   uint8_t status();
   void clearIntFlag    (CANINTF const int_flag);
 
@@ -73,7 +77,7 @@ public:
 
 private:
 
-  MCP2515_Io & _io;
+  MCP2515_Io _io;
 
 };
 

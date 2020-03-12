@@ -48,9 +48,8 @@ inline bool isBitClr(uint8_t const reg_val, uint8_t const bit_pos)
  * CTOR/DTOR
  **************************************************************************************/
 
-ArduinoMCP2515::ArduinoMCP2515(MCP2515::SpiSelectFunc select, MCP2515::SpiDeselectFunc deselect, MCP2515::SpiTransferFunc transfer, OnCanFrameReceiveFunc on_can_frame_rx)
-: _io{select, deselect, transfer}
-, _ctrl{_io}
+ArduinoMCP2515::ArduinoMCP2515(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransferFunc transfer, OnCanFrameReceiveFunc on_can_frame_rx)
+: _ctrl{select, deselect, transfer}
 , _on_can_frame_rx{on_can_frame_rx}
 {
 
@@ -62,8 +61,12 @@ ArduinoMCP2515::ArduinoMCP2515(MCP2515::SpiSelectFunc select, MCP2515::SpiDesele
 
 void ArduinoMCP2515::begin()
 {
-  _io.reset();
-  configureMCP2515();
+  _ctrl.reset();
+  _ctrl.disableFilter(RxB::RxB0);
+  _ctrl.disableFilter(RxB::RxB1);
+  _ctrl.enableRxBuffer0Rollover();
+  _ctrl.enableIntFlag(CANINTE::RX0IE);
+  _ctrl.enableIntFlag(CANINTE::RX1IE);
 }
 
 void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
@@ -107,25 +110,4 @@ void ArduinoMCP2515::onExternalEventHandler()
     _ctrl.receive(RxB::RxB1, _on_can_frame_rx);
     _ctrl.clearIntFlag(CANINTF::RX1IF);
   }
-}
-
-/**************************************************************************************
- * PRIVATE FUNCTION DEFINITION
- **************************************************************************************/
-
-void ArduinoMCP2515::configureMCP2515()
-{
-  /* Enable interrupts:
-   *   Receive Buffer 0 Full
-   *   Receive Buffer 1 Full
-   */
-  setBit(_io, Register::CANINTE, bp(CANINTE::RX0IE));
-  setBit(_io, Register::CANINTE, bp(CANINTE::RX1IE));
-  /* Turn masks/filters off */
-  setBit(_io, Register::RXB0CTRL, bp(RXB0CTRL::RXM1));
-  setBit(_io, Register::RXB0CTRL, bp(RXB0CTRL::RXM0));
-  setBit(_io, Register::RXB1CTRL, bp(RXB1CTRL::RXM1));
-  setBit(_io, Register::RXB1CTRL, bp(RXB1CTRL::RXM0));
-  /* Enable roll-over to RXB1 if RXB0 is full */
-  setBit(_io, Register::RXB0CTRL, bp(RXB0CTRL::BUKT));
 }

@@ -23,8 +23,8 @@ namespace MCP2515
  * CTOR/DTOR
  **************************************************************************************/
 
-MCP2515_Control::MCP2515_Control(MCP2515_Io & io)
-: _io{io}
+MCP2515_Control::MCP2515_Control(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransferFunc transfer)
+: _io{select, deselect, transfer}
 {
 
 }
@@ -55,6 +55,40 @@ void MCP2515_Control::setBitRateConfig(CanBitRateConfig const bit_rate_config)
   _io.writeRegister(Register::CNF1, bit_rate_config.CNF1);
   _io.writeRegister(Register::CNF2, bit_rate_config.CNF2);
   _io.writeRegister(Register::CNF3, bit_rate_config.CNF3);
+}
+
+void MCP2515_Control::disableFilter(RxB const rxb)
+{
+  switch(rxb)
+  {
+    case RxB::RxB0:
+    {
+     setBit(_io, Register::RXB0CTRL, bp(RXB0CTRL::RXM1));
+     setBit(_io, Register::RXB0CTRL, bp(RXB0CTRL::RXM0));
+    }
+    break;
+    case RxB::RxB1:
+    {
+     setBit(_io, Register::RXB1CTRL, bp(RXB1CTRL::RXM1));
+     setBit(_io, Register::RXB1CTRL, bp(RXB1CTRL::RXM0));
+    }
+    break;
+  }
+}
+
+void MCP2515_Control::enableRxBuffer0Rollover()
+{
+  setBit(_io, Register::RXB0CTRL, bp(RXB0CTRL::BUKT));
+}
+
+void MCP2515_Control::enableIntFlag(CANINTE const int_flag)
+{
+  setBit(_io, Register::CANINTE, bp(int_flag));
+}
+
+void MCP2515_Control::reset()
+{
+  _io.reset();
 }
 
 uint8_t MCP2515_Control::status()

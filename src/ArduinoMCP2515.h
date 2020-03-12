@@ -14,7 +14,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "MCP2515/MCP2515_Io.h"
 #include "MCP2515/MCP2515_Control.h"
 
 #undef min
@@ -71,7 +70,6 @@ public:
 
 private:
 
-  MCP2515::MCP2515_Io _io;
   MCP2515::MCP2515_Control _ctrl;
   MCP2515::OnCanFrameReceiveFunc _on_can_frame_rx;
 
