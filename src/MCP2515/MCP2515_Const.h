@@ -190,6 +190,10 @@ enum class RXB1CTRL : uint8_t
 static uint8_t constexpr CANCTRL_REQOP_MASK = 0xE0;
 static uint8_t constexpr CANSTAT_OP_MASK    = 0xE0;
 
+static uint32_t constexpr CAN_EFF_BITMASK   = 0x80000000;
+static uint32_t constexpr CAN_RTR_BITMASK   = 0x40000000;
+static uint32_t constexpr CAN_ERR_BITMASK   = 0x20000000;
+
 /**************************************************************************************
  * CONVERSION FUNCTIONS
  **************************************************************************************/

@@ -67,6 +67,7 @@ public:
   void setBitRateConfig(CanBitRateConfig const bit_rate_config);
   void clearIntFlag    (CANINTF const int_flag);
 
+  void transmit        (TxB const txb, uint32_t const id, uint8_t const * data, uint8_t const len);
   void receive         (RxB const rxb, OnCanFrameReceiveFunc on_can_frame_rx);
 
 private:
