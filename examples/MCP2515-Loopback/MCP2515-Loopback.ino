@@ -7,6 +7,10 @@
  * INCLUDE
  **************************************************************************************/
 
+#include <SPI.h>
+#undef max
+#undef min
+
 #include <ArduinoMCP2515.h>
 
 #include <algorithm>
@@ -25,11 +29,26 @@ static std::array<uint32_t, 10> const TEST_ID_VECTOR{0,1,2,3,4,5,6,7,8,9};
 static uint8_t                  const TEST_DATA[]   = {0xDE, 0xAD, 0xBE, 0xEF};
 static uint8_t                  const TEST_DATA_LEN = sizeof(TEST_DATA)/sizeof(uint8_t);
 
+void mcp2515_spi_select()
+{
+  digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW);
+}
+
+void mcp2515_spi_deselect()
+{
+  digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH);
+}
+
+uint8_t spi_transfer(uint8_t const data)
+{
+  return SPI.transfer(data);
+}
+
 /**************************************************************************************
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-ArduinoMCP2515 mcp2515(MKRCAN_MCP2515_CS_PIN, onCanFrameReceive);
+ArduinoMCP2515 mcp2515(mcp2515_spi_select, mcp2515_spi_deselect,  spi_transfer, onCanFrameReceive);
 
 /**************************************************************************************
  * CALLBACK FUNCTIONS
@@ -48,6 +67,11 @@ void setup()
 {
   Serial.begin(9600);
   while(!Serial) { }
+
+  /* Setup SPI access */
+  SPI.begin();
+  pinMode(MKRCAN_MCP2515_CS_PIN, OUTPUT);
+  digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH);
 
   /* Attach interrupt handler to register MCP2515 signaled by taking INT low */
   pinMode(MKRCAN_MCP2515_INT_PIN, INPUT_PULLUP);

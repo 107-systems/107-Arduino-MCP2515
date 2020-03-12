@@ -10,6 +10,8 @@
 
 #include <ArduinoMCP2515.h>
 
+#include <string.h>
+
 #include <algorithm>
 
 /**************************************************************************************
@@ -64,8 +66,8 @@ inline bool isBitClr(uint8_t const reg_val, uint8_t const bit_pos)
  * CTOR/DTOR
  **************************************************************************************/
 
-ArduinoMCP2515::ArduinoMCP2515(int const cs_pin, OnCanFrameReceiveFunc on_can_frame_rx)
-: _io{cs_pin}
+ArduinoMCP2515::ArduinoMCP2515(MCP2515::SpiSelectFunc select, MCP2515::SpiDeselectFunc deselect, MCP2515::SpiTransferFunc transfer, OnCanFrameReceiveFunc on_can_frame_rx)
+: _io{select, deselect, transfer}
 , _ctrl{_io}
 , _on_can_frame_rx{on_can_frame_rx}
 {
@@ -78,7 +80,6 @@ ArduinoMCP2515::ArduinoMCP2515(int const cs_pin, OnCanFrameReceiveFunc on_can_fr
 
 void ArduinoMCP2515::begin()
 {
-  _io.begin();
   _io.reset();
   configureMCP2515();
 }

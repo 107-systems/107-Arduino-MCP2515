@@ -10,6 +10,8 @@
 
 #include "MCP2515_Io.h"
 
+#include <Arduino.h>
+
 #include <assert.h>
 
 /**************************************************************************************
@@ -47,8 +49,10 @@ static Instruction const TABLE_READ_RX_BUFFER[] =
  * CTOR/DTOR
  **************************************************************************************/
 
-MCP2515_Io::MCP2515_Io(int const cs_pin)
-: _cs_pin{cs_pin}
+MCP2515_Io::MCP2515_Io(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransferFunc transfer)
+: _select{select}
+, _deselect{deselect}
+, _transfer{transfer}
 {
 
 }
@@ -57,19 +61,13 @@ MCP2515_Io::MCP2515_Io(int const cs_pin)
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void MCP2515_Io::begin()
-{
-  init_cs ();
-  init_spi();
-}
-
 void MCP2515_Io::reset()
 {
   uint8_t const instruction = static_cast<uint8_t>(Instruction::RESET);
 
-  select();
-  SPI.transfer(instruction);
-  deselect();
+  _select();
+  _transfer(instruction);
+  _deselect();
 
   delay(10);
 }
@@ -78,10 +76,10 @@ uint8_t MCP2515_Io::status()
 {
   uint8_t const instruction = static_cast<uint8_t>(Instruction::READ_STATUS);
 
-  select();
-                         SPI.transfer(instruction);
-  uint8_t const status = SPI.transfer(0);
-  deselect();
+  _select();
+                         _transfer(instruction);
+  uint8_t const status = _transfer(0);
+  _deselect();
 
   return status;
 }
@@ -91,11 +89,11 @@ uint8_t MCP2515_Io::readRegister(Register const reg)
   uint8_t const instruction = static_cast<uint8_t>(Instruction::READ);
   uint8_t const reg_addr    = static_cast<uint8_t>(reg);
 
-  select();
-                       SPI.transfer(instruction);
-                       SPI.transfer(reg_addr);
-  uint8_t const data = SPI.transfer(0);
-  deselect();
+  _select();
+                       _transfer(instruction);
+                       _transfer(reg_addr);
+  uint8_t const data = _transfer(0);
+  _deselect();
 
   return data;
 }
@@ -105,11 +103,11 @@ void MCP2515_Io::writeRegister(Register const reg, uint8_t const data)
   uint8_t const instruction = static_cast<uint8_t>(Instruction::WRITE);
   uint8_t const reg_addr    = static_cast<uint8_t>(reg);
 
-  select();
-  SPI.transfer(instruction);
-  SPI.transfer(reg_addr);
-  SPI.transfer(data);
-  deselect();
+  _select();
+  _transfer(instruction);
+  _transfer(reg_addr);
+  _transfer(data);
+  _deselect();
 }
 
 void MCP2515_Io::modifyRegister(Register const reg, uint8_t const mask, uint8_t const data)
@@ -117,47 +115,47 @@ void MCP2515_Io::modifyRegister(Register const reg, uint8_t const mask, uint8_t 
   uint8_t const instruction = static_cast<uint8_t>(Instruction::BITMOD);
   uint8_t const reg_addr    = static_cast<uint8_t>(reg);
 
-  select();
-  SPI.transfer(instruction);
-  SPI.transfer(reg_addr);
-  SPI.transfer(mask);
-  SPI.transfer(data);
-  deselect();
+  _select();
+  _transfer(instruction);
+  _transfer(reg_addr);
+  _transfer(mask);
+  _transfer(data);
+  _deselect();
 }
 
 void MCP2515_Io::loadTxBuffer(TxB const txb, uint8_t const * tx_buf_data)
 {
   uint8_t const instruction = static_cast<uint8_t>(TABLE_LOAD_TX_BUFFER[static_cast<uint8_t>(txb)]);
 
-  select();
-  SPI.transfer(instruction);
+  _select();
+  _transfer(instruction);
   for(uint8_t b = 0; b < TX_BUF_SIZE; b++)
   {
-    SPI.transfer(tx_buf_data[b]);
+    _transfer(tx_buf_data[b]);
   }
-  deselect();
+  _deselect();
 }
 
 void MCP2515_Io::requestTx(TxB const txb)
 {
   uint8_t const instruction = static_cast<uint8_t>(TABLE_REQUEST_TO_SEND[static_cast<uint8_t>(txb)]);
 
-  select();
-  SPI.transfer(instruction);
-  deselect();
+  _select();
+  _transfer(instruction);
+  _deselect();
 }
 
 void MCP2515_Io::readRxBuffer(RxB const rxb, uint8_t * rx_buf_data)
 {
   uint8_t const instruction = static_cast<uint8_t>(TABLE_READ_RX_BUFFER[static_cast<uint8_t>(rxb)]);
 
-  select();
-  SPI.transfer(instruction);
+  _select();
+  _transfer(instruction);
   for(uint8_t b = 0; b < RX_BUF_SIZE; b++)
   {
-    rx_buf_data[b] = SPI.transfer(0);
+    rx_buf_data[b] = _transfer(0);
   }
-  deselect();
+  _deselect();
 }
 
 /**************************************************************************************

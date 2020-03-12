@@ -13,8 +13,7 @@
 
 #include <stdint.h>
 
-#include <Arduino.h>
-#include <SPI.h>
+#include <functional>
 
 #include "MCP2515_Const.h"
 
@@ -28,6 +27,10 @@ namespace MCP2515
 /**************************************************************************************
  * TYPEDEF
  **************************************************************************************/
+
+typedef std::function<void()>                 SpiSelectFunc;
+typedef std::function<void()>                 SpiDeselectFunc;
+typedef std::function<uint8_t(uint8_t const)> SpiTransferFunc;
 
 enum class TxB : uint8_t
 {
@@ -65,14 +68,12 @@ class MCP2515_Io
 
 public:
 
-  MCP2515_Io(int const cs_pin);
+  MCP2515_Io(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransferFunc transfer);
 
 
   static uint8_t constexpr TX_BUF_SIZE = 5 + 8;
   static uint8_t constexpr RX_BUF_SIZE = TX_BUF_SIZE;
 
-
-  void    begin();
 
   void    reset();
   uint8_t status();
@@ -86,13 +87,9 @@ public:
 
 private:
 
-  int const _cs_pin;
-
-  inline void init_cs () { pinMode(_cs_pin, OUTPUT); deselect(); }
-  inline void init_spi() { SPI.begin(); }
-
-  inline void select  () { digitalWrite(_cs_pin, LOW);  }
-  inline void deselect() { digitalWrite(_cs_pin, HIGH); }
+  SpiSelectFunc _select;
+  SpiDeselectFunc _deselect;
+  SpiTransferFunc _transfer;
 
 };
 

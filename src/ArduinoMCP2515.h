@@ -57,7 +57,7 @@ class ArduinoMCP2515
 
 public:
 
-  ArduinoMCP2515(int const cs_pin, OnCanFrameReceiveFunc on_can_frame_rx);
+  ArduinoMCP2515(MCP2515::SpiSelectFunc select, MCP2515::SpiDeselectFunc deselect, MCP2515::SpiTransferFunc transfer, OnCanFrameReceiveFunc on_can_frame_rx);
 
 
   void begin();
