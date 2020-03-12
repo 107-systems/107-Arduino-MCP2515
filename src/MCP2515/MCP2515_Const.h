@@ -183,32 +183,46 @@ enum class RXB1CTRL : uint8_t
   FILHIT0 = 0
 };
 
-/**************************************************************************************
- * CONSTANTS
- **************************************************************************************/
+enum class CANCTRL : uint8_t
+{
+  REQOP2 = 7,
+  REQOP1 = 6,
+  REQOP0 = 5
+};
 
-static uint8_t constexpr CANCTRL_REQOP_MASK = 0xE0;
-static uint8_t constexpr CANSTAT_OP_MASK    = 0xE0;
-
-static uint32_t constexpr CAN_EFF_BITMASK   = 0x80000000;
-static uint32_t constexpr CAN_RTR_BITMASK   = 0x40000000;
-static uint32_t constexpr CAN_ERR_BITMASK   = 0x20000000;
+enum class CANSTAT : uint8_t
+{
+  OPMOD2 = 7,
+  OPMOD1 = 6,
+  OPMOD0 = 5
+};
 
 /**************************************************************************************
  * CONVERSION FUNCTIONS
  **************************************************************************************/
 
 template <typename Enumeration>
-auto bp(Enumeration const value) -> typename std::underlying_type<Enumeration>::type
+constexpr auto bp(Enumeration const value) -> typename std::underlying_type<Enumeration>::type
 {
     return static_cast<typename std::underlying_type<Enumeration>::type>(value);
 }
 
 template <typename Enumeration>
-auto bm(Enumeration const value) -> typename std::underlying_type<Enumeration>::type
+constexpr auto bm(Enumeration const value) -> typename std::underlying_type<Enumeration>::type
 {
     return (1 << bp(value));
 }
+
+/**************************************************************************************
+ * CONSTANTS
+ **************************************************************************************/
+
+static uint8_t constexpr CANCTRL_REQOP_MASK = bm(CANCTRL::REQOP2) | bm(CANCTRL::REQOP1) | bm(CANCTRL::REQOP0);
+static uint8_t constexpr CANSTAT_OP_MASK    = bm(CANSTAT::OPMOD2) | bm(CANSTAT::OPMOD1) | bm(CANSTAT::OPMOD0);
+
+static uint32_t constexpr CAN_EFF_BITMASK   = 0x80000000;
+static uint32_t constexpr CAN_RTR_BITMASK   = 0x40000000;
+static uint32_t constexpr CAN_ERR_BITMASK   = 0x20000000;
 
 /**************************************************************************************
  * NAMESPACE
