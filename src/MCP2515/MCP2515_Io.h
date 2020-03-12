@@ -80,6 +80,8 @@ public:
   uint8_t readRegister  (Register const reg);
   void    writeRegister (Register const reg, uint8_t const data);
   void    modifyRegister(Register const reg, uint8_t const mask, uint8_t const data);
+  void    setBit        (Register const reg, uint8_t const bit_pos);
+  void    clrBit        (Register const reg, uint8_t const bit_pos);
   void    loadTxBuffer  (TxB const txb, uint8_t const * tx_buf_data); /* tx_buf_data = {SIDH, SIDL, EID8, EID0, DLC, DATA[0-8 Byte] } */
   void    requestTx     (TxB const txb);
   void    readRxBuffer  (RxB const rxb, uint8_t * rx_buf_data);       /* rx_buf_data = {SIDH, SIDL, EID8, EID0, DLC, DATA[0-8 Byte] } */
@@ -94,13 +96,6 @@ private:
 };
 
 static_assert(sizeof(RxTxBuffer) == MCP2515_Io::TX_BUF_SIZE, "Union RxTxBuffer exceeds expected size of MCP2515_Io::TX/RX_BUF_SIZE bytes");
-
-/**************************************************************************************
- * FREE FUNCTION DECLARATION
- **************************************************************************************/
-
-void setBit(MCP2515_Io & io, Register const reg, uint8_t const bit_pos);
-void clrBit(MCP2515_Io & io, Register const reg, uint8_t const bit_pos);
 
 /**************************************************************************************
  * NAMESPACE

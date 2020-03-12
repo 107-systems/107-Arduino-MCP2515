@@ -64,10 +64,10 @@ public:
          bool setMode            (Mode const mode);
          void setBitRateConfig   (CanBitRateConfig const bit_rate_config);
   
-  inline void enableIntFlag      (CANINTE const int_flag) { setBit(_io, Register::CANINTE, bp(int_flag)); }
+  inline void enableIntFlag      (CANINTE const int_flag) { _io.setBit(Register::CANINTE, bp(int_flag)); }
   inline void disableFilter_RxB0 ()                       { _io.modifyRegister(Register::RXB0CTRL, RXB0CTRL_RXM_MASK, RXB0CTRL_RXM_MASK); }
   inline void disableFilter_RxB1 ()                       { _io.modifyRegister(Register::RXB1CTRL, RXB1CTRL_RXM_MASK, RXB1CTRL_RXM_MASK); }
-  inline void enableRollover_RxB0()                       { setBit(_io, Register::RXB0CTRL, bp(RXB0CTRL::BUKT)); }
+  inline void enableRollover_RxB0()                       { _io.setBit(Register::RXB0CTRL, bp(RXB0CTRL::BUKT)); }
   
 
 private:

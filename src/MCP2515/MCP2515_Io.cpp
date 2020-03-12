@@ -123,6 +123,20 @@ void MCP2515_Io::modifyRegister(Register const reg, uint8_t const mask, uint8_t 
   _deselect();
 }
 
+void MCP2515_Io::setBit(Register const reg, uint8_t const bit_pos)
+{
+  assert(bit_pos < 8);
+  uint8_t const bit_mask = (1<<bit_pos);
+  modifyRegister(reg, bit_mask, bit_mask);
+}
+
+void MCP2515_Io::clrBit(Register const reg, uint8_t const bit_pos)
+{
+  assert(bit_pos < 8);
+  uint8_t const bit_mask = (1<<bit_pos);
+  modifyRegister(reg, bit_mask, 0);
+}
+
 void MCP2515_Io::loadTxBuffer(TxB const txb, uint8_t const * tx_buf_data)
 {
   uint8_t const instruction = static_cast<uint8_t>(TABLE_LOAD_TX_BUFFER[static_cast<uint8_t>(txb)]);
@@ -156,24 +170,6 @@ void MCP2515_Io::readRxBuffer(RxB const rxb, uint8_t * rx_buf_data)
     rx_buf_data[b] = _transfer(0);
   }
   _deselect();
-}
-
-/**************************************************************************************
- * FREE FUNCTION DEFINITION
- **************************************************************************************/
-
-void setBit(MCP2515_Io & io, Register const reg, uint8_t const bit_pos)
-{
-  assert(bit_pos < 8);
-  uint8_t const bit_mask = (1<<bit_pos);
-  io.modifyRegister(reg, bit_mask, bit_mask);
-}
-
-void clrBit(MCP2515_Io & io, Register const reg, uint8_t const bit_pos)
-{
-  assert(bit_pos < 8);
-  uint8_t const bit_mask = (1<<bit_pos);
-  io.modifyRegister(reg, bit_mask, 0);
 }
 
 /**************************************************************************************
