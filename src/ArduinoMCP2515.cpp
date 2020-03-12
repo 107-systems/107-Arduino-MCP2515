@@ -21,24 +21,8 @@
 using namespace MCP2515;
 
 /**************************************************************************************
- * TYPEDEF
+ * CONSTANTS
  **************************************************************************************/
-
-typedef struct
-{
-  uint8_t CNF1;
-  uint8_t CNF2;
-  uint8_t CNF3;
-} CanBitRateConfig;
-
-/**************************************************************************************
- * GLOBAL CONSTANTS
- **************************************************************************************/
-
-static CanBitRateConfig constexpr BitRate_125kBPS_16MHz  = {0x03, 0xF0, 0x86};
-static CanBitRateConfig constexpr BitRate_250kBPS_16MHz  = {0x41, 0xF1, 0x85};
-static CanBitRateConfig constexpr BitRate_500kBPS_16MHz  = {0x00, 0xF0, 0x86};
-static CanBitRateConfig constexpr BitRate_1000kBPS_16MHz = {0x00, 0xD0, 0x82};
 
 static CanBitRateConfig const BIT_RATE_CONFIG_ARRAY[] =
 {
@@ -86,9 +70,7 @@ void ArduinoMCP2515::begin()
 
 void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
 {
-  _io.writeRegister(Register::CNF1, BIT_RATE_CONFIG_ARRAY[static_cast<size_t>(bit_rate)].CNF1);
-  _io.writeRegister(Register::CNF2, BIT_RATE_CONFIG_ARRAY[static_cast<size_t>(bit_rate)].CNF2);
-  _io.writeRegister(Register::CNF3, BIT_RATE_CONFIG_ARRAY[static_cast<size_t>(bit_rate)].CNF3);
+  _ctrl.setBitRateConfig(BIT_RATE_CONFIG_ARRAY[static_cast<size_t>(bit_rate)]);
 }
 
 bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t const len)

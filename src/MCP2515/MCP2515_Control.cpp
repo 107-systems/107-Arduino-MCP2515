@@ -50,6 +50,13 @@ bool MCP2515_Control::setMode(Mode const mode)
   return false;
 }
 
+void MCP2515_Control::setBitRateConfig(CanBitRateConfig const bit_rate_config)
+{
+  _io.writeRegister(Register::CNF1, bit_rate_config.CNF1);
+  _io.writeRegister(Register::CNF2, bit_rate_config.CNF2);
+  _io.writeRegister(Register::CNF3, bit_rate_config.CNF3);
+}
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/

@@ -33,6 +33,22 @@ enum class Mode : uint8_t
   Config     = 0x80
 };
 
+typedef struct
+{
+  uint8_t CNF1;
+  uint8_t CNF2;
+  uint8_t CNF3;
+} CanBitRateConfig;
+
+/**************************************************************************************
+ * GLOBAL CONSTANTS
+ **************************************************************************************/
+
+static CanBitRateConfig constexpr BitRate_125kBPS_16MHz  = {0x03, 0xF0, 0x86};
+static CanBitRateConfig constexpr BitRate_250kBPS_16MHz  = {0x41, 0xF1, 0x85};
+static CanBitRateConfig constexpr BitRate_500kBPS_16MHz  = {0x00, 0xF0, 0x86};
+static CanBitRateConfig constexpr BitRate_1000kBPS_16MHz = {0x00, 0xD0, 0x82};
+
 /**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
@@ -45,7 +61,8 @@ public:
   MCP2515_Control(MCP2515_Io & io);
 
 
-  bool setMode(Mode const mode);
+  bool setMode         (Mode const mode);
+  void setBitRateConfig(CanBitRateConfig const bit_rate_config);
 
 
 private:
