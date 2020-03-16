@@ -67,7 +67,7 @@ void MCP2515_Control::transmit(TxB const txb, uint32_t const id, uint8_t const *
   }
 
   /* Load data length register */
-  tx_buffer.reg.dlc = is_rtr ? (len | (1 << static_cast<uint8_t>(TXBnDLC::RTR))) : len;
+  tx_buffer.reg.dlc = is_rtr ? (len | bm(TXBnDLC::RTR)) : len;
 
   /* Load data buffer */
   memcpy(tx_buffer.reg.data, data, std::min<uint8_t>(len, 8));
