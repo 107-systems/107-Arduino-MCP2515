@@ -147,8 +147,11 @@ enum class STATUS : uint8_t
 
 enum class CANINTE : uint8_t
 {
-  RX0IE = 0,
+  TX2IE = 4,
+  TX1IE = 3,
+  TX0IE = 2,
   RX1IE = 1,
+  RX0IE = 0,
 };
 
 enum class CANINTF : uint8_t

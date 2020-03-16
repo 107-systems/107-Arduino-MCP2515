@@ -48,11 +48,12 @@ inline bool isBitClr(uint8_t const reg_val, uint8_t const bit_pos)
  * CTOR/DTOR
  **************************************************************************************/
 
-ArduinoMCP2515::ArduinoMCP2515(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransferFunc transfer, OnCanFrameReceiveFunc on_can_frame_rx)
+ArduinoMCP2515::ArduinoMCP2515(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransferFunc transfer, OnCanFrameReceiveFunc on_can_frame_rx, OnTransmitBufferEmptyFunc on_tx_buf_empty)
 : _io{select, deselect, transfer}
 , _cfg{_io}
 , _ctrl{_io}
 , _on_can_frame_rx{on_can_frame_rx}
+, _on_tx_buf_empty{on_tx_buf_empty}
 {
 
 }
@@ -69,6 +70,9 @@ void ArduinoMCP2515::begin()
   _cfg.enableRollover_RxB0();
   _cfg.enableIntFlag(CANINTE::RX0IE);
   _cfg.enableIntFlag(CANINTE::RX1IE);
+  _cfg.enableIntFlag(CANINTE::TX0IE);
+  _cfg.enableIntFlag(CANINTE::TX1IE);
+  _cfg.enableIntFlag(CANINTE::TX2IE);
 }
 
 void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
@@ -101,15 +105,39 @@ void ArduinoMCP2515::onExternalEventHandler()
 {
   uint8_t const status = _ctrl.status();
 
-  if(isBitSet(status, bp(STATUS::RX0IF)))
-  {
-    _ctrl.receive(RxB::RxB0, _on_can_frame_rx);
-    _ctrl.clearIntFlag(CANINTF::RX0IF);
-  }
+  if(isBitSet(status, bp(STATUS::RX0IF))) onReceiveBuffer_0_Full();
+  if(isBitSet(status, bp(STATUS::RX1IF))) onReceiveBuffer_1_Full();
+  if(isBitSet(status, bp(STATUS::TX0IF))) onTransmitBuffer_0_Empty();
+  if(isBitSet(status, bp(STATUS::TX1IF))) onTransmitBuffer_1_Empty();
+  if(isBitSet(status, bp(STATUS::TX2IF))) onTransmitBuffer_2_Empty();
+}
 
-  if(isBitSet(status, bp(STATUS::RX1IF)))
-  {
-    _ctrl.receive(RxB::RxB1, _on_can_frame_rx);
-    _ctrl.clearIntFlag(CANINTF::RX1IF);
-  }
+void ArduinoMCP2515::onReceiveBuffer_0_Full()
+{
+  _ctrl.receive(RxB::RxB0, _on_can_frame_rx);
+  _ctrl.clearIntFlag(CANINTF::RX0IF);
+}
+
+void ArduinoMCP2515::onReceiveBuffer_1_Full()
+{
+  _ctrl.receive(RxB::RxB1, _on_can_frame_rx);
+  _ctrl.clearIntFlag(CANINTF::RX1IF);
+}
+
+void ArduinoMCP2515::onTransmitBuffer_0_Empty()
+{
+  _on_tx_buf_empty(this);
+  _ctrl.clearIntFlag(CANINTF::TX0IF);
+}
+
+void ArduinoMCP2515::onTransmitBuffer_1_Empty()
+{
+  _on_tx_buf_empty(this);
+  _ctrl.clearIntFlag(CANINTF::TX1IF);
+}
+
+void ArduinoMCP2515::onTransmitBuffer_2_Empty()
+{
+  _on_tx_buf_empty(this);
+  _ctrl.clearIntFlag(CANINTF::TX2IF);
 }
