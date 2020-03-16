@@ -89,6 +89,21 @@ void MCP2515_Control::receive(RxB const rxb, uint32_t & id, uint8_t * data, uint
   /* Assemble ID from registers */
   id = (static_cast<uint32_t>(rx_buffer.reg.sidh) << 3) + (static_cast<uint32_t>(rx_buffer.reg.sidl) >> 5);
 
+  if(rx_buffer.reg.sidl & bm(RXBnSIDL::IDE) == bm(RXBnSIDL::IDE))
+  {
+    id = (id << 2) + (rx_buffer.reg.sidl & 0x03);
+    id = (id << 8) + rx_buffer.reg.eid8;
+    id = (id << 8) + rx_buffer.reg.eid0;
+    id |= CAN_EFF_BITMASK;
+  }
+
+  Register const ctrl_reg_addr = (rxb == RxB::RxB0) ? Register::RXB0CTRL : Register::RXB1CTRL;
+  uint8_t const ctrl_reg_val = _io.readRegister(ctrl_reg_addr);
+  if(ctrl_reg_val & bm(RXB0CTRL::RXRTR) == bm(RXB0CTRL::RXRTR))
+  {
+    id |= CAN_RTR_BITMASK;
+  }
+
   /* Read amount of bytes received */
   len = rx_buffer.reg.dlc & 0x0F;
 

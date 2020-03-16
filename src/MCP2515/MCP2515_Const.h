@@ -186,6 +186,11 @@ enum class RXB1CTRL : uint8_t
   FILHIT0 = 0
 };
 
+enum class RXBnSIDL : uint8_t
+{
+  IDE = 3,
+};
+
 enum class CANCTRL : uint8_t
 {
   REQOP2 = 7,

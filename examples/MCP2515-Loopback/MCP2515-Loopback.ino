@@ -111,8 +111,12 @@ uint8_t spi_transfer(uint8_t const data)
 
 void mcp2515_onReceiveBufferFull(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
-  Serial.print("ID ");
+  Serial.print("ID");
+  if(id & MCP2515::CAN_EFF_BITMASK) Serial.print("(EXT)");
+  if(id & MCP2515::CAN_RTR_BITMASK) Serial.print("(RTR)");
+  Serial.print(" ");
   Serial.print(id, HEX);
+  
   Serial.print(" DATA[");
   Serial.print(len);
   Serial.print("] ");
