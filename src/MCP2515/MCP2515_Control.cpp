@@ -12,6 +12,10 @@
 
 #include <Arduino.h>
 
+#undef min
+#undef max
+#include <algorithm>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -66,7 +70,7 @@ void MCP2515_Control::transmit(TxB const txb, uint32_t const id, uint8_t const *
   tx_buffer.reg.dlc = is_rtr ? (len | (1 << static_cast<uint8_t>(TXBnDLC::RTR))) : len;
 
   /* Load data buffer */
-  memcpy(tx_buffer.reg.data, data, len);
+  memcpy(tx_buffer.reg.data, data, std::min<uint8_t>(len, 8));
 
   /* Write to transmit buffer */
   _io.loadTxBuffer(txb, tx_buffer.buf);
@@ -75,7 +79,7 @@ void MCP2515_Control::transmit(TxB const txb, uint32_t const id, uint8_t const *
   _io.requestTx(txb);
 }
 
-void MCP2515_Control::receive(RxB const rxb, OnCanFrameReceiveFunc on_can_frame_rx)
+void MCP2515_Control::receive(RxB const rxb, uint32_t & id, uint8_t * data, uint8_t & len)
 {
   RxTxBuffer rx_buffer;
 
@@ -83,13 +87,13 @@ void MCP2515_Control::receive(RxB const rxb, OnCanFrameReceiveFunc on_can_frame_
   _io.readRxBuffer(rxb, rx_buffer.buf);
 
   /* Assemble ID from registers */
-  uint32_t id = (static_cast<uint32_t>(rx_buffer.reg.sidh) << 3) + (static_cast<uint32_t>(rx_buffer.reg.sidl) >> 5);
+  id = (static_cast<uint32_t>(rx_buffer.reg.sidh) << 3) + (static_cast<uint32_t>(rx_buffer.reg.sidl) >> 5);
 
   /* Read amount of bytes received */
-  uint8_t const len = rx_buffer.reg.dlc & 0x0F;
+  len = rx_buffer.reg.dlc & 0x0F;
 
   /* Call registered callback with received data */
-  on_can_frame_rx(id, rx_buffer.reg.data, len);
+  memcpy(data, rx_buffer.reg.data, std::min<uint8_t>(len, 8));
 }
 
 

@@ -22,7 +22,7 @@
 void mcp2515_spi_select();
 void mcp2515_spi_deselect();
 uint8_t spi_transfer(uint8_t const data);
-void mcp2515_on_can_frame_rx(uint32_t const id, uint8_t const * data, uint8_t const len);
+void mcp2515_onReceiveBufferFull(uint32_t const id, uint8_t const * data, uint8_t const len);
 void mcp2515_OnTransmitBufferEmpty(ArduinoMCP2515 * this_ptr);
 
 /**************************************************************************************
@@ -37,7 +37,11 @@ static uint8_t                  const TEST_DATA_LEN = sizeof(TEST_DATA)/sizeof(u
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-ArduinoMCP2515 mcp2515(mcp2515_spi_select, mcp2515_spi_deselect, spi_transfer, mcp2515_on_can_frame_rx, mcp2515_OnTransmitBufferEmpty);
+ArduinoMCP2515 mcp2515(mcp2515_spi_select,
+                       mcp2515_spi_deselect,
+                       spi_transfer,
+                       mcp2515_onReceiveBufferFull,
+                       mcp2515_OnTransmitBufferEmpty);
 
 /**************************************************************************************
  * CALLBACK FUNCTIONS
@@ -105,7 +109,7 @@ uint8_t spi_transfer(uint8_t const data)
   return SPI.transfer(data);
 }
 
-void mcp2515_on_can_frame_rx(uint32_t const id, uint8_t const * data, uint8_t const len)
+void mcp2515_onReceiveBufferFull(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
   Serial.print("ID ");
   Serial.print(id, HEX);

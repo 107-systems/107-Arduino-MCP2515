@@ -21,12 +21,6 @@ namespace MCP2515
 {
 
 /**************************************************************************************
- * TYPEDEF
- **************************************************************************************/
-
-typedef std::function<void(uint32_t const, uint8_t const *, uint8_t const)> OnCanFrameReceiveFunc;
-
-/**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
 
@@ -38,8 +32,8 @@ public:
   MCP2515_Control(MCP2515_Io & io);
 
 
-  void           transmit    (TxB const txb, uint32_t const id, uint8_t const * data, uint8_t const len);
-  void           receive     (RxB const rxb, OnCanFrameReceiveFunc on_can_frame_rx);
+  void           transmit    (TxB const txb, uint32_t const   id, uint8_t const * data, uint8_t const   len);
+  void           receive     (RxB const rxb, uint32_t       & id, uint8_t       * data, uint8_t       & len);
 
   inline void    reset       ()                       { _io.reset(); }
   inline uint8_t status      ()                       { return _io.status(); }

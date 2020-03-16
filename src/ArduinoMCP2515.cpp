@@ -48,11 +48,15 @@ inline bool isBitClr(uint8_t const reg_val, uint8_t const bit_pos)
  * CTOR/DTOR
  **************************************************************************************/
 
-ArduinoMCP2515::ArduinoMCP2515(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransferFunc transfer, OnCanFrameReceiveFunc on_can_frame_rx, OnTransmitBufferEmptyFunc on_tx_buf_empty)
+ArduinoMCP2515::ArduinoMCP2515(SpiSelectFunc select,
+                               SpiDeselectFunc deselect,
+                               SpiTransferFunc transfer,
+                               onReceiveBufferFullFunc on_rx_buf_full,
+                               OnTransmitBufferEmptyFunc on_tx_buf_empty)
 : _io{select, deselect, transfer}
 , _cfg{_io}
 , _ctrl{_io}
-, _on_can_frame_rx{on_can_frame_rx}
+, _on_rx_buf_full{on_rx_buf_full}
 , _on_tx_buf_empty{on_tx_buf_empty}
 {
 
@@ -114,13 +118,21 @@ void ArduinoMCP2515::onExternalEventHandler()
 
 void ArduinoMCP2515::onReceiveBuffer_0_Full()
 {
-  _ctrl.receive(RxB::RxB0, _on_can_frame_rx);
+  uint32_t id = 0;
+  uint8_t data[8] = {0}, len = 0;
+
+  _ctrl.receive(RxB::RxB0, id, data, len);
+  _on_rx_buf_full(id, data, len);
   _ctrl.clearIntFlag(CANINTF::RX0IF);
 }
 
 void ArduinoMCP2515::onReceiveBuffer_1_Full()
 {
-  _ctrl.receive(RxB::RxB1, _on_can_frame_rx);
+  uint32_t id = 0;
+  uint8_t data[8] = {0}, len = 0;
+
+  _ctrl.receive(RxB::RxB1, id, data, len);
+  _on_rx_buf_full(id, data, len);
   _ctrl.clearIntFlag(CANINTF::RX1IF);
 }
 
