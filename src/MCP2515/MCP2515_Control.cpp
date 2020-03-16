@@ -56,7 +56,7 @@ void MCP2515_Control::transmit(TxB const txb, uint32_t const id, uint8_t const *
   if(is_ext)
   {
     tx_buffer.reg.sidl |= static_cast<uint8_t>((id & 0x18000000) >> 27);
-    tx_buffer.reg.sidl |= (1 << static_cast<uint8_t>(TXBnSIDL::EXIDE));
+    tx_buffer.reg.sidl |= bm(TXBnSIDL::EXIDE);
     tx_buffer.reg.eid0  = static_cast<uint8_t>((id & 0x0007F800) >> 11);
     tx_buffer.reg.eid8  = static_cast<uint8_t>((id & 0x07F80000) >> 19);
   }
