@@ -77,8 +77,6 @@ private:
   MCP2515::MCP2515_Control _ctrl;
   MCP2515::OnCanFrameReceiveFunc _on_can_frame_rx;
 
-  void configureMCP2515();
-
 };
 
 #endif /* ARDUINO_MCP2515_H_ */
