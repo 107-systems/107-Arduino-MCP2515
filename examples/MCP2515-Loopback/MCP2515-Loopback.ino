@@ -142,7 +142,7 @@ void mcp2515_onReceiveBufferFull(uint32_t const id, uint8_t const * data, uint8_
   if(id & MCP2515::CAN_RTR_BITMASK) Serial.print("(RTR)");
   Serial.print(" ");
   Serial.print(id, HEX);
-  
+
   Serial.print(" DATA[");
   Serial.print(len);
   Serial.print("] ");
