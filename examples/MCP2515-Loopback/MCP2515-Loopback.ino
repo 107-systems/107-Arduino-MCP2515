@@ -26,12 +26,38 @@ void mcp2515_onReceiveBufferFull(uint32_t const id, uint8_t const * data, uint8_
 void mcp2515_OnTransmitBufferEmpty(ArduinoMCP2515 * this_ptr);
 
 /**************************************************************************************
+ * TYPEDEF
+ **************************************************************************************/
+
+typedef struct
+{
+  uint32_t id;
+  uint8_t  data[8];
+  uint8_t  len;
+} sCanTestFrame;
+
+/**************************************************************************************
  * GLOBAL CONSTANTS
  **************************************************************************************/
 
-static std::array<uint32_t, 10> const TEST_ID_VECTOR{0,1,2,3,4,5,6,7,8,9};
-static uint8_t                  const TEST_DATA[]   = {0xDE, 0xAD, 0xBE, 0xEF};
-static uint8_t                  const TEST_DATA_LEN = sizeof(TEST_DATA)/sizeof(uint8_t);
+static sCanTestFrame const test_frame_1 = { 0x00000001, {0}, 0 };                                              /* Minimum (no) payload */
+static sCanTestFrame const test_frame_2 = { 0x00000002, {0xCA, 0xFE, 0xCA, 0xFE, 0, 0, 0, 0}, 4 };             /* Between minimum and maximum payload */
+static sCanTestFrame const test_frame_3 = { 0x00000003, {0xCA, 0xFE, 0xCA, 0xFE, 0xCA, 0xFE, 0xCA, 0xFE}, 8 }; /* Maximum payload */
+static sCanTestFrame const test_frame_4 = { 0x000007FF, {0}, 0 };                                              /* Highest standard 11 bit CAN address */
+static sCanTestFrame const test_frame_5 = { 0x80000800, {0}, 0 };                                              /* Lowest extended 29 bit CAN address */
+static sCanTestFrame const test_frame_6 = { 0x9FFFFFFF, {0}, 0 };                                              /* Highest extended 29 bit CAN address */
+static sCanTestFrame const test_frame_7 = { 0x40000001, {0}, 0 };                                              /* RTR frame */
+
+static std::array<sCanTestFrame, 7> const CAN_TEST_FRAME_ARRAY =
+{
+  test_frame_1,
+  test_frame_2,
+  test_frame_3,
+  test_frame_4,
+  test_frame_5,
+  test_frame_6,
+  test_frame_7
+};
 
 /**************************************************************************************
  * GLOBAL VARIABLES
@@ -74,11 +100,11 @@ void setup()
   mcp2515.setBitRate(CanBitRate::BR_250kBPS);
   mcp2515.setLoopbackMode();
 
-  std::for_each(TEST_ID_VECTOR.cbegin(),
-                TEST_ID_VECTOR.cend(),
-                [](uint32_t const id)
+  std::for_each(CAN_TEST_FRAME_ARRAY.cbegin(),
+                CAN_TEST_FRAME_ARRAY.cend(),
+                [](sCanTestFrame const frame)
                 {
-                  if(!mcp2515.transmit(id, TEST_DATA, TEST_DATA_LEN)) {
+                  if(!mcp2515.transmit(frame.id, frame.data, frame.len)) {
                     Serial.println("ERROR TX");
                   }
                   delay(10);
