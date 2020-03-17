@@ -13,6 +13,8 @@
 
 #include <stdint.h>
 
+#undef max
+#undef min
 #include <functional>
 
 #include "MCP2515_Const.h"
