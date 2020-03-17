@@ -23,7 +23,7 @@ void mcp2515_spi_select();
 void mcp2515_spi_deselect();
 uint8_t spi_transfer(uint8_t const data);
 void mcp2515_onReceiveBufferFull(uint32_t const id, uint8_t const * data, uint8_t const len);
-void mcp2515_OnTransmitBufferEmpty(ArduinoMCP2515 * this_ptr);
+void mcp2515_onTransmitBufferEmpty(ArduinoMCP2515 * this_ptr);
 
 /**************************************************************************************
  * TYPEDEF
@@ -67,7 +67,7 @@ ArduinoMCP2515 mcp2515(mcp2515_spi_select,
                        mcp2515_spi_deselect,
                        spi_transfer,
                        mcp2515_onReceiveBufferFull,
-                       mcp2515_OnTransmitBufferEmpty);
+                       mcp2515_onTransmitBufferEmpty);
 
 /**************************************************************************************
  * CALLBACK FUNCTIONS
@@ -155,7 +155,7 @@ void mcp2515_onReceiveBufferFull(uint32_t const id, uint8_t const * data, uint8_
   Serial.println();
 }
 
-void mcp2515_OnTransmitBufferEmpty(ArduinoMCP2515 * this_ptr)
+void mcp2515_onTransmitBufferEmpty(ArduinoMCP2515 * this_ptr)
 {
   /* Serial.println("Transmit Buffer empty"); */
 }
