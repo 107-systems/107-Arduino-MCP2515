@@ -1,0 +1,31 @@
+#######################################
+# Syntax Coloring Map for 107-Arduino-MCP2515
+#######################################
+
+#######################################
+# Class (KEYWORD1)
+#######################################
+
+ArduinoMCP2515	KEYWORD1
+CanBitRate	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+setBitRate	KEYWORD2
+setNormalMode	KEYWORD2
+setSleepMode	KEYWORD2
+setLoopbackMode	KEYWORD2
+setListenOnlyMode	KEYWORD2
+setConfigMode	KEYWORD2
+transmit	KEYWORD2
+onExternalEventHandler	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+MKRCAN_MCP2515_CS_PIN	LITERAL1
+MKRCAN_MCP2515_INT_PIN	LITERAL1
