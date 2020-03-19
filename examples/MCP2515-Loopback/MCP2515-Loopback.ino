@@ -19,11 +19,12 @@
  * FUNCTION DECLARATION
  **************************************************************************************/
 
-void mcp2515_spi_select();
-void mcp2515_spi_deselect();
-uint8_t spi_transfer(uint8_t const data);
-void mcp2515_onReceiveBufferFull(uint32_t const id, uint8_t const * data, uint8_t const len);
-void mcp2515_onTransmitBufferEmpty(ArduinoMCP2515 * this_ptr);
+void    mcp2515_spi_select           ();
+void    mcp2515_spi_deselect         ();
+uint8_t spi_transfer                 (uint8_t const);
+void    mcp2515_onExternalEvent      ();
+void    mcp2515_onReceiveBufferFull  (uint32_t const, uint8_t const *, uint8_t const);
+void    mcp2515_onTransmitBufferEmpty(ArduinoMCP2515 *);
 
 /**************************************************************************************
  * TYPEDEF
@@ -73,10 +74,7 @@ ArduinoMCP2515 mcp2515(mcp2515_spi_select,
  * CALLBACK FUNCTIONS
  **************************************************************************************/
 
-void onMCP2515ExternalEvent()
-{
-  mcp2515.onExternalEventHandler();
-}
+
 
 /**************************************************************************************
  * SETUP/LOOP
@@ -94,7 +92,7 @@ void setup()
 
   /* Attach interrupt handler to register MCP2515 signaled by taking INT low */
   pinMode(MKRCAN_MCP2515_INT_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(MKRCAN_MCP2515_INT_PIN), onMCP2515ExternalEvent, FALLING);
+  attachInterrupt(digitalPinToInterrupt(MKRCAN_MCP2515_INT_PIN), mcp2515_onExternalEvent, FALLING);
 
   mcp2515.begin();
   mcp2515.setBitRate(CanBitRate::BR_250kBPS);
@@ -133,6 +131,11 @@ void mcp2515_spi_deselect()
 uint8_t spi_transfer(uint8_t const data)
 {
   return SPI.transfer(data);
+}
+
+void mcp2515_onExternalEvent()
+{
+  mcp2515.onExternalEventHandler();
 }
 
 void mcp2515_onReceiveBufferFull(uint32_t const id, uint8_t const * data, uint8_t const len)
