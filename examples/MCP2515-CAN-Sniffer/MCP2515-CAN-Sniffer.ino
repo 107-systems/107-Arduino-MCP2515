@@ -1,5 +1,5 @@
 /**
- * @brief   This example enables the loopback mode to test the transmission and reception of CAN frames via MCP2515 without any physical bus connection.
+ * @brief   This example enables the listen-only mode and prints all received CAN frames to the serial interface.
  * @author  Alexander Entinger, MSc / LXRobotics GmbH
  */
 
@@ -27,40 +27,6 @@ void    mcp2515_onReceiveBufferFull  (uint32_t const, uint8_t const *, uint8_t c
 void    mcp2515_onTransmitBufferEmpty(ArduinoMCP2515 *);
 
 /**************************************************************************************
- * TYPEDEF
- **************************************************************************************/
-
-typedef struct
-{
-  uint32_t id;
-  uint8_t  data[8];
-  uint8_t  len;
-} sCanTestFrame;
-
-/**************************************************************************************
- * GLOBAL CONSTANTS
- **************************************************************************************/
-
-static sCanTestFrame const test_frame_1 = { 0x00000001, {0}, 0 };                                              /* Minimum (no) payload */
-static sCanTestFrame const test_frame_2 = { 0x00000002, {0xCA, 0xFE, 0xCA, 0xFE, 0, 0, 0, 0}, 4 };             /* Between minimum and maximum payload */
-static sCanTestFrame const test_frame_3 = { 0x00000003, {0xCA, 0xFE, 0xCA, 0xFE, 0xCA, 0xFE, 0xCA, 0xFE}, 8 }; /* Maximum payload */
-static sCanTestFrame const test_frame_4 = { 0x40000004, {0}, 0 };                                              /* RTR frame */
-static sCanTestFrame const test_frame_5 = { 0x000007FF, {0}, 0 };                                              /* Highest standard 11 bit CAN address */
-static sCanTestFrame const test_frame_6 = { 0x80000800, {0}, 0 };                                              /* Lowest extended 29 bit CAN address */
-static sCanTestFrame const test_frame_7 = { 0x9FFFFFFF, {0}, 0 };                                              /* Highest extended 29 bit CAN address */
-
-static std::array<sCanTestFrame, 7> const CAN_TEST_FRAME_ARRAY =
-{
-  test_frame_1,
-  test_frame_2,
-  test_frame_3,
-  test_frame_4,
-  test_frame_5,
-  test_frame_6,
-  test_frame_7
-};
-
-/**************************************************************************************
  * GLOBAL VARIABLES
  **************************************************************************************/
 
@@ -69,12 +35,6 @@ ArduinoMCP2515 mcp2515(mcp2515_spi_select,
                        spi_transfer,
                        mcp2515_onReceiveBufferFull,
                        mcp2515_onTransmitBufferEmpty);
-
-/**************************************************************************************
- * CALLBACK FUNCTIONS
- **************************************************************************************/
-
-
 
 /**************************************************************************************
  * SETUP/LOOP
@@ -96,17 +56,7 @@ void setup()
 
   mcp2515.begin();
   mcp2515.setBitRate(CanBitRate::BR_250kBPS);
-  mcp2515.setLoopbackMode();
-
-  std::for_each(CAN_TEST_FRAME_ARRAY.cbegin(),
-                CAN_TEST_FRAME_ARRAY.cend(),
-                [](sCanTestFrame const frame)
-                {
-                  if(!mcp2515.transmit(frame.id, frame.data, frame.len)) {
-                    Serial.println("ERROR TX");
-                  }
-                  delay(10);
-                });
+  mcp2515.setListenOnlyMode();
 }
 
 void loop()
@@ -160,5 +110,5 @@ void mcp2515_onReceiveBufferFull(uint32_t const id, uint8_t const * data, uint8_
 
 void mcp2515_onTransmitBufferEmpty(ArduinoMCP2515 * this_ptr)
 {
-  /* Serial.println("Transmit Buffer empty"); */
+
 }
