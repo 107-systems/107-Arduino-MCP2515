@@ -8,21 +8,14 @@ Arduino library for controlling the MCP2515 in order to receive/transmit CAN fra
 ```C++
 #include <ArduinoMCP2515.h>
 /* ... */
-ArduinoMCP2515 mcp2515(spi_select, spi_deselect, spi_transfer, onReceiveBufferFull, onTransmitBufferEmpty);
+void    spi_select            ()                                                           { digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW); }
+void    spi_deselect          ()                                                           { digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH); }
+uint8_t spi_transfer          (uint8_t const data)                                         { return SPI.transfer(data); }
+void    onReceiveBufferFull   (uint32_t const id, uint8_t const * data, uint8_t const len) { Serial.println(id, HEX); }
+void    onTransmitBufferEmpty (ArduinoMCP2515 * this_ptr)                                  { /* You can use this callback to refill the transmit buffer via this_ptr->transmit(...) */ }
+void    onMCP2515ExternalEvent()                                                           { mcp2515.onExternalEventHandler(); }
 /* ... */
-void    spi_select  ()                   { digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW); }
-void    spi_deselect()                   { digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH); }
-uint8_t spi_transfer(uint8_t const data) { return SPI.transfer(data); }
-
-void onReceiveBufferFull(uint32_t const id, uint8_t const * data, uint8_t const len) {
-  Serial.println(id, HEX);
-}
-void onTransmitBufferEmpty(ArduinoMCP2515 * this_ptr) {
-  /* You can use this callback to refill the transmit buffer via this_ptr->transmit(...) */
-}
-void onMCP2515ExternalEvent() {
-  mcp2515.onExternalEventHandler();
-}
+ArduinoMCP2515 mcp2515(spi_select, spi_deselect, spi_transfer, onReceiveBufferFull, onTransmitBufferEmpty);
 /* ... */
 void setup() {
   Serial.begin(9600);
