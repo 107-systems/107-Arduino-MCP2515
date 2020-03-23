@@ -76,7 +76,7 @@ private:
   MCP2515::MCP2515_Io _io;
   MCP2515::MCP2515_Config _cfg;
   MCP2515::MCP2515_Control _ctrl;
-  onReceiveBufferFullFunc _on_rx_buf_full;
+  OnReceiveBufferFullFunc _on_rx_buf_full;
   OnTransmitBufferEmptyFunc _on_tx_buf_empty;
 
   void onReceiveBuffer_0_Full  ();
