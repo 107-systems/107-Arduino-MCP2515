@@ -51,7 +51,7 @@ inline bool isBitClr(uint8_t const reg_val, uint8_t const bit_pos)
 ArduinoMCP2515::ArduinoMCP2515(SpiSelectFunc select,
                                SpiDeselectFunc deselect,
                                SpiTransferFunc transfer,
-                               onReceiveBufferFullFunc on_rx_buf_full,
+                               OnReceiveBufferFullFunc on_rx_buf_full,
                                OnTransmitBufferEmptyFunc on_tx_buf_empty)
 : _io{select, deselect, transfer}
 , _cfg{_io}

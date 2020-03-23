@@ -44,7 +44,7 @@ enum class CanBitRate : size_t
 };
 
 class ArduinoMCP2515;
-typedef std::function<void(uint32_t const, uint8_t const *, uint8_t const)> onReceiveBufferFullFunc;
+typedef std::function<void(uint32_t const, uint8_t const *, uint8_t const)> OnReceiveBufferFullFunc;
 typedef std::function<void(ArduinoMCP2515 *)> OnTransmitBufferEmptyFunc;
 
 /**************************************************************************************
@@ -59,7 +59,7 @@ public:
   ArduinoMCP2515(MCP2515::SpiSelectFunc select,
                  MCP2515::SpiDeselectFunc deselect,
                  MCP2515::SpiTransferFunc transfer,
-                 onReceiveBufferFullFunc on_rx_buf_full,
+                 OnReceiveBufferFullFunc on_rx_buf_full,
                  OnTransmitBufferEmptyFunc on_tx_buf_empty);
 
 
