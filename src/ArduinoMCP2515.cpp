@@ -1,6 +1,5 @@
 /**
  * @brief   Arduino library for controlling the MCP2515 in order to receive/transmit CAN frames.
- * @author  Alexander Entinger, MSc / LXRobotics GmbH
  * @license LGPL 3.0
  */
 

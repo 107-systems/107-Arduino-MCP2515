@@ -1,3 +1,8 @@
+/**
+ * @brief   Arduino library for controlling the MCP2515 in order to receive/transmit CAN frames.
+ * @license LGPL 3.0
+ */
+
 #ifndef MCP2515_MCP2515_CONST_H_
 #define MCP2515_MCP2515_CONST_H_
 
