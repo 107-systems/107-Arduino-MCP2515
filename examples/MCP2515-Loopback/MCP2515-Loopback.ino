@@ -26,12 +26,12 @@ static int const MKRCAN_MCP2515_INT_PIN = 7;
  * FUNCTION DECLARATION
  **************************************************************************************/
 
-void    mcp2515_spi_select           ();
-void    mcp2515_spi_deselect         ();
-uint8_t spi_transfer                 (uint8_t const);
-void    mcp2515_onExternalEvent      ();
-void    mcp2515_onReceiveBufferFull  (uint32_t const, uint8_t const *, uint8_t const);
-void    mcp2515_onTransmitBufferEmpty(ArduinoMCP2515 *);
+void    spi_select           ();
+void    spi_deselect         ();
+uint8_t spi_transfer         (uint8_t const);
+void    onExternalEvent      ();
+void    onReceiveBufferFull  (uint32_t const, uint8_t const *, uint8_t const);
+void    onTransmitBufferEmpty(ArduinoMCP2515 *);
 
 /**************************************************************************************
  * TYPEDEF
@@ -71,11 +71,11 @@ static std::array<sCanTestFrame, 7> const CAN_TEST_FRAME_ARRAY =
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-ArduinoMCP2515 mcp2515(mcp2515_spi_select,
-                       mcp2515_spi_deselect,
+ArduinoMCP2515 mcp2515(spi_select,
+                       spi_deselect,
                        spi_transfer,
-                       mcp2515_onReceiveBufferFull,
-                       mcp2515_onTransmitBufferEmpty);
+                       onReceiveBufferFull,
+                       onTransmitBufferEmpty);
 
 /**************************************************************************************
  * CALLBACK FUNCTIONS
@@ -99,7 +99,7 @@ void setup()
 
   /* Attach interrupt handler to register MCP2515 signaled by taking INT low */
   pinMode(MKRCAN_MCP2515_INT_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(MKRCAN_MCP2515_INT_PIN), mcp2515_onExternalEvent, FALLING);
+  attachInterrupt(digitalPinToInterrupt(MKRCAN_MCP2515_INT_PIN), onExternalEvent, FALLING);
 
   mcp2515.begin();
   mcp2515.setBitRate(CanBitRate::BR_250kBPS);
@@ -125,12 +125,12 @@ void loop()
  * FUNCTION DEFINITION
  **************************************************************************************/
 
-void mcp2515_spi_select()
+void spi_select()
 {
   digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW);
 }
 
-void mcp2515_spi_deselect()
+void spi_deselect()
 {
   digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH);
 }
@@ -140,12 +140,12 @@ uint8_t spi_transfer(uint8_t const data)
   return SPI.transfer(data);
 }
 
-void mcp2515_onExternalEvent()
+void onExternalEvent()
 {
   mcp2515.onExternalEventHandler();
 }
 
-void mcp2515_onReceiveBufferFull(uint32_t const id, uint8_t const * data, uint8_t const len)
+void onReceiveBufferFull(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
   Serial.print("ID");
   if(id & MCP2515::CAN_EFF_BITMASK) Serial.print("(EXT)");
@@ -165,7 +165,7 @@ void mcp2515_onReceiveBufferFull(uint32_t const id, uint8_t const * data, uint8_
   Serial.println();
 }
 
-void mcp2515_onTransmitBufferEmpty(ArduinoMCP2515 * this_ptr)
+void onTransmitBufferEmpty(ArduinoMCP2515 * this_ptr)
 {
-  /* Serial.println("Transmit Buffer empty"); */
+  /* One could use this to load the next frame from a CAN transmit ringbuffer into the MCP2515 CAN controller for transmission */
 }
