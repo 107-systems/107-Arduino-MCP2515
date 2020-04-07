@@ -6,7 +6,11 @@ Arduino library for controlling the MCP2515 in order to receive/transmit CAN fra
 
 ## Example
 ```C++
+#include <SPI.h>
 #include <ArduinoMCP2515.h>
+/* ... */
+static int const MKRCAN_MCP2515_CS_PIN  = 3;
+static int const MKRCAN_MCP2515_INT_PIN = 7;
 /* ... */
 void    spi_select            ()                                                           { digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW); }
 void    spi_deselect          ()                                                           { digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH); }
