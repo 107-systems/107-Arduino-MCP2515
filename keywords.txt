@@ -8,6 +8,7 @@
 
 ArduinoMCP2515	KEYWORD1
 CanBitRate	KEYWORD1
+MCP2515	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
