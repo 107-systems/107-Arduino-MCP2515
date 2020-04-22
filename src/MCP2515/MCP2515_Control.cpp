@@ -44,25 +44,20 @@ void MCP2515_Control::transmit(TxB const txb, uint32_t const id, uint8_t const *
   bool const is_rtr = (id & CAN_RTR_BITMASK) == CAN_RTR_BITMASK;
 
   /* Load address registers */
-  /*  ID[28:27] = EID[17:16]
-   *  ID[26:19] = EID[15: 8]
-   *  ID[18:11] = EID[ 7: 0]
-   *  ID[10: 3] = SID[10: 3]
-   *  ID[ 3: 0] = SID[ 3: 0]
-   */
-  tx_buffer.reg.sidl = static_cast<uint8_t>((id & 0x00000007) << 5);
-  tx_buffer.reg.sidh = static_cast<uint8_t>((id & 0x000007F8) >> 3);
-  if(is_ext)
-  {
-    tx_buffer.reg.sidl |= static_cast<uint8_t>((id & 0x18000000) >> 27);
+  if (is_ext) {
+    tx_buffer.reg.eid0  = static_cast<uint8_t>((id & 0x000000FF) >> 0);
+    tx_buffer.reg.eid8  = static_cast<uint8_t>((id & 0x0000FF00) >> 8);
+    tx_buffer.reg.sidl  = static_cast<uint8_t>((id & 0x00030000) >> 16);
+    tx_buffer.reg.sidl += static_cast<uint8_t>((id & 0x001C0000) >> 16) << 3;
     tx_buffer.reg.sidl |= bm(TXBnSIDL::EXIDE);
-    tx_buffer.reg.eid0  = static_cast<uint8_t>((id & 0x0007F800) >> 11);
-    tx_buffer.reg.eid8  = static_cast<uint8_t>((id & 0x07F80000) >> 19);
+    tx_buffer.reg.sidh  = static_cast<uint8_t>((id & 0x1FE00000) >> 21);
   }
   else
   {
-    tx_buffer.reg.eid0  = 0;
-    tx_buffer.reg.eid8  = 0;
+    tx_buffer.reg.sidl = static_cast<uint8_t>((id & 0x00000007) << 5);
+    tx_buffer.reg.sidh = static_cast<uint8_t>((id & 0x000007F8) >> 3);
+    tx_buffer.reg.eid0 = 0;
+    tx_buffer.reg.eid8 = 0;
   }
 
   /* Load data length register */
