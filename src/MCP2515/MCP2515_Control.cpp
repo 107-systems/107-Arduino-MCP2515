@@ -88,7 +88,7 @@ void MCP2515_Control::receive(RxB const rxb, uint32_t & id, uint8_t * data, uint
   /* Assemble ID from registers */
   id = (static_cast<uint32_t>(rx_buffer.reg.sidh) << 3) + (static_cast<uint32_t>(rx_buffer.reg.sidl) >> 5);
 
-  if(rx_buffer.reg.sidl & bm(RXBnSIDL::IDE) == bm(RXBnSIDL::IDE))
+  if((rx_buffer.reg.sidl & bm(RXBnSIDL::IDE)) == bm(RXBnSIDL::IDE))
   {
     id = (id << 2) + (rx_buffer.reg.sidl & 0x03);
     id = (id << 8) + rx_buffer.reg.eid8;
