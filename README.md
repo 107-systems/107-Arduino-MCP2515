@@ -1,6 +1,9 @@
 `107-Arduino-MCP2515`
 =====================
-[![Build Status](https://travis-ci.org/107-systems/107-Arduino-MCP2515.svg?branch=master)](https://travis-ci.org/107-systems/107-Arduino-MCP2515)
+[![Compile Examples](https://github.com/107-systems/107-Arduino-MCP2515/workflows/Compile%20Examples/badge.svg)](https://github.com/107-systems/107-Arduino-MCP2515/actions?workflow=Compile+Examples)
+[![Extra Library Checks](https://github.com/107-systems/107-Arduino-MCP2515/workflows/Extra%20Library%20Checks/badge.svg)](https://github.com/107-systems/107-Arduino-MCP2515/actions?workflow=Extra+Library+Checks)
+[![General Formatting Checks](https://github.com/107-systems/107-Arduino-MCP2515/workflows/General%20Formatting%20Checks/badge.svg)](https://github.com/107-systems/107-Arduino-MCP2515/actions?workflow=General+Formatting+Checks)
+[![Spell Check](https://github.com/107-systems/107-Arduino-MCP2515/workflows/Spell%20Check/badge.svg)](https://github.com/107-systems/107-Arduino-MCP2515/actions?workflow=Spell+Check)
 
 Arduino library for controlling the MCP2515 in order to receive/transmit CAN frames.
 

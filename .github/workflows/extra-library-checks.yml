@@ -1,0 +1,51 @@
+name: Extra Library Checks
+
+on:
+  - pull_request
+  - push
+
+jobs:
+  extra-library-checks:
+    runs-on: ubuntu-latest
+
+    env:
+      ARDUINO_CI_SCRIPT_FOLDER: extras/ci-tools/arduino-ci-script
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install arduino-ci-script
+        run: |
+          # install arduino-ci-script
+          git clone https://github.com/per1234/arduino-ci-script.git "$ARDUINO_CI_SCRIPT_FOLDER"
+          cd "$ARDUINO_CI_SCRIPT_FOLDER"
+          # Get new tags from the remote
+          git fetch --tags
+          # Checkout the latest tag
+          git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
+
+      # See: https://github.com/per1234/arduino-ci-script#check_library_structure-basepath-depth
+      - name: Check library structure
+        run: |
+          source "${ARDUINO_CI_SCRIPT_FOLDER}/arduino-ci-script.sh"
+          # https://github.com/per1234/arduino-ci-script#check_library_structure-basepath-depth
+          check_library_structure "$GITHUB_WORKSPACE"
+
+      # See: https://github.com/per1234/arduino-ci-script#check_library_properties-searchpath-maximumsearchdepth
+      - name: Check library.properties
+        run: |
+          source "${ARDUINO_CI_SCRIPT_FOLDER}/arduino-ci-script.sh"
+          check_library_properties "$GITHUB_WORKSPACE"
+
+      # See: https://github.com/per1234/arduino-ci-script#check_keywords_txt-searchpath-maximumsearchdepth
+      - name: Check keywords.txt
+        run: |
+          source "${ARDUINO_CI_SCRIPT_FOLDER}/arduino-ci-script.sh"
+          check_keywords_txt "$GITHUB_WORKSPACE"
+
+      # See: https://github.com/per1234/arduino-ci-script#check_library_manager_compliance-librarypath
+      - name: Check Library Manager compliance
+        run: |
+          source "${ARDUINO_CI_SCRIPT_FOLDER}/arduino-ci-script.sh"
+          check_library_manager_compliance "$GITHUB_WORKSPACE"
