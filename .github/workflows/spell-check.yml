@@ -1,0 +1,22 @@
+name: Spell Check
+
+on:
+  - pull_request
+  - push
+
+jobs:
+  spellcheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # See: https://github.com/codespell-project/actions-codespell/blob/master/README.md
+      - name: Spell check
+        uses: codespell-project/actions-codespell@master
+        with:
+          check_filenames: true
+          check_hidden: true
+          skip: ./.git,./extras/test/external,./src/lib
+          ignore_words_file: extras/codespell-ignore-words-list.txt
