@@ -31,7 +31,6 @@ void    spi_deselect         ();
 uint8_t spi_transfer         (uint8_t const);
 void    onExternalEvent      ();
 void    onReceiveBufferFull  (uint32_t const, uint8_t const *, uint8_t const);
-void    onTransmitBufferEmpty(ArduinoMCP2515 *);
 
 /**************************************************************************************
  * GLOBAL VARIABLES
@@ -41,7 +40,7 @@ ArduinoMCP2515 mcp2515(spi_select,
                        spi_deselect,
                        spi_transfer,
                        onReceiveBufferFull,
-                       onTransmitBufferEmpty);
+                       nullptr);
 
 /**************************************************************************************
  * SETUP/LOOP
@@ -113,9 +112,4 @@ void onReceiveBufferFull(uint32_t const id, uint8_t const * data, uint8_t const 
                   Serial.print(" ");
                 });
   Serial.println();
-}
-
-void onTransmitBufferEmpty(ArduinoMCP2515 * this_ptr)
-{
-  /* One could use this to load the next frame from a CAN transmit ringbuffer into the MCP2515 CAN controller for transmission */
 }

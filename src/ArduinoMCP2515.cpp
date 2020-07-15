@@ -121,7 +121,8 @@ void ArduinoMCP2515::onReceiveBuffer_0_Full()
   uint8_t data[8] = {0}, len = 0;
 
   _ctrl.receive(RxB::RxB0, id, data, len);
-  _on_rx_buf_full(id, data, len);
+  if (_on_rx_buf_full)
+    _on_rx_buf_full(id, data, len);
   _ctrl.clearIntFlag(CANINTF::RX0IF);
 }
 
@@ -131,24 +132,28 @@ void ArduinoMCP2515::onReceiveBuffer_1_Full()
   uint8_t data[8] = {0}, len = 0;
 
   _ctrl.receive(RxB::RxB1, id, data, len);
-  _on_rx_buf_full(id, data, len);
+  if (_on_rx_buf_full)
+    _on_rx_buf_full(id, data, len);
   _ctrl.clearIntFlag(CANINTF::RX1IF);
 }
 
 void ArduinoMCP2515::onTransmitBuffer_0_Empty()
 {
-  _on_tx_buf_empty(this);
+  if (_on_tx_buf_empty)
+    _on_tx_buf_empty(this);
   _ctrl.clearIntFlag(CANINTF::TX0IF);
 }
 
 void ArduinoMCP2515::onTransmitBuffer_1_Empty()
 {
-  _on_tx_buf_empty(this);
+  if (_on_tx_buf_empty)
+    _on_tx_buf_empty(this);
   _ctrl.clearIntFlag(CANINTF::TX1IF);
 }
 
 void ArduinoMCP2515::onTransmitBuffer_2_Empty()
 {
-  _on_tx_buf_empty(this);
+  if (_on_tx_buf_empty)
+    _on_tx_buf_empty(this);
   _ctrl.clearIntFlag(CANINTF::TX2IF);
 }
