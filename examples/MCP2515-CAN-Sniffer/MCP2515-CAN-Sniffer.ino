@@ -39,6 +39,7 @@ void    onReceiveBufferFull  (uint32_t const, uint8_t const *, uint8_t const);
 ArduinoMCP2515 mcp2515(spi_select,
                        spi_deselect,
                        spi_transfer,
+                       micros,
                        onReceiveBufferFull,
                        nullptr);
 
