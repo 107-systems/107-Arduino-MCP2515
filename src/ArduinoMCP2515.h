@@ -25,6 +25,15 @@
 #include <string>
 #include <functional>
 
+#if defined __has_include
+#  if __has_include (<canard.h>)
+#    include <canard.h>
+#    define LIBCANARD 1
+#  endif
+#else
+#    define LIBCANARD 0
+#endif
+
 /**************************************************************************************
  * TYPEDEF
  **************************************************************************************/
@@ -38,7 +47,11 @@ enum class CanBitRate : size_t
 };
 
 class ArduinoMCP2515;
+#if LIBCANARD
+typedef std::function<void(CanardFrame const & frame)> OnReceiveBufferFullFunc;
+#else
 typedef std::function<void(uint32_t const, uint8_t const *, uint8_t const)> OnReceiveBufferFullFunc;
+#endif
 typedef std::function<void(ArduinoMCP2515 *)> OnTransmitBufferEmptyFunc;
 
 /**************************************************************************************
@@ -68,6 +81,9 @@ public:
   inline bool setConfigMode    () { return _cfg.setMode(MCP2515::Mode::Config);     }
 
   bool transmit(uint32_t const id, uint8_t const * data, uint8_t const len);
+#if LIBCANARD
+  bool transmit(CanardFrame const & frame);
+#endif
 
   void onExternalEventHandler();
 

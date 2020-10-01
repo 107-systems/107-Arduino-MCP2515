@@ -106,6 +106,15 @@ bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t c
   }
 }
 
+#if LIBCANARD
+bool ArduinoMCP2515::transmit(CanardFrame const & frame)
+{
+  return transmit(frame.extended_can_id,
+                  reinterpret_cast<uint8_t const *>(frame.payload),
+                  static_cast<uint8_t const>(frame.payload_size));
+}
+#endif
+
 void ArduinoMCP2515::onExternalEventHandler()
 {
   uint8_t const status = _ctrl.status();
@@ -124,7 +133,15 @@ void ArduinoMCP2515::onReceiveBuffer_0_Full()
 
   _ctrl.receive(RxB::RxB0, id, data, len);
   if (_on_rx_buf_full)
+  {
+#if LIBCANARD
+    CanardFrame const frame{0, id, len, 0};
+    _on_rx_buf_full(frame);
+#else
     _on_rx_buf_full(id, data, len);
+#endif
+  }
+
   _ctrl.clearIntFlag(CANINTF::RX0IF);
 }
 
@@ -135,7 +152,15 @@ void ArduinoMCP2515::onReceiveBuffer_1_Full()
 
   _ctrl.receive(RxB::RxB1, id, data, len);
   if (_on_rx_buf_full)
+  {
+#if LIBCANARD
+    CanardFrame const frame{0, id, len, 0};
+    _on_rx_buf_full(frame);
+#else
     _on_rx_buf_full(id, data, len);
+#endif
+  }
+
   _ctrl.clearIntFlag(CANINTF::RX1IF);
 }
 
