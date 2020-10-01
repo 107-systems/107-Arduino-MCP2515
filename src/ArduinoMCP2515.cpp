@@ -132,9 +132,10 @@ void ArduinoMCP2515::onReceiveBuffer_0_Full()
 {
   uint32_t id = 0;
   uint8_t data[8] = {0}, len = 0;
+  unsigned long const rx_timestamp_us = _micros();
 
   _ctrl.receive(RxB::RxB0, id, data, len);
-  onReceiveBuffer_n_Full(id, data, len);
+  onReceiveBuffer_n_Full(rx_timestamp_us, id, data, len);
   _ctrl.clearIntFlag(CANINTF::RX0IF);
 }
 
@@ -142,9 +143,10 @@ void ArduinoMCP2515::onReceiveBuffer_1_Full()
 {
   uint32_t id = 0;
   uint8_t data[8] = {0}, len = 0;
+  unsigned long const rx_timestamp_us = _micros();
 
   _ctrl.receive(RxB::RxB1, id, data, len);
-  onReceiveBuffer_n_Full(id, data, len);
+  onReceiveBuffer_n_Full(rx_timestamp_us, id, data, len);
   _ctrl.clearIntFlag(CANINTF::RX1IF);
 }
 
@@ -169,20 +171,21 @@ void ArduinoMCP2515::onTransmitBuffer_2_Empty()
   _ctrl.clearIntFlag(CANINTF::TX2IF);
 }
 
-void ArduinoMCP2515::onReceiveBuffer_n_Full(uint32_t const id, uint8_t const * data, uint8_t const len) const
+void ArduinoMCP2515::onReceiveBuffer_n_Full(unsigned long const timestamp_us, uint32_t const id, uint8_t const * data, uint8_t const len) const
 {
   if (_on_rx_buf_full)
   {
 #if LIBCANARD
     CanardFrame const frame
     {
-      _micros(),                             /* timestamp_usec  */
-      id,                                    /* extended_can_id */
-      len,                                   /* payload_size    */
-      reinterpret_cast<const void *>(data)}; /* payload         */
+      timestamp_us,                        /* timestamp_usec  */
+      id,                                  /* extended_can_id */
+      len,                                 /* payload_size    */
+      reinterpret_cast<const void *>(data) /* payload         */
+    };
     _on_rx_buf_full(frame);
 #else
-    _on_rx_buf_full(id, data, len);
+    _on_rx_buf_full(timestamp_us, id, data, len);
 #endif
   }
 }

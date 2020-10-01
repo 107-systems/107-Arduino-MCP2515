@@ -53,7 +53,7 @@ typedef std::function<unsigned long()> MicroSecondFunc;
 #if LIBCANARD
 typedef std::function<void(CanardFrame const & frame)> OnReceiveBufferFullFunc;
 #else
-typedef std::function<void(uint32_t const, uint8_t const *, uint8_t const)> OnReceiveBufferFullFunc;
+typedef std::function<void(uint32_t const, uint32_t const, uint8_t const *, uint8_t const)> OnReceiveBufferFullFunc;
 #endif
 class ArduinoMCP2515;
 typedef std::function<void(ArduinoMCP2515 *)> OnTransmitBufferEmptyFunc;
@@ -107,7 +107,7 @@ private:
   void onTransmitBuffer_0_Empty();
   void onTransmitBuffer_1_Empty();
   void onTransmitBuffer_2_Empty();
-  void onReceiveBuffer_n_Full(uint32_t const id, uint8_t const * data, uint8_t const len) const;
+  void onReceiveBuffer_n_Full  (unsigned long const timestamp_us, uint32_t const id, uint8_t const * data, uint8_t const len) const;
 };
 
 #endif /* ARDUINO_MCP2515_H_ */
