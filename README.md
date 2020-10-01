@@ -22,7 +22,7 @@ static int const MKRCAN_MCP2515_INT_PIN = 7;
 void    spi_select            ()                                                           { digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW); }
 void    spi_deselect          ()                                                           { digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH); }
 uint8_t spi_transfer          (uint8_t const data)                                         { return SPI.transfer(data); }
-void    onReceiveBufferFull   (uint32_t const id, uint8_t const * data, uint8_t const len) { Serial.println(id, HEX); }
+void    onReceiveBufferFull   (uint32_t const timestamp_us, uint32_t const id, uint8_t const * data, uint8_t const len) { Serial.println(id, HEX); }
 void    onTransmitBufferEmpty (ArduinoMCP2515 * this_ptr)                                  { /* You can use this callback to refill the transmit buffer via this_ptr->transmit(...) */ }
 void    onMCP2515ExternalEvent()                                                           { mcp2515.onExternalEventHandler(); }
 /* ... */

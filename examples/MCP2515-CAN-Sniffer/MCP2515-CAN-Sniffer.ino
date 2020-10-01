@@ -30,7 +30,7 @@ void    spi_select           ();
 void    spi_deselect         ();
 uint8_t spi_transfer         (uint8_t const);
 void    onExternalEvent      ();
-void    onReceiveBufferFull  (uint32_t const, uint8_t const *, uint8_t const);
+void    onReceiveBufferFull  (uint32_t const, uint32_t const, uint8_t const *, uint8_t const);
 
 /**************************************************************************************
  * GLOBAL VARIABLES
@@ -95,8 +95,12 @@ void onExternalEvent()
   mcp2515.onExternalEventHandler();
 }
 
-void onReceiveBufferFull(uint32_t const id, uint8_t const * data, uint8_t const len)
+void onReceiveBufferFull(uint32_t const timestamp_us, uint32_t const id, uint8_t const * data, uint8_t const len)
 {
+  Serial.print("[ ");
+  Serial.print(timestamp_us);
+  Serial.print("] ");
+
   Serial.print("ID");
   if(id & MCP2515::CAN_EFF_BITMASK) Serial.print("(EXT)");
   if(id & MCP2515::CAN_RTR_BITMASK) Serial.print("(RTR)");
