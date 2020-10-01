@@ -29,6 +29,9 @@
 #  if __has_include (<libcanard/canard.h>)
 #    include <libcanard/canard.h>
 #    define LIBCANARD 1
+#  elif __has_include (<canard.h>)
+#    include <canard.h>
+#    define LIBCANARD 1
 #  endif
 #else
 #  define LIBCANARD 0
