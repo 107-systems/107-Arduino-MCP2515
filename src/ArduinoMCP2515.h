@@ -46,12 +46,13 @@ enum class CanBitRate : size_t
   BR_1000kBPS = 3
 };
 
-class ArduinoMCP2515;
+typedef std::function<unsigned long()> MicroSecondFunc;
 #if LIBCANARD
 typedef std::function<void(CanardFrame const & frame)> OnReceiveBufferFullFunc;
 #else
 typedef std::function<void(uint32_t const, uint8_t const *, uint8_t const)> OnReceiveBufferFullFunc;
 #endif
+class ArduinoMCP2515;
 typedef std::function<void(ArduinoMCP2515 *)> OnTransmitBufferEmptyFunc;
 
 /**************************************************************************************
@@ -66,6 +67,7 @@ public:
   ArduinoMCP2515(MCP2515::SpiSelectFunc select,
                  MCP2515::SpiDeselectFunc deselect,
                  MCP2515::SpiTransferFunc transfer,
+                 MicroSecondFunc micros,
                  OnReceiveBufferFullFunc on_rx_buf_full,
                  OnTransmitBufferEmptyFunc on_tx_buf_empty);
 
@@ -93,6 +95,7 @@ private:
   MCP2515::MCP2515_Io _io;
   MCP2515::MCP2515_Config _cfg;
   MCP2515::MCP2515_Control _ctrl;
+  MicroSecondFunc _micros;
   OnReceiveBufferFullFunc _on_rx_buf_full;
   OnTransmitBufferEmptyFunc _on_tx_buf_empty;
 

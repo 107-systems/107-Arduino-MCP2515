@@ -52,11 +52,13 @@ inline bool isBitClr(uint8_t const reg_val, uint8_t const bit_pos)
 ArduinoMCP2515::ArduinoMCP2515(SpiSelectFunc select,
                                SpiDeselectFunc deselect,
                                SpiTransferFunc transfer,
+                               MicroSecondFunc micros,
                                OnReceiveBufferFullFunc on_rx_buf_full,
                                OnTransmitBufferEmptyFunc on_tx_buf_empty)
 : _io{select, deselect, transfer}
 , _cfg{_io}
 , _ctrl{_io}
+, _micros{micros}
 , _on_rx_buf_full{on_rx_buf_full}
 , _on_tx_buf_empty{on_tx_buf_empty}
 {
@@ -174,7 +176,7 @@ void ArduinoMCP2515::onReceiveBuffer_n_Full(uint32_t const id, uint8_t const * d
 #if LIBCANARD
     CanardFrame const frame
     {
-      0,                                     /* timestamp_usec  */
+      _micros(),                             /* timestamp_usec  */
       id,                                    /* extended_can_id */
       len,                                   /* payload_size    */
       reinterpret_cast<const void *>(data)}; /* payload         */
