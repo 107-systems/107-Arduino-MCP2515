@@ -26,12 +26,12 @@
 #include <functional>
 
 #if defined __has_include
-#  if __has_include (<canard.h>)
-#    include <canard.h>
+#  if __has_include (<libcanard/canard.h>)
+#    include <libcanard/canard.h>
 #    define LIBCANARD 1
 #  endif
 #else
-#    define LIBCANARD 0
+#  define LIBCANARD 0
 #endif
 
 /**************************************************************************************
