@@ -1,6 +1,8 @@
 /**
- * @brief   Arduino library for controlling the MCP2515 in order to receive/transmit CAN frames.
- * @license LGPL 3.0
+ * This software is distributed under the terms of the MIT License.
+ * Copyright (c) 2020 LXRobotics.
+ * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
+ * Contributors: https://github.com/107-systems/107-Arduino-MCP2515/graphs/contributors.
  */
 
 #ifndef MCP2515_MCP2515_CONFIG_H_
