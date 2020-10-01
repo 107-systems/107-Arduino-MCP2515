@@ -13,6 +13,10 @@
 
 #include <algorithm>
 
+#if LIBCANARD
+#  include <string.h>
+#endif
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -132,16 +136,7 @@ void ArduinoMCP2515::onReceiveBuffer_0_Full()
   uint8_t data[8] = {0}, len = 0;
 
   _ctrl.receive(RxB::RxB0, id, data, len);
-  if (_on_rx_buf_full)
-  {
-#if LIBCANARD
-    CanardFrame const frame{0, id, len, 0};
-    _on_rx_buf_full(frame);
-#else
-    _on_rx_buf_full(id, data, len);
-#endif
-  }
-
+  onReceiveBuffer_n_Full(id, data, len);
   _ctrl.clearIntFlag(CANINTF::RX0IF);
 }
 
@@ -151,16 +146,7 @@ void ArduinoMCP2515::onReceiveBuffer_1_Full()
   uint8_t data[8] = {0}, len = 0;
 
   _ctrl.receive(RxB::RxB1, id, data, len);
-  if (_on_rx_buf_full)
-  {
-#if LIBCANARD
-    CanardFrame const frame{0, id, len, 0};
-    _on_rx_buf_full(frame);
-#else
-    _on_rx_buf_full(id, data, len);
-#endif
-  }
-
+  onReceiveBuffer_n_Full(id, data, len);
   _ctrl.clearIntFlag(CANINTF::RX1IF);
 }
 
@@ -183,4 +169,18 @@ void ArduinoMCP2515::onTransmitBuffer_2_Empty()
   if (_on_tx_buf_empty)
     _on_tx_buf_empty(this);
   _ctrl.clearIntFlag(CANINTF::TX2IF);
+}
+
+void ArduinoMCP2515::onReceiveBuffer_n_Full(uint32_t const id, uint8_t const * data, uint8_t const len) const
+{
+  if (_on_rx_buf_full)
+  {
+#if LIBCANARD
+    CanardFrame frame{0, id, len, 0};
+    memcpy(frame.payload, data, len);
+    _on_rx_buf_full(frame);
+#else
+    _on_rx_buf_full(id, data, len);
+#endif
+  }
 }
