@@ -177,7 +177,7 @@ void ArduinoMCP2515::onReceiveBuffer_n_Full(uint32_t const id, uint8_t const * d
   {
 #if LIBCANARD
     CanardFrame frame{0, id, len, 0};
-    memcpy(frame.payload, data, len);
+    memcpy((void*)frame.payload, data, len);
     _on_rx_buf_full(frame);
 #else
     _on_rx_buf_full(id, data, len);
