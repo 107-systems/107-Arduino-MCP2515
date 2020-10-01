@@ -52,11 +52,13 @@ inline bool isBitClr(uint8_t const reg_val, uint8_t const bit_pos)
 ArduinoMCP2515::ArduinoMCP2515(SpiSelectFunc select,
                                SpiDeselectFunc deselect,
                                SpiTransferFunc transfer,
+                               MicroSecondFunc micros,
                                OnReceiveBufferFullFunc on_rx_buf_full,
                                OnTransmitBufferEmptyFunc on_tx_buf_empty)
 : _io{select, deselect, transfer}
 , _cfg{_io}
 , _ctrl{_io}
+, _micros{micros}
 , _on_rx_buf_full{on_rx_buf_full}
 , _on_tx_buf_empty{on_tx_buf_empty}
 {
@@ -106,6 +108,15 @@ bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t c
   }
 }
 
+#if LIBCANARD
+bool ArduinoMCP2515::transmit(CanardFrame const & frame)
+{
+  return transmit(frame.extended_can_id,
+                  reinterpret_cast<uint8_t const *>(frame.payload),
+                  static_cast<uint8_t const>(frame.payload_size));
+}
+#endif
+
 void ArduinoMCP2515::onExternalEventHandler()
 {
   uint8_t const status = _ctrl.status();
@@ -123,8 +134,7 @@ void ArduinoMCP2515::onReceiveBuffer_0_Full()
   uint8_t data[8] = {0}, len = 0;
 
   _ctrl.receive(RxB::RxB0, id, data, len);
-  if (_on_rx_buf_full)
-    _on_rx_buf_full(id, data, len);
+  onReceiveBuffer_n_Full(id, data, len);
   _ctrl.clearIntFlag(CANINTF::RX0IF);
 }
 
@@ -134,8 +144,7 @@ void ArduinoMCP2515::onReceiveBuffer_1_Full()
   uint8_t data[8] = {0}, len = 0;
 
   _ctrl.receive(RxB::RxB1, id, data, len);
-  if (_on_rx_buf_full)
-    _on_rx_buf_full(id, data, len);
+  onReceiveBuffer_n_Full(id, data, len);
   _ctrl.clearIntFlag(CANINTF::RX1IF);
 }
 
@@ -158,4 +167,22 @@ void ArduinoMCP2515::onTransmitBuffer_2_Empty()
   if (_on_tx_buf_empty)
     _on_tx_buf_empty(this);
   _ctrl.clearIntFlag(CANINTF::TX2IF);
+}
+
+void ArduinoMCP2515::onReceiveBuffer_n_Full(uint32_t const id, uint8_t const * data, uint8_t const len) const
+{
+  if (_on_rx_buf_full)
+  {
+#if LIBCANARD
+    CanardFrame const frame
+    {
+      _micros(),                             /* timestamp_usec  */
+      id,                                    /* extended_can_id */
+      len,                                   /* payload_size    */
+      reinterpret_cast<const void *>(data)}; /* payload         */
+    _on_rx_buf_full(frame);
+#else
+    _on_rx_buf_full(id, data, len);
+#endif
+  }
 }

@@ -73,6 +73,7 @@ static std::array<sCanTestFrame, 7> const CAN_TEST_FRAME_ARRAY =
 ArduinoMCP2515 mcp2515(spi_select,
                        spi_deselect,
                        spi_transfer,
+                       micros,
                        onReceiveBufferFull,
                        nullptr);
 

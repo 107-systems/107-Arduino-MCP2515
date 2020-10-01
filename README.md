@@ -26,7 +26,7 @@ void    onReceiveBufferFull   (uint32_t const id, uint8_t const * data, uint8_t 
 void    onTransmitBufferEmpty (ArduinoMCP2515 * this_ptr)                                  { /* You can use this callback to refill the transmit buffer via this_ptr->transmit(...) */ }
 void    onMCP2515ExternalEvent()                                                           { mcp2515.onExternalEventHandler(); }
 /* ... */
-ArduinoMCP2515 mcp2515(spi_select, spi_deselect, spi_transfer, onReceiveBufferFull, onTransmitBufferEmpty);
+ArduinoMCP2515 mcp2515(spi_select, spi_deselect, spi_transfer, micros, onReceiveBufferFull, onTransmitBufferEmpty);
 /* ... */
 void setup() {
   Serial.begin(9600);

@@ -25,6 +25,18 @@
 #include <string>
 #include <functional>
 
+#if defined __has_include
+#  if __has_include (<libcanard/canard.h>)
+#    include <libcanard/canard.h>
+#    define LIBCANARD 1
+#  elif __has_include (<canard.h>)
+#    include <canard.h>
+#    define LIBCANARD 1
+#  endif
+#else
+#  define LIBCANARD 0
+#endif
+
 /**************************************************************************************
  * TYPEDEF
  **************************************************************************************/
@@ -37,8 +49,13 @@ enum class CanBitRate : size_t
   BR_1000kBPS = 3
 };
 
-class ArduinoMCP2515;
+typedef std::function<unsigned long()> MicroSecondFunc;
+#if LIBCANARD
+typedef std::function<void(CanardFrame const & frame)> OnReceiveBufferFullFunc;
+#else
 typedef std::function<void(uint32_t const, uint8_t const *, uint8_t const)> OnReceiveBufferFullFunc;
+#endif
+class ArduinoMCP2515;
 typedef std::function<void(ArduinoMCP2515 *)> OnTransmitBufferEmptyFunc;
 
 /**************************************************************************************
@@ -53,6 +70,7 @@ public:
   ArduinoMCP2515(MCP2515::SpiSelectFunc select,
                  MCP2515::SpiDeselectFunc deselect,
                  MCP2515::SpiTransferFunc transfer,
+                 MicroSecondFunc micros,
                  OnReceiveBufferFullFunc on_rx_buf_full,
                  OnTransmitBufferEmptyFunc on_tx_buf_empty);
 
@@ -68,6 +86,9 @@ public:
   inline bool setConfigMode    () { return _cfg.setMode(MCP2515::Mode::Config);     }
 
   bool transmit(uint32_t const id, uint8_t const * data, uint8_t const len);
+#if LIBCANARD
+  bool transmit(CanardFrame const & frame);
+#endif
 
   void onExternalEventHandler();
 
@@ -77,6 +98,7 @@ private:
   MCP2515::MCP2515_Io _io;
   MCP2515::MCP2515_Config _cfg;
   MCP2515::MCP2515_Control _ctrl;
+  MicroSecondFunc _micros;
   OnReceiveBufferFullFunc _on_rx_buf_full;
   OnTransmitBufferEmptyFunc _on_tx_buf_empty;
 
@@ -85,7 +107,7 @@ private:
   void onTransmitBuffer_0_Empty();
   void onTransmitBuffer_1_Empty();
   void onTransmitBuffer_2_Empty();
-
+  void onReceiveBuffer_n_Full(uint32_t const id, uint8_t const * data, uint8_t const len) const;
 };
 
 #endif /* ARDUINO_MCP2515_H_ */
