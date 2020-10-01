@@ -107,7 +107,7 @@ private:
   void onTransmitBuffer_0_Empty();
   void onTransmitBuffer_1_Empty();
   void onTransmitBuffer_2_Empty();
-  void onReceiveBuffer_n_Full(uint32_t const id, uint8_t const * data, uint8_t const len) const;
+  void onReceiveBuffer_n_Full  (unsigned long const timestamp_us, uint32_t const id, uint8_t const * data, uint8_t const len) const;
 };
 
 #endif /* ARDUINO_MCP2515_H_ */
