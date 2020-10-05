@@ -103,7 +103,7 @@ private:
   OnReceiveBufferFullFunc _on_rx_buf_full;
   OnTransmitBufferEmptyFunc _on_tx_buf_empty;
 
-  bool transmit                (uint32_t const id, uint8_t const * data, uint8_t const len);
+  bool transmitCANFrame        (uint32_t const id, uint8_t const * data, uint8_t const len);
   void onReceiveBuffer_0_Full  ();
   void onReceiveBuffer_1_Full  ();
   void onTransmitBuffer_0_Empty();

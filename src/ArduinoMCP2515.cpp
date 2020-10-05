@@ -90,14 +90,14 @@ void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
 #if LIBCANARD
 bool ArduinoMCP2515::transmit(CanardFrame const & frame)
 {
-  return transmit(frame.extended_can_id,
-                  reinterpret_cast<uint8_t const *>(frame.payload),
-                  static_cast<uint8_t const>(frame.payload_size));
+  return transmitCANFrame(frame.extended_can_id,
+                          reinterpret_cast<uint8_t const *>(frame.payload),
+                          static_cast<uint8_t const>(frame.payload_size));
 }
 #else
 bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
-  return transmit(id, data, len);
+  return transmitCANFrame(id, data, len);
 }
 #endif
 
@@ -116,7 +116,7 @@ void ArduinoMCP2515::onExternalEventHandler()
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/
 
-bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t const len)
+bool ArduinoMCP2515::transmitCANFrame(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
   uint8_t const status = _ctrl.status();
 
