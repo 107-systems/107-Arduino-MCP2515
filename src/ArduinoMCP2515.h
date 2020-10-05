@@ -85,9 +85,10 @@ public:
   inline bool setListenOnlyMode() { return _cfg.setMode(MCP2515::Mode::ListenOnly); }
   inline bool setConfigMode    () { return _cfg.setMode(MCP2515::Mode::Config);     }
 
-  bool transmit(uint32_t const id, uint8_t const * data, uint8_t const len);
 #if LIBCANARD
   bool transmit(CanardFrame const & frame);
+#else
+  bool transmit(uint32_t const id, uint8_t const * data, uint8_t const len);
 #endif
 
   void onExternalEventHandler();
@@ -102,6 +103,7 @@ private:
   OnReceiveBufferFullFunc _on_rx_buf_full;
   OnTransmitBufferEmptyFunc _on_tx_buf_empty;
 
+  bool transmitCANFrame        (uint32_t const id, uint8_t const * data, uint8_t const len);
   void onReceiveBuffer_0_Full  ();
   void onReceiveBuffer_1_Full  ();
   void onTransmitBuffer_0_Empty();

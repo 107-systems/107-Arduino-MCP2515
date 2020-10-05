@@ -87,7 +87,36 @@ void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
   _cfg.setBitRateConfig(BIT_RATE_CONFIG_ARRAY[static_cast<size_t>(bit_rate)]);
 }
 
+#if LIBCANARD
+bool ArduinoMCP2515::transmit(CanardFrame const & frame)
+{
+  return transmitCANFrame(frame.extended_can_id,
+                          reinterpret_cast<uint8_t const *>(frame.payload),
+                          static_cast<uint8_t const>(frame.payload_size));
+}
+#else
 bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t const len)
+{
+  return transmitCANFrame(id, data, len);
+}
+#endif
+
+void ArduinoMCP2515::onExternalEventHandler()
+{
+  uint8_t const status = _ctrl.status();
+
+  if(isBitSet(status, bp(STATUS::RX0IF))) onReceiveBuffer_0_Full();
+  if(isBitSet(status, bp(STATUS::RX1IF))) onReceiveBuffer_1_Full();
+  if(isBitSet(status, bp(STATUS::TX0IF))) onTransmitBuffer_0_Empty();
+  if(isBitSet(status, bp(STATUS::TX1IF))) onTransmitBuffer_1_Empty();
+  if(isBitSet(status, bp(STATUS::TX2IF))) onTransmitBuffer_2_Empty();
+}
+
+/**************************************************************************************
+ * PRIVATE MEMBER FUNCTIONS
+ **************************************************************************************/
+
+bool ArduinoMCP2515::transmitCANFrame(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
   uint8_t const status = _ctrl.status();
 
@@ -106,26 +135,6 @@ bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t c
     _ctrl.transmit(TxB::TxB2, id, data, len);
     return true;
   }
-}
-
-#if LIBCANARD
-bool ArduinoMCP2515::transmit(CanardFrame const & frame)
-{
-  return transmit(frame.extended_can_id,
-                  reinterpret_cast<uint8_t const *>(frame.payload),
-                  static_cast<uint8_t const>(frame.payload_size));
-}
-#endif
-
-void ArduinoMCP2515::onExternalEventHandler()
-{
-  uint8_t const status = _ctrl.status();
-
-  if(isBitSet(status, bp(STATUS::RX0IF))) onReceiveBuffer_0_Full();
-  if(isBitSet(status, bp(STATUS::RX1IF))) onReceiveBuffer_1_Full();
-  if(isBitSet(status, bp(STATUS::TX0IF))) onTransmitBuffer_0_Empty();
-  if(isBitSet(status, bp(STATUS::TX1IF))) onTransmitBuffer_1_Empty();
-  if(isBitSet(status, bp(STATUS::TX2IF))) onTransmitBuffer_2_Empty();
 }
 
 void ArduinoMCP2515::onReceiveBuffer_0_Full()
