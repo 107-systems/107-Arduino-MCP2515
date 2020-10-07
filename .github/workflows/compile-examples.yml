@@ -27,8 +27,7 @@ jobs:
         uses: arduino/compile-sketches@main
         with:
           fqbn: arduino:samd:mkrvidor4000
-          size-report-sketch: MCP2515-Loopback
-          enable-size-deltas-report: true
+          enable-deltas-report: true
           sketches-report-path: ${{ env.SKETCHES_REPORTS_PATH }}
 
       - name: Save memory usage change report as artifact
