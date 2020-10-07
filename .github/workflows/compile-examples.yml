@@ -19,6 +19,25 @@ jobs:
     env:
       SKETCHES_REPORTS_PATH: sketches-reports
 
+    strategy:
+      fail-fast: false
+
+      matrix:
+        fqbn:
+          - arduino:samd:mkr1000
+          - arduino:samd:mkrzero
+          - arduino:samd:mkrwifi1010
+          - arduino:samd:mkrfox1200
+          - arduino:samd:mkrwan1300
+          - arduino:samd:mkrwan1310
+          - arduino:samd:mkrgsm1400
+          - arduino:samd:mkrnb1500
+          - arduino:samd:mkrvidor4000
+          # These should be changed from to the "arduino-beta" vendor to "arduino" once there is a production release of Arduino mbed-Enabled Boards
+          - arduino-beta:mbed:envie_m7
+          - arduino-beta:mbed:envie_m4
+          - arduino-beta:mbed:nano33ble
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -26,7 +45,7 @@ jobs:
       - name: Compile examples
         uses: arduino/compile-sketches@main
         with:
-          fqbn: arduino:samd:mkrvidor4000
+          fqbn: ${{ matrix.fqbn }}
           enable-deltas-report: true
           sketches-report-path: ${{ env.SKETCHES_REPORTS_PATH }}
 
