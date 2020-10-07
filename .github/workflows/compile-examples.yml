@@ -16,20 +16,42 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      SKETCHES_REPORTS_PATH: sketches-reports
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        fqbn:
+          - arduino:samd:mkr1000
+          - arduino:samd:mkrzero
+          - arduino:samd:mkrwifi1010
+          - arduino:samd:mkrfox1200
+          - arduino:samd:mkrwan1300
+          - arduino:samd:mkrwan1310
+          - arduino:samd:mkrgsm1400
+          - arduino:samd:mkrnb1500
+          - arduino:samd:mkrvidor4000
+          # These should be changed from to the "arduino-beta" vendor to "arduino" once there is a production release of Arduino mbed-Enabled Boards
+          - arduino-beta:mbed:envie_m7
+          - arduino-beta:mbed:envie_m4
+          - arduino-beta:mbed:nano33ble
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Compile examples
-        uses: arduino/actions/libraries/compile-examples@master
+        uses: arduino/compile-sketches@main
         with:
-          fqbn: arduino:samd:mkrvidor4000
-          size-report-sketch: MCP2515-Loopback
-          enable-size-deltas-report: true
+          fqbn: ${{ matrix.fqbn }}
+          enable-deltas-report: true
+          sketches-report-path: ${{ env.SKETCHES_REPORTS_PATH }}
 
       - name: Save memory usage change report as artifact
         if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
-          name: size-deltas-reports
-          path: size-deltas-reports
+          name: ${{ env.SKETCHES_REPORTS_PATH }}
+          path: ${{ env.SKETCHES_REPORTS_PATH }}
