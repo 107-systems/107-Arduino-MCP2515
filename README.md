@@ -6,7 +6,7 @@
 [![Spell Check](https://github.com/107-systems/107-Arduino-MCP2515/workflows/Spell%20Check/badge.svg)](https://github.com/107-systems/107-Arduino-MCP2515/actions?workflow=Spell+Check)
 
 <p align="center">
-  <a href="https://github.com/107-systems/107-Arduino-Viper"><img src="extras/logo/viper-logo.jpg" width="40%"></a>
+  <a href="https://github.com/107-systems/107-Arduino-Viper"><img src="https://github.com/107-systems/.github/raw/main/viper-logo.jpg" width="40%"></a>
 </p>
 
 Arduino library for controlling the MCP2515 in order to receive/transmit CAN frames. This library is prepared to interface easily with [libcanard](https://github.com/UAVCAN/libcanard) for using [UAVCAN](https://uavcan.org/) on Arduino via [107-Arduino-UAVCAN](https://github.com/107-systems/107-Arduino-UAVCAN).
