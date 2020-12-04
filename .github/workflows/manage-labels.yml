@@ -1,0 +1,42 @@
+name: Manage Repository Labels
+
+on:
+  push:
+    paths:
+      - ".github/workflows/manage-labels.yml"
+      - ".github/repository-labels-data/*.json"
+  schedule:
+    # run every Tuesday at 3 AM UTC
+    - cron: "0 3 * * 2"
+  # workflow_dispatch event allows the workflow to be triggered manually
+  # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_dispatch
+  workflow_dispatch:
+
+jobs:
+  manage-labels:
+    runs-on: ubuntu-latest
+
+    env:
+      # All JSON files in this folder will be merged.
+      SOURCE_DATA_FOLDER_PATH: .github/repository-labels-data
+      # See: https://github.com/lannonbr/issue-label-manager-action#usage
+      MERGED_DATA_FILE_PATH: .github/labels.json
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download universal labels data file
+        uses: carlosperate/download-file-action@v1.0.3
+        with:
+          file-url: https://raw.githubusercontent.com/107-systems/.github/main/universal-repository-labels.json
+          location: ${{ env.SOURCE_DATA_FOLDER_PATH }}
+
+      - name: Merge labels data files
+        run: |
+          # Merge all data files and output to the location used by lannonbr/issue-label-manager-action
+          jq -s '.=.|add|.' "${{ env.SOURCE_DATA_FOLDER_PATH }}"/*.json > "${{ env.MERGED_DATA_FILE_PATH }}"
+
+      - name: Update labels
+        uses: lannonbr/issue-label-manager-action@2.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
