@@ -90,7 +90,7 @@ void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
 #if LIBCANARD
 bool ArduinoMCP2515::transmit(CanardFrame const & frame)
 {
-  return transmitCANFrame(frame.extended_can_id,
+  return transmitCANFrame(CAN_EFF_BITMASK | frame.extended_can_id,
                           reinterpret_cast<uint8_t const *>(frame.payload),
                           static_cast<uint8_t const>(frame.payload_size));
 }
