@@ -144,7 +144,6 @@ void ArduinoMCP2515::onReceiveBuffer_0_Full()
   unsigned long const rx_timestamp_us = _micros();
 
   _ctrl.receive(RxB::RxB0, id, data, len);
-  id&=0x1FFFFFFF;
   onReceiveBuffer_n_Full(rx_timestamp_us, id, data, len);
   _ctrl.clearIntFlag(CANINTF::RX0IF);
 }
@@ -189,7 +188,7 @@ void ArduinoMCP2515::onReceiveBuffer_n_Full(unsigned long const timestamp_us, ui
     CanardFrame const frame
     {
       timestamp_us,                        /* timestamp_usec  */
-      id,                                  /* extended_can_id */
+      id&0x1FFFFFFF,                       /* extended_can_id limited to 29 bit */
       len,                                 /* payload_size    */
       reinterpret_cast<const void *>(data) /* payload         */
     };
