@@ -188,7 +188,7 @@ void ArduinoMCP2515::onReceiveBuffer_n_Full(unsigned long const timestamp_us, ui
     CanardFrame const frame
     {
       timestamp_us,                        /* timestamp_usec  */
-      id&0x1FFFFFFF,                       /* extended_can_id limited to 29 bit */
+      id & CAN_ADR_BITMASK,                /* extended_can_id limited to 29 bit */
       len,                                 /* payload_size    */
       reinterpret_cast<const void *>(data) /* payload         */
     };
