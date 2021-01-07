@@ -240,6 +240,7 @@ static uint8_t constexpr RXB1CTRL_RXM_MASK  = bm(RXB1CTRL::RXM1)  | bm(RXB1CTRL:
 static uint32_t constexpr CAN_EFF_BITMASK   = 0x80000000;
 static uint32_t constexpr CAN_RTR_BITMASK   = 0x40000000;
 static uint32_t constexpr CAN_ERR_BITMASK   = 0x20000000;
+static uint32_t constexpr CAN_ADR_BITMASK   = ~(CAN_EFF_BITMASK | CAN_RTR_BITMASK | CAN_ERR_BITMASK);
 
 /**************************************************************************************
  * NAMESPACE
