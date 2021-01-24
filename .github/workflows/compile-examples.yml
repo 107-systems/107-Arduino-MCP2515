@@ -23,19 +23,43 @@ jobs:
       fail-fast: false
 
       matrix:
-        fqbn:
-          - arduino:samd:mkr1000
-          - arduino:samd:mkrzero
-          - arduino:samd:mkrwifi1010
-          - arduino:samd:mkrfox1200
-          - arduino:samd:mkrwan1300
-          - arduino:samd:mkrwan1310
-          - arduino:samd:mkrgsm1400
-          - arduino:samd:mkrnb1500
-          - arduino:samd:mkrvidor4000
-          - arduino:mbed:envie_m7
-          - arduino:mbed:envie_m4
-          - arduino:mbed:nano33ble
+        board:
+          - fqbn: arduino:samd:mkr1000
+            platforms: |
+              - name: arduino:samd
+          - fqbn: arduino:samd:mkrzero
+            platforms: |
+              - name: arduino:samd
+          - fqbn: arduino:samd:mkrwifi1010
+            platforms: |
+              - name: arduino:samd
+          - fqbn: arduino:samd:mkrfox1200
+            platforms: |
+              - name: arduino:samd
+          - fqbn: arduino:samd:mkrwan1300
+            platforms: |
+              - name: arduino:samd
+          - fqbn: arduino:samd:mkrwan1310
+            platforms: |
+              - name: arduino:samd
+          - fqbn: arduino:samd:mkrgsm1400
+            platforms: |
+              - name: arduino:samd
+          - fqbn: arduino:samd:mkrnb1500
+            platforms: |
+              - name: arduino:samd
+          - fqbn: arduino:samd:mkrvidor4000
+            platforms: |
+              - name: arduino:samd
+          - fqbn: arduino:mbed:envie_m7
+            platforms: |
+              - name: arduino:mbed
+          - fqbn: arduino:mbed:envie_m4
+            platforms: |
+              - name: arduino:mbed
+          - fqbn: arduino:mbed:nano33ble
+            platforms: |
+              - name: arduino:samd
 
     steps:
       - name: Checkout
@@ -44,7 +68,8 @@ jobs:
       - name: Compile examples
         uses: arduino/compile-sketches@main
         with:
-          fqbn: ${{ matrix.fqbn }}
+          fqbn: ${{ matrix.board.fqbn }}
+          platforms: ${{ matrix.board.platforms }}
           enable-deltas-report: true
           sketches-report-path: ${{ env.SKETCHES_REPORTS_PATH }}
 
