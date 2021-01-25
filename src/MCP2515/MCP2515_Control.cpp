@@ -95,7 +95,7 @@ void MCP2515_Control::receive(RxB const rxb, uint32_t & id, uint8_t * data, uint
 
   Register const ctrl_reg_addr = (rxb == RxB::RxB0) ? Register::RXB0CTRL : Register::RXB1CTRL;
   uint8_t const ctrl_reg_val = _io.readRegister(ctrl_reg_addr);
-  if(ctrl_reg_val & bm(RXB0CTRL::RXRTR) == bm(RXB0CTRL::RXRTR))
+  if((ctrl_reg_val & bm(RXB0CTRL::RXRTR)) == bm(RXB0CTRL::RXRTR))
   {
     id |= CAN_RTR_BITMASK;
   }

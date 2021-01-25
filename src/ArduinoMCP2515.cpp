@@ -135,6 +135,8 @@ bool ArduinoMCP2515::transmitCANFrame(uint32_t const id, uint8_t const * data, u
     _ctrl.transmit(TxB::TxB2, id, data, len);
     return true;
   }
+
+  return false;
 }
 
 void ArduinoMCP2515::onReceiveBuffer_0_Full()
