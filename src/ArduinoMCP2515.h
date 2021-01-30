@@ -43,10 +43,14 @@
 
 enum class CanBitRate : size_t
 {
-  BR_125kBPS  = 0,
-  BR_250kBPS  = 1,
-  BR_500kBPS  = 2,
-  BR_1000kBPS = 3
+  BR_125kBPS_16MHZ  = 0,
+  BR_250kBPS_16MHZ  = 1,
+  BR_500kBPS_16MHZ  = 2,
+  BR_1000kBPS_16MHZ = 3,
+  BR_125kBPS_8MHZ  = 4,
+  BR_250kBPS_8MHZ  = 5,
+  BR_500kBPS_8MHZ  = 6,
+  BR_1000kBPS_8MHZ = 7
 };
 
 typedef std::function<unsigned long()> MicroSecondFunc;
