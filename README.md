@@ -3,7 +3,8 @@
 =====================
 [![Arduino Library Badge](https://www.ardu-badge.com/badge/107-Arduino-MCP2515.svg?)](https://www.ardu-badge.com/107-Arduino-MCP2515)
 [![Compile Examples](https://github.com/107-systems/107-Arduino-MCP2515/workflows/Compile%20Examples/badge.svg)](https://github.com/107-systems/107-Arduino-MCP2515/actions?workflow=Compile+Examples)
-[![Extra Library Checks](https://github.com/107-systems/107-Arduino-MCP2515/workflows/Extra%20Library%20Checks/badge.svg)](https://github.com/107-systems/107-Arduino-MCP2515/actions?workflow=Extra+Library+Checks)
+[![Check Arduino](https://github.com/107-systems/107-Arduino-MCP2515/actions/workflows/check-arduino.yml/badge.svg)](https://github.com/107-systems/107-Arduino-MCP2515/actions/workflows/check-arduino.yml)
+[![Check keywords.txt](https://github.com/107-systems/107-Arduino-MCP2515/actions/workflows/check-keywords-txt.yml/badge.svg)](https://github.com/107-systems/107-Arduino-MCP2515/actions/workflows/check-keywords-txt.yml)
 [![General Formatting Checks](https://github.com/107-systems/107-Arduino-MCP2515/workflows/General%20Formatting%20Checks/badge.svg)](https://github.com/107-systems/107-Arduino-MCP2515/actions?workflow=General+Formatting+Checks)
 [![Spell Check](https://github.com/107-systems/107-Arduino-MCP2515/workflows/Spell%20Check/badge.svg)](https://github.com/107-systems/107-Arduino-MCP2515/actions?workflow=Spell+Check)
 
