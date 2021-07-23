@@ -26,11 +26,7 @@ static int const MKRCAN_MCP2515_INT_PIN = 7;
  * FUNCTION DECLARATION
  **************************************************************************************/
 
-void    spi_select           ();
-void    spi_deselect         ();
-uint8_t spi_transfer         (uint8_t const);
-void    onExternalEvent      ();
-void    onReceiveBufferFull  (uint32_t const, uint32_t const, uint8_t const *, uint8_t const);
+void onReceiveBufferFull(uint32_t const, uint32_t const, uint8_t const *, uint8_t const);
 
 /**************************************************************************************
  * TYPEDEF
@@ -70,9 +66,9 @@ static std::array<sCanTestFrame, 7> const CAN_TEST_FRAME_ARRAY =
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-ArduinoMCP2515 mcp2515(spi_select,
-                       spi_deselect,
-                       spi_transfer,
+ArduinoMCP2515 mcp2515([](){ digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW); },
+                       [](){ digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH); },
+                       [](uint8_t const d) -> uint8t { return SPI.transfer(d); },
                        micros,
                        onReceiveBufferFull,
                        nullptr);
@@ -93,7 +89,7 @@ void setup()
 
   /* Attach interrupt handler to register MCP2515 signaled by taking INT low */
   pinMode(MKRCAN_MCP2515_INT_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(MKRCAN_MCP2515_INT_PIN), onExternalEvent, FALLING);
+  attachInterrupt(digitalPinToInterrupt(MKRCAN_MCP2515_INT_PIN), [](){ mcp2515.onExternalEventHandler(); }, FALLING);
 
   mcp2515.begin();
   mcp2515.setBitRate(CanBitRate::BR_250kBPS_16MHZ);
@@ -118,26 +114,6 @@ void loop()
 /**************************************************************************************
  * FUNCTION DEFINITION
  **************************************************************************************/
-
-void spi_select()
-{
-  digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW);
-}
-
-void spi_deselect()
-{
-  digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH);
-}
-
-uint8_t spi_transfer(uint8_t const data)
-{
-  return SPI.transfer(data);
-}
-
-void onExternalEvent()
-{
-  mcp2515.onExternalEventHandler();
-}
 
 void onReceiveBufferFull(uint32_t const timestamp_us, uint32_t const id, uint8_t const * data, uint8_t const len)
 {
