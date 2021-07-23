@@ -51,15 +51,21 @@ jobs:
           - fqbn: arduino:samd:mkrvidor4000
             platforms: |
               - name: arduino:samd
-          - fqbn: arduino:mbed:envie_m7
+          - fqbn: arduino:mbed_portenta:envie_m7
             platforms: |
-              - name: arduino:mbed
-          - fqbn: arduino:mbed:envie_m4
+              - name: arduino:mbed_portenta
+          - fqbn: arduino:mbed_portenta:envie_m4
             platforms: |
-              - name: arduino:mbed
-          - fqbn: arduino:mbed:nano33ble
+              - name: arduino:mbed_portenta
+          - fqbn: arduino:mbed_nano:nano33ble
             platforms: |
-              - name: arduino:mbed
+              - name: arduino:mbed_nano
+          - fqbn: arduino:mbed_nano:nanorp2040connect
+            platforms: |
+              - name: arduino:mbed_nano
+          - fqbn: arduino:mbed_edge:edge_control
+            platforms: |
+              - name: arduino:mbed_edge
           - fqbn: esp32:esp32:esp32
             platforms: |
               - name: esp32:esp32
