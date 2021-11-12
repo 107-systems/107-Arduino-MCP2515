@@ -55,7 +55,13 @@ void setup()
 
   /* Attach interrupt handler to register MCP2515 signaled by taking INT low */
   pinMode(MKRCAN_MCP2515_INT_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(MKRCAN_MCP2515_INT_PIN), [](){ mcp2515.onExternalEventHandler(); }, FALLING);
+  attachInterrupt(digitalPinToInterrupt(MKRCAN_MCP2515_INT_PIN),
+#ifdef ARDUINO_ARCH_STM32
+                  static_cast<void(*)(void)>([](){ mcp2515.onExternalEventHandler(); }),
+#else
+                  [](){ mcp2515.onExternalEventHandler(); },
+#endif /* #ifdef ARDUINO_ARCH_STM32 */
+                  FALLING);
 
   mcp2515.begin();
   mcp2515.setBitRate(CanBitRate::BR_250kBPS_16MHZ);
