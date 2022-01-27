@@ -35,6 +35,7 @@ public:
 
   void           transmit    (TxB const txb, uint32_t const   id, uint8_t const * data, uint8_t const   len);
   void           receive     (RxB const rxb, uint32_t       & id, uint8_t       * data, uint8_t       & len);
+  uint8_t        txbnctrl_peek();
 
   inline void    reset       ()                       { _io.reset(); }
   inline uint8_t status      ()                       { return _io.status(); }

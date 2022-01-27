@@ -68,11 +68,26 @@ void MCP2515_Control::transmit(TxB const txb, uint32_t const id, uint8_t const *
   /* Load data buffer */
   memcpy(tx_buffer.reg.data, data, std::min<uint8_t>(len, 8));
 
+  /* Wait untill all the TX buffers are empty */
+  while(txbnctrl_peek()>0)
+  {
+    __asm__("nop\n\t");
+  }
+
   /* Write to transmit buffer */
   _io.loadTxBuffer(txb, tx_buffer.buf);
 
   /* Request transmission */
   _io.requestTx(txb);
+
+}
+
+uint8_t MCP2515_Control::txbnctrl_peek()
+{
+  if(0x8&&_io.readRegister(Register::TXB0CTRL)) return 1;
+  if(0x8&&_io.readRegister(Register::TXB1CTRL)) return 2;
+  if(0x8&&_io.readRegister(Register::TXB2CTRL)) return 3;
+  return 0;
 }
 
 void MCP2515_Control::receive(RxB const rxb, uint32_t & id, uint8_t * data, uint8_t & len)
