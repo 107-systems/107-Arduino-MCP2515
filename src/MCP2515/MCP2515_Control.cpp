@@ -68,7 +68,7 @@ void MCP2515_Control::transmit(TxB const txb, uint32_t const id, uint8_t const *
   /* Load data buffer */
   memcpy(tx_buffer.reg.data, data, std::min<uint8_t>(len, 8));
 
-  /* Wait untill all the TX buffers are empty */
+  /* Wait until all the TX buffers are empty */
   while(txbnctrl_peek()>0)
   {
     __asm__("nop\n\t");
