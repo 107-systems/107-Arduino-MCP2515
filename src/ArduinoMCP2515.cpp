@@ -122,19 +122,19 @@ void ArduinoMCP2515::onExternalEventHandler()
 
 bool ArduinoMCP2515::transmitCANFrame(uint32_t const id, uint8_t const * data, uint8_t const len)
 {
-  uint8_t const status = _ctrl.status();
-
-  if (isBitClr(status, bp(STATUS::TX0REQ)))
+  if (isBitClr(_io.readRegister(Register::TXB0CTRL), bp(TXBnCTRL::TXREQ)))
   {
     _ctrl.transmit(TxB::TxB0, id, data, len);
     return true;
   }
-  else if (isBitClr(status, bp(STATUS::TX1REQ)))
+
+  if (isBitClr(_io.readRegister(Register::TXB1CTRL), bp(TXBnCTRL::TXREQ)))
   {
     _ctrl.transmit(TxB::TxB1, id, data, len);
     return true;
   }
-  else if (isBitClr(status, bp(STATUS::TX2REQ)))
+
+  if (isBitClr(_io.readRegister(Register::TXB2CTRL), bp(TXBnCTRL::TXREQ)))
   {
     _ctrl.transmit(TxB::TxB2, id, data, len);
     return true;
