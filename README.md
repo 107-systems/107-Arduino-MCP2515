@@ -23,7 +23,7 @@ This library works for
 ## Example
 ```C++
 #include <SPI.h>
-#include <ArduinoMCP2515.h>
+#include <107-Arduino-MCP2515.h>
 /* ... */
 static int const MKRCAN_MCP2515_CS_PIN  = 3;
 static int const MKRCAN_MCP2515_INT_PIN = 7;
