@@ -193,7 +193,9 @@ void ArduinoMCP2515::onReceiveBuffer_n_Full(unsigned long const timestamp_us, ui
 #if LIBCANARD
     CanardFrame const frame
     {
+#if (CANARD_VERSION_MAJOR == 1)
       timestamp_us,                        /* timestamp_usec  */
+#endif
       id & CAN_ADR_BITMASK,                /* extended_can_id limited to 29 bit */
       len,                                 /* payload_size    */
       reinterpret_cast<const void *>(data) /* payload         */
