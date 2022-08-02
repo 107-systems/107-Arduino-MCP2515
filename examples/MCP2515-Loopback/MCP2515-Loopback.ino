@@ -92,7 +92,7 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(MKRCAN_MCP2515_INT_PIN), [](){ mcp2515.onExternalEventHandler(); }, FALLING);
 
   mcp2515.begin();
-  mcp2515.setBitRate(CanBitRate::BR_250kBPS_16MHZ);
+  mcp2515.setBitRate(CanBitRate::BR_250kBPS_16MHZ); // CAN bit rate and MCP2515 clock speed
   mcp2515.setLoopbackMode();
 
   std::for_each(CAN_TEST_FRAME_ARRAY.cbegin(),
