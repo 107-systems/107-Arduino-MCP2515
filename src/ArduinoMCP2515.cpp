@@ -79,11 +79,16 @@ void ArduinoMCP2515::begin()
   _cfg.disableFilter_RxB0();
   _cfg.disableFilter_RxB1();
   _cfg.enableRollover_RxB0();
-  _cfg.enableIntFlag(CANINTE::RX0IE);
-  _cfg.enableIntFlag(CANINTE::RX1IE);
+
   _cfg.enableIntFlag(CANINTE::TX0IE);
   _cfg.enableIntFlag(CANINTE::TX1IE);
   _cfg.enableIntFlag(CANINTE::TX2IE);
+
+  if (_on_rx_buf_full)
+  {
+    _cfg.enableIntFlag(CANINTE::RX0IE);
+    _cfg.enableIntFlag(CANINTE::RX1IE);
+  }
 }
 
 void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
