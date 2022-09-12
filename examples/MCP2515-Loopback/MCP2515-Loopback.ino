@@ -19,8 +19,9 @@
  * CONSTANTS
  **************************************************************************************/
 
-static int const MKRCAN_MCP2515_CS_PIN  = 3;
-static int const MKRCAN_MCP2515_INT_PIN = 7;
+static int         const MKRCAN_MCP2515_CS_PIN  = 3;
+static int         const MKRCAN_MCP2515_INT_PIN = 7;
+static SPISettings const MCP2515x_SPI_SETTING{1000000, MSBFIRST, SPI_MODE0};
 
 /**************************************************************************************
  * FUNCTION DECLARATION
@@ -66,9 +67,19 @@ static std::array<sCanTestFrame, 7> const CAN_TEST_FRAME_ARRAY =
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-ArduinoMCP2515 mcp2515([](){ digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW); },
-                       [](){ digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH); },
-                       [](uint8_t const d) -> uint8_t { return SPI.transfer(d); },
+ArduinoMCP2515 mcp2515([]()
+                       {
+                         noInterrupts();
+                         SPI.beginTransaction(MCP2515x_SPI_SETTING);
+                         digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW);
+                       },
+                       []()
+                       {
+                         digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH);
+                         SPI.endTransaction();
+                         interrupts();
+                       },
+                       [](uint8_t const d) { return SPI.transfer(d); },
                        micros,
                        onReceiveBufferFull,
                        nullptr);
@@ -89,7 +100,7 @@ void setup()
 
   /* Attach interrupt handler to register MCP2515 signaled by taking INT low */
   pinMode(MKRCAN_MCP2515_INT_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(MKRCAN_MCP2515_INT_PIN), [](){ mcp2515.onExternalEventHandler(); }, FALLING);
+  attachInterrupt(digitalPinToInterrupt(MKRCAN_MCP2515_INT_PIN), [](){ mcp2515.onExternalEventHandler(); }, LOW);
 
   mcp2515.begin();
   mcp2515.setBitRate(CanBitRate::BR_250kBPS_16MHZ); // CAN bit rate and MCP2515 clock speed
