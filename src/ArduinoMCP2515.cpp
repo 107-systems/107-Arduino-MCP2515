@@ -165,8 +165,8 @@ void ArduinoMCP2515::onReceiveBuffer_0_Full()
   unsigned long const rx_timestamp_us = _micros();
 
   _ctrl.receive(RxB::RxB0, id, data, len);
-  onReceiveBuffer_n_Full(rx_timestamp_us, id, data, len);
   _ctrl.clearIntFlag(CANINTF::RX0IF);
+  onReceiveBuffer_n_Full(rx_timestamp_us, id, data, len);
 }
 
 void ArduinoMCP2515::onReceiveBuffer_1_Full()
@@ -176,8 +176,8 @@ void ArduinoMCP2515::onReceiveBuffer_1_Full()
   unsigned long const rx_timestamp_us = _micros();
 
   _ctrl.receive(RxB::RxB1, id, data, len);
-  onReceiveBuffer_n_Full(rx_timestamp_us, id, data, len);
   _ctrl.clearIntFlag(CANINTF::RX1IF);
+  onReceiveBuffer_n_Full(rx_timestamp_us, id, data, len);
 }
 
 void ArduinoMCP2515::onTransmitBuffer_0_Empty()
