@@ -1,6 +1,7 @@
+<a href="https://107-systems.org/"><img align="right" src="https://raw.githubusercontent.com/107-systems/.github/main/logo/107-systems.png" width="15%"></a>
+:floppy_disk: `107-Arduino-MCP2515`
+===================================
 <a href="https://opencyphal.org/"><img align="right" src="https://raw.githubusercontent.com/107-systems/.github/main/logo/opencyphal.svg" width="25%"></a>
-`107-Arduino-MCP2515`
-=====================
 [![Arduino Library Badge](https://www.ardu-badge.com/badge/107-Arduino-MCP2515.svg?)](https://www.ardu-badge.com/107-Arduino-MCP2515)
 [![Compile Examples](https://github.com/107-systems/107-Arduino-MCP2515/workflows/Compile%20Examples/badge.svg)](https://github.com/107-systems/107-Arduino-MCP2515/actions?workflow=Compile+Examples)
 [![Check Arduino](https://github.com/107-systems/107-Arduino-MCP2515/actions/workflows/check-arduino.yml/badge.svg)](https://github.com/107-systems/107-Arduino-MCP2515/actions/workflows/check-arduino.yml)
@@ -9,10 +10,11 @@
 [![Spell Check](https://github.com/107-systems/107-Arduino-MCP2515/workflows/Spell%20Check/badge.svg)](https://github.com/107-systems/107-Arduino-MCP2515/actions?workflow=Spell+Check)
 
 <p align="center">
-  <a href="https://github.com/107-systems/viper"><img src="https://github.com/107-systems/.github/raw/main/logo/viper.jpg" width="40%"></a>
+  <a href="https://github.com/107-systems/l3xz"><img src="https://raw.githubusercontent.com/107-systems/.github/main/logo/l3xz-logo-memento-mori-github.png" width="30%"></a>
+  <a href="https://github.com/107-systems/viper"><img src="https://github.com/107-systems/.github/raw/main/logo/viper.jpg" width="30%"></a>
 </p>
 
-Arduino library for controlling the MCP2515 in order to receive/transmit CAN frames. This library is prepared to interface easily with [libcanard](https://github.com/OpenCyphal/libcanard) for using [OpenCyphal](https://opencyphal.org/) on Arduino via [107-Arduino-UAVCAN](https://github.com/107-systems/107-Arduino-UAVCAN).
+Arduino library for controlling the MCP2515 in order to receive/transmit CAN frames. This library is prepared to interface easily with [libcanard](https://github.com/OpenCyphal/libcanard) for using [Cyphal](https://opencyphal.org/) on Arduino via [107-Arduino-UAVCAN](https://github.com/107-systems/107-Arduino-Cyphal).
 
 This library works for
 * [ArduinoCore-samd](https://github.com/arduino/ArduinoCore-samd): [`Arduino Zero`](https://store.arduino.cc/arduino-zero), [`MKR 1000`](https://store.arduino.cc/arduino-mkr1000-wifi), [`MKR WiFi 1010`](https://store.arduino.cc/arduino-mkr-wifi-1010), [`Nano 33 IoT`](https://store.arduino.cc/arduino-nano-33-iot), [`MKR GSM 1400`](https://store.arduino.cc/arduino-mkr-gsm-1400-1415), [`MKR NB 1500`](https://store.arduino.cc/arduino-mkr-nb-1500-1413), [`MKR WAN 1300/1310`](https://store.arduino.cc/mkr-wan-1310) :heavy_check_mark:
