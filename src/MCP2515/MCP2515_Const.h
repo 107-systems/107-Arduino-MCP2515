@@ -198,6 +198,11 @@ enum class RXBnSIDL : uint8_t
   IDE = 3,
 };
 
+enum class RXFnSIDL : uint8_t
+{
+  EXIDE = 3,
+};
+
 enum class CANCTRL : uint8_t
 {
   REQOP2 = 7,
