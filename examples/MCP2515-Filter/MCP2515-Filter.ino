@@ -19,8 +19,8 @@
  * CONSTANTS
  **************************************************************************************/
 
-static int         const MKRCAN_MCP2515_CS_PIN  = 3;
-static int         const MKRCAN_MCP2515_INT_PIN = 7;
+static int         const MKRCAN_MCP2515_CS_PIN  = 10;
+static int         const MKRCAN_MCP2515_INT_PIN = 3;
 static SPISettings const MCP2515x_SPI_SETTING{1000000, MSBFIRST, SPI_MODE0};
 
 /**************************************************************************************
@@ -35,7 +35,6 @@ void onReceiveBufferFull(uint32_t const, uint32_t const, uint8_t const *, uint8_
 
 ArduinoMCP2515 mcp2515([]()
                        {
-                         noInterrupts();
                          SPI.beginTransaction(MCP2515x_SPI_SETTING);
                          digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW);
                        },
@@ -43,7 +42,6 @@ ArduinoMCP2515 mcp2515([]()
                        {
                          digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH);
                          SPI.endTransaction();
-                         interrupts();
                        },
                        [](uint8_t const d) { return SPI.transfer(d); },
                        micros,
@@ -56,8 +54,8 @@ ArduinoMCP2515 mcp2515([]()
 
 void setup()
 {
-  Serial.begin(9600);
-  while(!Serial) { }
+  //Serial.begin(9600);
+  //while(!Serial) { }
 
   /* Setup SPI access */
   SPI.begin();
@@ -117,6 +115,7 @@ void loop()
 
 void onReceiveBufferFull(uint32_t const timestamp_us, uint32_t const id, uint8_t const * data, uint8_t const len)
 {
+  /*
   Serial.print("[ ");
   Serial.print(timestamp_us);
   Serial.print("] ");
@@ -137,4 +136,5 @@ void onReceiveBufferFull(uint32_t const timestamp_us, uint32_t const id, uint8_t
                   Serial.print(" ");
                 });
   Serial.println();
+  */
 }

@@ -69,7 +69,6 @@ static std::array<sCanTestFrame, 7> const CAN_TEST_FRAME_ARRAY =
 
 ArduinoMCP2515 mcp2515([]()
                        {
-                         noInterrupts();
                          SPI.beginTransaction(MCP2515x_SPI_SETTING);
                          digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW);
                        },
@@ -77,7 +76,6 @@ ArduinoMCP2515 mcp2515([]()
                        {
                          digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH);
                          SPI.endTransaction();
-                         interrupts();
                        },
                        [](uint8_t const d) { return SPI.transfer(d); },
                        micros,
