@@ -21,6 +21,7 @@ setSleepMode	KEYWORD2
 setLoopbackMode	KEYWORD2
 setListenOnlyMode	KEYWORD2
 setConfigMode	KEYWORD2
+enableFilter	KEYWORD2
 transmit	KEYWORD2
 onExternalEventHandler	KEYWORD2
 

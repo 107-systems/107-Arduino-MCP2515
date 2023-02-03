@@ -111,6 +111,19 @@ void MCP2515_Io::writeRegister(Register const reg, uint8_t const data)
   _deselect();
 }
 
+void MCP2515_Io::writeRegister(Register const reg, uint8_t const * data, size_t const num_bytes)
+{
+  uint8_t const instruction = static_cast<uint8_t>(Instruction::WRITE);
+  uint8_t const reg_addr    = static_cast<uint8_t>(reg);
+
+  _select();
+  _transfer(instruction);
+  _transfer(reg_addr);
+  for (size_t b = 0; b < num_bytes; b++)
+    _transfer(data[b]);
+  _deselect();
+}
+
 void MCP2515_Io::modifyRegister(Register const reg, uint8_t const mask, uint8_t const data)
 {
   uint8_t const instruction = static_cast<uint8_t>(Instruction::BITMOD);

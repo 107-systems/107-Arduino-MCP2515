@@ -89,6 +89,8 @@ public:
   inline bool setListenOnlyMode() { return _cfg.setMode(MCP2515::Mode::ListenOnly); }
   inline bool setConfigMode    () { return _cfg.setMode(MCP2515::Mode::Config);     }
 
+  void enableFilter(MCP2515::RxB const rxb, uint32_t const mask, uint32_t const * filter, size_t const filter_size);
+
 #if LIBCANARD
   bool transmit(CanardFrame const & frame);
 #else

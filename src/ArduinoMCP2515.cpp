@@ -99,6 +99,26 @@ void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
   _cfg.setBitRateConfig(BIT_RATE_CONFIG_ARRAY[static_cast<size_t>(bit_rate)]);
 }
 
+void ArduinoMCP2515::enableFilter(RxB const rxb, uint32_t const mask, uint32_t const * filter, size_t const filter_size)
+{
+  if (rxb == RxB::RxB0)
+  {
+    if (filter_size >= 1) _cfg.setFilterId_RxF0(filter[0]);
+    if (filter_size >= 2) _cfg.setFilterId_RxF1(filter[1]);
+    _cfg.setFilterMask_RxB0(mask);
+    _cfg.enableFilter_RxB0();
+  }
+  else
+  {
+    if (filter_size >= 1) _cfg.setFilterId_RxF2(filter[0]);
+    if (filter_size >= 2) _cfg.setFilterId_RxF3(filter[1]);
+    if (filter_size >= 3) _cfg.setFilterId_RxF5(filter[2]);
+    if (filter_size >= 4) _cfg.setFilterId_RxF3(filter[3]);
+    _cfg.setFilterMask_RxB1(mask);
+    _cfg.enableFilter_RxB1();
+  }
+}
+
 #if LIBCANARD
 bool ArduinoMCP2515::transmit(CanardFrame const & frame)
 {

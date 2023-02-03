@@ -62,6 +62,20 @@ union RxTxBuffer
   uint8_t buf[5+8];
 };
 
+union RxFilterId
+{
+  struct
+  {
+    uint8_t sidh;
+    uint8_t sidl;
+    uint8_t eid8;
+    uint8_t eid0;
+  } reg;
+  uint8_t buf[4];
+};
+
+typedef RxFilterId RxFilterMask;
+
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
@@ -82,6 +96,7 @@ public:
   uint8_t status();
   uint8_t readRegister  (Register const reg);
   void    writeRegister (Register const reg, uint8_t const data);
+  void    writeRegister (Register const reg, uint8_t const * data, size_t const num_bytes);
   void    modifyRegister(Register const reg, uint8_t const mask, uint8_t const data);
   void    setBit        (Register const reg, uint8_t const bit_pos);
   void    clrBit        (Register const reg, uint8_t const bit_pos);

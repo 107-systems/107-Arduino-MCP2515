@@ -59,6 +59,39 @@ void MCP2515_Config::setBitRateConfig(CanBitRateConfig const bit_rate_config)
 }
 
 /**************************************************************************************
+ * PRIVATE MEMBER FUNCTIONS
+ **************************************************************************************/
+
+void MCP2515_Config::setFilterId(Register const rxf_n_sidh, uint32_t const id)
+{
+  RxFilterId filter_id;
+
+  bool const is_ext = (id & CAN_EFF_BITMASK) == CAN_EFF_BITMASK;
+
+  filter_id.reg.eid0  = static_cast<uint8_t>((id & 0x000000FF) >> 0);
+  filter_id.reg.eid8  = static_cast<uint8_t>((id & 0x0000FF00) >> 8);
+  filter_id.reg.sidl  = static_cast<uint8_t>((id & 0x00030000) >> 16);
+  filter_id.reg.sidl += static_cast<uint8_t>((id & 0x001C0000) >> 16) << 3;
+  filter_id.reg.sidl |= is_ext ? bm(RXFnSIDL::EXIDE) : 0;
+  filter_id.reg.sidh  = static_cast<uint8_t>((id & 0x1FE00000) >> 21);
+
+  _io.writeRegister(rxf_n_sidh, filter_id.buf, sizeof(filter_id.buf));
+}
+
+void MCP2515_Config::setFilterMask(Register const rxm_n_sidh, uint32_t const mask)
+{
+  RxFilterMask filter_mask;
+
+  filter_mask.reg.eid0  = static_cast<uint8_t>((mask & 0x000000FF) >> 0);
+  filter_mask.reg.eid8  = static_cast<uint8_t>((mask & 0x0000FF00) >> 8);
+  filter_mask.reg.sidl  = static_cast<uint8_t>((mask & 0x00030000) >> 16);
+  filter_mask.reg.sidl += static_cast<uint8_t>((mask & 0x001C0000) >> 16) << 3;
+  filter_mask.reg.sidh  = static_cast<uint8_t>((mask & 0x1FE00000) >> 21);
+
+  _io.writeRegister(rxm_n_sidh, filter_mask.buf, sizeof(filter_mask.buf));
+}
+
+/**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 

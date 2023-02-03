@@ -35,7 +35,6 @@ void onReceiveBufferFull(uint32_t const, uint32_t const, uint8_t const *, uint8_
 
 ArduinoMCP2515 mcp2515([]()
                        {
-                         noInterrupts();
                          SPI.beginTransaction(MCP2515x_SPI_SETTING);
                          digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW);
                        },
@@ -43,7 +42,6 @@ ArduinoMCP2515 mcp2515([]()
                        {
                          digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH);
                          SPI.endTransaction();
-                         interrupts();
                        },
                        [](uint8_t const d) { return SPI.transfer(d); },
                        micros,
