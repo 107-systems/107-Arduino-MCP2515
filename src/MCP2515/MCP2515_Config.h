@@ -53,7 +53,12 @@ static CanBitRateConfig constexpr BitRate_1000kBPS_16MHz = {0x00, 0xD0, 0x82};
 static CanBitRateConfig constexpr BitRate_250kBPS_8MHz  = {0x00, 0xb1, 0x05};
 static CanBitRateConfig constexpr BitRate_500kBPS_8MHz  = {0x00, 0x90, 0x02};
 static CanBitRateConfig constexpr BitRate_125kBPS_8MHz  = {0x01, 0xb1, 0x05};
-static CanBitRateConfig constexpr BitRate_1000kBPS_8MHz = {0x00, 0x80, 0x00};
+static CanBitRateConfig constexpr BitRate_1000kBPS_8MHz = {0x00, 0x80, 0x00};	
+  
+static CanBitRateConfig constexpr BitRate_250kBPS_10MHz  = {0x00, 0xB6, 0x04};
+static CanBitRateConfig constexpr BitRate_500kBPS_10MHz  = {0x00, 0x9A, 0x01};
+static CanBitRateConfig constexpr BitRate_125kBPS_10MHz  = {0x01, 0xB6, 0x04};
+static CanBitRateConfig constexpr BitRate_1000kBPS_10MHz = {0x00, 0x80, 0x01};
 
 /**************************************************************************************
  * CTOR/DTOR
