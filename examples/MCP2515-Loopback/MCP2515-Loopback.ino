@@ -67,16 +67,8 @@ static std::array<sCanTestFrame, 7> const CAN_TEST_FRAME_ARRAY =
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-ArduinoMCP2515 mcp2515([]()
-                       {
-                         SPI.beginTransaction(MCP2515x_SPI_SETTING);
-                         digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW);
-                       },
-                       []()
-                       {
-                         digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH);
-                         SPI.endTransaction();
-                       },
+ArduinoMCP2515 mcp2515([]() { digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW); },
+                       []() { digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH); },
                        [](uint8_t const d) { return SPI.transfer(d); },
                        micros,
                        onReceiveBufferFull,
@@ -93,6 +85,7 @@ void setup()
 
   /* Setup SPI access */
   SPI.begin();
+  SPI.beginTransaction(MCP2515x_SPI_SETTING);
   pinMode(MKRCAN_MCP2515_CS_PIN, OUTPUT);
   digitalWrite(MKRCAN_MCP2515_CS_PIN, HIGH);
 
