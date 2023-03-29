@@ -35,7 +35,6 @@ static CanBitRateConfig const BIT_RATE_CONFIG_ARRAY[] =
   BitRate_250kBPS_8MHz,
   BitRate_500kBPS_8MHz,
   BitRate_1000kBPS_8MHz,
-  BitRate_125kBPS_10MHz,
   BitRate_20kBPS_10MHz,
   BitRate_125kBPS_10MHz,
   BitRate_250kBPS_10MHz,
