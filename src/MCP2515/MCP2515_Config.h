@@ -45,28 +45,44 @@ typedef struct
  * GLOBAL CONSTANTS
  **************************************************************************************/
 
-static CanBitRateConfig constexpr BitRate_20kBPS_16MHz  = {0x13, 0xb6, 0x04};
-static CanBitRateConfig constexpr BitRate_125kBPS_16MHz  = {0x03, 0xF0, 0x86};
-static CanBitRateConfig constexpr BitRate_250kBPS_16MHz  = {0x41, 0xF1, 0x85};
-static CanBitRateConfig constexpr BitRate_500kBPS_16MHz  = {0x00, 0xF0, 0x86};
-static CanBitRateConfig constexpr BitRate_1000kBPS_16MHz = {0x00, 0xD0, 0x82};
+static CanBitRateConfig constexpr BitRate_10kBPS_16MHz  = {0x31, 0xb5, 0x01};
+static CanBitRateConfig constexpr BitRate_20kBPS_16MHz  = {0x18, 0xb5, 0x01};
+static CanBitRateConfig constexpr BitRate_50kBPS_16MHz  = {0x09, 0xb5, 0x01};
+static CanBitRateConfig constexpr BitRate_100kBPS_16MHz  = {0x04, 0xb5, 0x01};
+static CanBitRateConfig constexpr BitRate_125kBPS_16MHz  = {0x03, 0xb5, 0x01};
+static CanBitRateConfig constexpr BitRate_250kBPS_16MHz  = {0x01, 0xb5, 0x01};
+static CanBitRateConfig constexpr BitRate_500kBPS_16MHz  = {0x00, 0xb5, 0x01};
+static CanBitRateConfig constexpr BitRate_800kBPS_16MHz  = {0x00, 0x9a, 0x01};
+static CanBitRateConfig constexpr BitRate_1000kBPS_16MHz = {0x00, 0x91, 0x01};
 
-static CanBitRateConfig constexpr BitRate_20kBPS_8MHz  = {0x09, 0xb6, 0x04};
-static CanBitRateConfig constexpr BitRate_125kBPS_8MHz  = {0x01, 0xb1, 0x05};
-static CanBitRateConfig constexpr BitRate_250kBPS_8MHz  = {0x00, 0xb1, 0x05};
-static CanBitRateConfig constexpr BitRate_500kBPS_8MHz  = {0x00, 0x90, 0x02};
-static CanBitRateConfig constexpr BitRate_1000kBPS_8MHz = {0x00, 0x80, 0x00};
+static CanBitRateConfig constexpr BitRate_10kBPS_8MHz  = {0x18, 0xb5, 0x01};
+static CanBitRateConfig constexpr BitRate_20kBPS_8MHz  = {0x09, 0xbf, 0x02};
+static CanBitRateConfig constexpr BitRate_50kBPS_8MHz  = {0x04, 0xb5, 0x01};
+static CanBitRateConfig constexpr BitRate_100kBPS_8MHz  = {0x01, 0xbf, 0x02};
+static CanBitRateConfig constexpr BitRate_125kBPS_8MHz  = {0x01, 0xb5, 0x01};
+static CanBitRateConfig constexpr BitRate_250kBPS_8MHz  = {0x00, 0xb5, 0x01};
+static CanBitRateConfig constexpr BitRate_500kBPS_8MHz  = {0x00, 0x91, 0x01};
+static CanBitRateConfig constexpr BitRate_800kBPS_8MHz  = {0x00, 0x80, 0x01};
+static CanBitRateConfig constexpr BitRate_1000kBPS_8MHz = {0x00, 0x80, 0x00}; // 8 mhz is to slow for this speed to be CANopen compliant (Sample point ?)
 
-static CanBitRateConfig constexpr BitRate_20kBPS_10MHz  = {0x18, 0x92, 0x02};
-static CanBitRateConfig constexpr BitRate_125kBPS_10MHz  = {0x01, 0xB6, 0x04};
-static CanBitRateConfig constexpr BitRate_250kBPS_10MHz  = {0x00, 0xB6, 0x04};
-static CanBitRateConfig constexpr BitRate_500kBPS_10MHz  = {0x00, 0x9A, 0x01};
+static CanBitRateConfig constexpr BitRate_10kBPS_10MHz  = {0x18, 0xbf, 0x02};
+static CanBitRateConfig constexpr BitRate_20kBPS_10MHz  = {0x18, 0x9a, 0x01};
+static CanBitRateConfig constexpr BitRate_50kBPS_10MHz  = {0x04, 0xbf, 0x02};
+static CanBitRateConfig constexpr BitRate_100kBPS_10MHz  = {0x04, 0x9a, 0x01};
+static CanBitRateConfig constexpr BitRate_125kBPS_10MHz  = {0x01, 0xbf, 0x02};
+static CanBitRateConfig constexpr BitRate_250kBPS_10MHz  = {0x00, 0xbf, 0x02};
+static CanBitRateConfig constexpr BitRate_500kBPS_10MHz  = {0x00, 0x9a, 0x01};
+//static CanBitRateConfig constexpr BitRate_800kBPS_10MHz  = {0x00, 0x00, 0x00}; // 10 mhz is to slow for this speed - not possible
 static CanBitRateConfig constexpr BitRate_1000kBPS_10MHz = {0x00, 0x80, 0x01};
 
-static CanBitRateConfig constexpr BitRate_20kBPS_12MHz = {0x0e, 0xb6, 0x04};
-static CanBitRateConfig constexpr BitRate_125kBPS_12MHz = {0x02, 0xac, 0x03};
-static CanBitRateConfig constexpr BitRate_250kBPS_12MHz = {0x01, 0x9b, 0x02};
-static CanBitRateConfig constexpr BitRate_500kBPS_12MHz = {0x00, 0x9b, 0x02};
+static CanBitRateConfig constexpr BitRate_10kBPS_12MHz = {0x27, 0xad, 0x01};
+static CanBitRateConfig constexpr BitRate_20kBPS_12MHz = {0x13, 0xad, 0x01};
+static CanBitRateConfig constexpr BitRate_50kBPS_12MHz = {0x07, 0xad, 0x01};
+static CanBitRateConfig constexpr BitRate_100kBPS_12MHz = {0x03, 0xad, 0x01};
+static CanBitRateConfig constexpr BitRate_125kBPS_12MHz = {0x02, 0xb5, 0x01};
+static CanBitRateConfig constexpr BitRate_250kBPS_12MHz = {0x01, 0xa3, 0x01};
+static CanBitRateConfig constexpr BitRate_500kBPS_12MHz = {0x00, 0xa3, 0x01};
+//static CanBitRateConfig constexpr BitRate_800kBPS_12MHz = {0x00, 0x00, 0x00}; // 12 mhz is to slow for this speed - not possible
 static CanBitRateConfig constexpr BitRate_1000kBPS_12MHz = {0x00, 0x88, 0x01};
 
 /**************************************************************************************
