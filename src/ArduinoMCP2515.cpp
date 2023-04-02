@@ -25,18 +25,43 @@ using namespace MCP2515;
 
 static CanBitRateConfig const BIT_RATE_CONFIG_ARRAY[] =
 {
+  BitRate_10kBPS_16MHz,
+  BitRate_20kBPS_16MHz,
+  BitRate_50kBPS_16MHz,
+  BitRate_100kBPS_16MHz,
   BitRate_125kBPS_16MHz,
   BitRate_250kBPS_16MHz,
   BitRate_500kBPS_16MHz,
+  BitRate_800kBPS_16MHz,
   BitRate_1000kBPS_16MHz,
+
+  BitRate_10kBPS_8MHz,
+  BitRate_20kBPS_8MHz,
+  BitRate_50kBPS_8MHz,
+  BitRate_100kBPS_8MHz,
   BitRate_125kBPS_8MHz,
   BitRate_250kBPS_8MHz,
   BitRate_500kBPS_8MHz,
+  BitRate_800kBPS_8MHz,
   BitRate_1000kBPS_8MHz,
+
+  BitRate_10kBPS_10MHz,
+  BitRate_20kBPS_10MHz,
+  BitRate_50kBPS_10MHz,
+  BitRate_1000kBPS_10MHz,
   BitRate_125kBPS_10MHz,
   BitRate_250kBPS_10MHz,
   BitRate_500kBPS_10MHz,
-  BitRate_1000kBPS_10MHz
+  BitRate_1000kBPS_10MHz,
+
+  BitRate_10kBPS_12MHz,
+  BitRate_20kBPS_12MHz,
+  BitRate_50kBPS_12MHz,
+  BitRate_100kBPS_12MHz,
+  BitRate_125kBPS_12MHz,
+  BitRate_250kBPS_12MHz,
+  BitRate_500kBPS_12MHz,
+  BitRate_1000kBPS_12MHz
 };
 
 /**************************************************************************************
