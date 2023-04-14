@@ -123,7 +123,7 @@ void ArduinoMCP2515::begin()
   }
 }
 
-void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
+void ArduinoMCP2515::setBitRate(MCP2515::CanBitRate const bit_rate)
 {
   _cfg.setBitRateConfig(BIT_RATE_CONFIG_ARRAY[static_cast<size_t>(bit_rate)]);
 }

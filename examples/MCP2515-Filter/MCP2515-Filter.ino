@@ -60,7 +60,7 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(MKRCAN_MCP2515_INT_PIN), [](){ mcp2515.onExternalEventHandler(); }, LOW);
 
   mcp2515.begin();
-  mcp2515.setBitRate(CanBitRate::BR_250kBPS_16MHZ); // CAN bit rate and MCP2515 clock speed
+  mcp2515.setBitRate(MCP2515::CanBitRate::BR_250kBPS_16MHZ); // CAN bit rate and MCP2515 clock speed
   mcp2515.setListenOnlyMode();
 
   /* Enable filtering of CAN messages. The MCP2515 has two message receive buffers.

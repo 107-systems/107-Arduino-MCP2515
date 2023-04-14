@@ -41,6 +41,9 @@
  * TYPEDEF
  **************************************************************************************/
 
+namespace MCP2515
+{
+
 enum class CanBitRate : size_t
 {
   BR_10kBPS_16MHZ = 0,
@@ -82,6 +85,8 @@ enum class CanBitRate : size_t
   BR_1000kBPS_12MHZ
 };
 
+} /* MCP2515 */
+
 typedef std::function<unsigned long()> MicroSecondFunc;
 #if LIBCANARD
 typedef std::function<void(CanardFrame const & frame)> OnReceiveBufferFullFunc;
@@ -110,7 +115,7 @@ public:
 
   void begin();
 
-  void setBitRate(CanBitRate const bit_rate);
+  void setBitRate(MCP2515::CanBitRate const bit_rate);
 
   inline bool setNormalMode    () { return _cfg.setMode(MCP2515::Mode::Normal);     }
   inline bool setSleepMode     () { return _cfg.setMode(MCP2515::Mode::Sleep);      }

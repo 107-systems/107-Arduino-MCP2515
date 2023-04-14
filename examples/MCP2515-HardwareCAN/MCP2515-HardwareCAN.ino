@@ -11,9 +11,7 @@
 
 #include <107-Arduino-MCP2515.h>
 
-#undef max
-#undef min
-#include <algorithm>
+#include "api/HardwareCAN.h"
 
 /**************************************************************************************
  * CONSTANTS
@@ -21,13 +19,74 @@
 
 static int         const MKRCAN_MCP2515_CS_PIN  = 3;
 static int         const MKRCAN_MCP2515_INT_PIN = 7;
-static SPISettings const MCP2515x_SPI_SETTING{1000000, MSBFIRST, SPI_MODE0};
+static SPISettings const MCP2515x_SPI_SETTING{10*1000*1000UL, MSBFIRST, SPI_MODE0};
+
+/**************************************************************************************
+ * CONSTANTS
+ **************************************************************************************/
+
+static uint32_t const CAN_ID = 0x20;
 
 /**************************************************************************************
  * FUNCTION DECLARATION
  **************************************************************************************/
 
 void onReceiveBufferFull(uint32_t const, uint32_t const, uint8_t const *, uint8_t const);
+
+/**************************************************************************************
+ * CLASS DECLARATION
+ **************************************************************************************/
+
+class MCP2515_HardwareCAN : public arduino::HardwareCAN
+{
+private:
+  ArduinoMCP2515 & _mcp2515;
+  CanMsgRingbuffer _can_rx_buf;
+
+public:
+  MCP2515_HardwareCAN(ArduinoMCP2515 & mcp2515)
+  : _mcp2515{mcp2515}
+  { }
+  virtual ~MCP2515_HardwareCAN() { }
+
+
+  virtual bool begin(CanBitRate const can_bitrate) override
+  {
+    _mcp2515.begin();
+    _mcp2515.setBitRate(MCP2515::CanBitRate::BR_250kBPS_16MHZ);
+    _mcp2515.setNormalMode();
+    return true;
+  }
+  virtual void end() override { }
+
+  virtual int write(CanMsg const &msg) override
+  {
+    return _mcp2515.transmit(msg.id, msg.data, msg.data_length);
+  }
+
+  virtual size_t available() override
+  {
+    return _can_rx_buf.available();
+  }
+
+  virtual CanMsg read() override
+  {
+    return _can_rx_buf.dequeue();
+  }
+
+  void onCanMsgReceived(uint32_t const id, uint8_t const * data, uint8_t const len)
+  {
+    /* Extract the received CAN message. */
+    CanMsg const msg
+      (
+        id,
+        len,
+        data
+      );
+    /* Store the received CAN message in the receive buffer. */
+    _can_rx_buf.enqueue(msg);
+  }
+};
 
 /**************************************************************************************
  * GLOBAL VARIABLES
@@ -40,13 +99,15 @@ ArduinoMCP2515 mcp2515([]() { digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW); },
                        onReceiveBufferFull,
                        nullptr);
 
+MCP2515_HardwareCAN CANx(mcp2515);
+
 /**************************************************************************************
  * SETUP/LOOP
  **************************************************************************************/
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   while(!Serial) { }
 
   /* Setup SPI access */
@@ -59,15 +120,41 @@ void setup()
   pinMode(MKRCAN_MCP2515_INT_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(MKRCAN_MCP2515_INT_PIN), [](){ mcp2515.onExternalEventHandler(); }, LOW);
 
-  mcp2515.begin();
-  mcp2515.setBitRate(MCP2515::CanBitRate::BR_250kBPS_16MHZ); // CAN bit rate and MCP2515 clock speed
-  mcp2515.setListenOnlyMode();
+  if (!CANx.begin(CanBitRate::BR_250k))
+  {
+    Serial.println("CAN.begin(...) failed.");
+    for (;;) {}
+  }
 }
+
+static uint32_t msg_cnt = 0;
 
 void loop()
 {
+  /* Assemble a CAN message with the format of
+   * 0xCA 0xFE 0x00 0x00 [4 byte message counter]
+   */
+  uint8_t const msg_data[] = {0xCA,0xFE,0,0,0,0,0,0};
+  memcpy((void *)(msg_data + 4), &msg_cnt, sizeof(msg_cnt));
+  CanMsg msg(CAN_ID, sizeof(msg_data), msg_data);
 
+  /* Transmit the CAN message, capture and display an
+   * error core in case of failure.
+   */
+  if (int const rc = CANx.write(msg); rc <= 0)
+  {
+    Serial.print  ("CAN.write(...) failed with error code ");
+    Serial.println(rc);
+    for (;;) { }
+  }
+
+  /* Increase the message counter. */
+  msg_cnt++;
+
+  /* Only send one message per second. */
+  delay(1000);
 }
+
 
 /**************************************************************************************
  * FUNCTION DEFINITION
@@ -75,24 +162,5 @@ void loop()
 
 void onReceiveBufferFull(uint32_t const timestamp_us, uint32_t const id, uint8_t const * data, uint8_t const len)
 {
-  Serial.print("[ ");
-  Serial.print(timestamp_us);
-  Serial.print("] ");
-
-  Serial.print("ID");
-  if(id & MCP2515::CAN_EFF_BITMASK) Serial.print("(EXT)");
-  if(id & MCP2515::CAN_RTR_BITMASK) Serial.print("(RTR)");
-  Serial.print(" ");
-  Serial.print(id, HEX);
-
-  Serial.print(" DATA[");
-  Serial.print(len);
-  Serial.print("] ");
-  std::for_each(data,
-                data+len,
-                [](uint8_t const elem) {
-                  Serial.print(elem, HEX);
-                  Serial.print(" ");
-                });
-  Serial.println();
+  CANx.onCanMsgReceived(id, data, len);
 }
