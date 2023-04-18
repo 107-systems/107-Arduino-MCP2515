@@ -98,12 +98,12 @@ public:
          bool setMode            (Mode const mode);
          void setBitRateConfig   (CanBitRateConfig const bit_rate_config);
 
-  inline void setFilterId_RxF0  (uint32_t const id)   { setFilterId(Register::RXF0SIDL, id); }
-  inline void setFilterId_RxF1  (uint32_t const id)   { setFilterId(Register::RXF1SIDL, id); }
-  inline void setFilterId_RxF2  (uint32_t const id)   { setFilterId(Register::RXF2SIDL, id); }
-  inline void setFilterId_RxF3  (uint32_t const id)   { setFilterId(Register::RXF3SIDL, id); }
-  inline void setFilterId_RxF4  (uint32_t const id)   { setFilterId(Register::RXF4SIDL, id); }
-  inline void setFilterId_RxF5  (uint32_t const id)   { setFilterId(Register::RXF5SIDL, id); }
+  inline void setFilterId_RxF0  (uint32_t const id)   { setFilterId(Register::RXF0SIDH, id); }
+  inline void setFilterId_RxF1  (uint32_t const id)   { setFilterId(Register::RXF1SIDH, id); }
+  inline void setFilterId_RxF2  (uint32_t const id)   { setFilterId(Register::RXF2SIDH, id); }
+  inline void setFilterId_RxF3  (uint32_t const id)   { setFilterId(Register::RXF3SIDH, id); }
+  inline void setFilterId_RxF4  (uint32_t const id)   { setFilterId(Register::RXF4SIDH, id); }
+  inline void setFilterId_RxF5  (uint32_t const id)   { setFilterId(Register::RXF5SIDH, id); }
   inline void setFilterMask_RxB0(uint32_t const mask) { setFilterMask(Register::RXM0SIDH, mask); }
   inline void setFilterMask_RxB1(uint32_t const mask) { setFilterMask(Register::RXM1SIDH, mask); }
 
