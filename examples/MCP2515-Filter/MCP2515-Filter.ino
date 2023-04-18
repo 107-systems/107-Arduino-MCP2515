@@ -61,7 +61,6 @@ void setup()
 
   mcp2515.begin();
   mcp2515.setBitRate(CanBitRate::BR_250kBPS_16MHZ); // CAN bit rate and MCP2515 clock speed
-  mcp2515.setListenOnlyMode();
 
   /* Enable filtering of CAN messages. The MCP2515 has two message receive buffers.
    * For each message receive buffer a filter mask can be defined. In addition, for
@@ -95,6 +94,9 @@ void setup()
     0x00000008
   };
   mcp2515.enableFilter(MCP2515::RxB::RxB1, RXMB1_MASK, RXMB1_FILTER, RXMB1_FILTER_SIZE);
+
+  /* Leave configuration mode and start listening. */
+  mcp2515.setListenOnlyMode();
 }
 
 void loop()
