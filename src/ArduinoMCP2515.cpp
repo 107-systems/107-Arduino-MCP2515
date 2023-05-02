@@ -192,7 +192,7 @@ void ArduinoMCP2515::onExternalEventHandler()
    * transaction which consumes valuable processing
    * time.
    */
-  if (!_on_error || !_on_warning)
+  if (!_on_error && !_on_warning)
     return;
 
   /* Check if an error flag is set and - should an error flag
