@@ -154,6 +154,7 @@ enum class STATUS : uint8_t
 
 enum class CANINTE : uint8_t
 {
+  ERRIE = 5,
   TX2IE = 4,
   TX1IE = 3,
   TX0IE = 2,
@@ -222,6 +223,18 @@ enum class TXBnCTRL : uint8_t
   TXREQ = 3,
 };
 
+enum class EFLG : uint8_t
+{
+  RX1OVR = 7,
+  RX0OVR = 6,
+  TXBO   = 5,
+  TXEP   = 4,
+  RXEP   = 3,
+  TXWAR  = 2,
+  RXWAR  = 1,
+  EWARN  = 0,
+};
+
 /**************************************************************************************
  * CONVERSION FUNCTIONS
  **************************************************************************************/
@@ -239,6 +252,12 @@ constexpr auto bm(Enumeration const value) -> typename std::underlying_type<Enum
 }
 
 /**************************************************************************************
+ * FUNCTION DECLARATION
+ **************************************************************************************/
+
+const char * toStr(EFLG const err_flag);
+
+/**************************************************************************************
  * CONSTANTS
  **************************************************************************************/
 
@@ -246,6 +265,9 @@ static uint8_t constexpr CANCTRL_REQOP_MASK = bm(CANCTRL::REQOP2) | bm(CANCTRL::
 static uint8_t constexpr CANSTAT_OP_MASK    = bm(CANSTAT::OPMOD2) | bm(CANSTAT::OPMOD1) | bm(CANSTAT::OPMOD0);
 static uint8_t constexpr RXB0CTRL_RXM_MASK  = bm(RXB0CTRL::RXM1)  | bm(RXB0CTRL::RXM0);
 static uint8_t constexpr RXB1CTRL_RXM_MASK  = bm(RXB1CTRL::RXM1)  | bm(RXB1CTRL::RXM0);
+
+static uint8_t constexpr EFLG_ERR_MASK      = bm(EFLG::RX1OVR) | bm(EFLG::RX0OVR) | bm(EFLG::TXBO) | bm(EFLG::TXEP) | bm(EFLG::RXEP);
+static uint8_t constexpr EFLG_WAR_MASK      = bm(EFLG::TXWAR) | bm(EFLG::RXWAR) | bm(EFLG::EWARN);
 
 static uint32_t constexpr CAN_EFF_BITMASK   = 0x80000000;
 static uint32_t constexpr CAN_RTR_BITMASK   = 0x40000000;

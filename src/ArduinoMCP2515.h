@@ -90,6 +90,8 @@ typedef std::function<void(uint32_t const, uint32_t const, uint8_t const *, uint
 #endif
 class ArduinoMCP2515;
 typedef std::function<void(ArduinoMCP2515 *)> OnTransmitBufferEmptyFunc;
+typedef std::function<void(MCP2515::EFLG const)> OnCanErrorFunc;
+typedef std::function<void(MCP2515::EFLG const)> OnCanWarningFunc;
 
 /**************************************************************************************
  * CLASS DECLARATION
@@ -105,7 +107,18 @@ public:
                  MCP2515::SpiTransferFunc transfer,
                  MicroSecondFunc micros,
                  OnReceiveBufferFullFunc on_rx_buf_full,
-                 OnTransmitBufferEmptyFunc on_tx_buf_empty);
+                 OnTransmitBufferEmptyFunc on_tx_buf_empty,
+                 OnCanErrorFunc on_error,
+                 OnCanWarningFunc on_warning);
+
+  ArduinoMCP2515(MCP2515::SpiSelectFunc select,
+                 MCP2515::SpiDeselectFunc deselect,
+                 MCP2515::SpiTransferFunc transfer,
+                 MicroSecondFunc micros,
+                 OnReceiveBufferFullFunc on_rx_buf_full,
+                 OnTransmitBufferEmptyFunc on_tx_buf_empty)
+  : ArduinoMCP2515{select, deselect, transfer, micros, on_rx_buf_full, on_tx_buf_empty, nullptr, nullptr}
+  { }
 
 
   void begin();
@@ -137,6 +150,8 @@ private:
   MicroSecondFunc _micros;
   OnReceiveBufferFullFunc _on_rx_buf_full;
   OnTransmitBufferEmptyFunc _on_tx_buf_empty;
+  OnCanErrorFunc _on_error;
+  OnCanWarningFunc _on_warning;
 
   bool transmitCANFrame        (uint32_t const id, uint8_t const * data, uint8_t const len);
   void onReceiveBuffer_0_Full  ();

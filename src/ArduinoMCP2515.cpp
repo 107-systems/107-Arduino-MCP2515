@@ -87,13 +87,17 @@ ArduinoMCP2515::ArduinoMCP2515(SpiSelectFunc select,
                                SpiTransferFunc transfer,
                                MicroSecondFunc micros,
                                OnReceiveBufferFullFunc on_rx_buf_full,
-                               OnTransmitBufferEmptyFunc on_tx_buf_empty)
+                               OnTransmitBufferEmptyFunc on_tx_buf_empty,
+                               OnCanErrorFunc on_error,
+                               OnCanWarningFunc on_warning)
 : _io{select, deselect, transfer}
 , _cfg{_io}
 , _ctrl{_io}
 , _micros{micros}
 , _on_rx_buf_full{on_rx_buf_full}
 , _on_tx_buf_empty{on_tx_buf_empty}
+, _on_error{on_error}
+, _on_warning{on_warning}
 {
 
 }
@@ -121,6 +125,13 @@ void ArduinoMCP2515::begin()
     _cfg.enableIntFlag(CANINTE::RX0IE);
     _cfg.enableIntFlag(CANINTE::RX1IE);
   }
+
+  /* Conditionally enable error interrupt
+   * only if we have error callbacks
+   * registered.
+   */
+  if (_on_error || _on_warning)
+    _cfg.enableIntFlag(CANINTE::ERRIE);
 }
 
 void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
@@ -164,6 +175,9 @@ bool ArduinoMCP2515::transmit(uint32_t const id, uint8_t const * data, uint8_t c
 
 void ArduinoMCP2515::onExternalEventHandler()
 {
+  /* Obtain current status and call the appropriate callback
+   * handlers to facilitate the necessary actions.
+   */
   uint8_t const status = _ctrl.status();
 
   if(isBitSet(status, bp(STATUS::RX0IF))) onReceiveBuffer_0_Full();
@@ -171,6 +185,46 @@ void ArduinoMCP2515::onExternalEventHandler()
   if(isBitSet(status, bp(STATUS::TX0IF))) onTransmitBuffer_0_Empty();
   if(isBitSet(status, bp(STATUS::TX1IF))) onTransmitBuffer_1_Empty();
   if(isBitSet(status, bp(STATUS::TX2IF))) onTransmitBuffer_2_Empty();
+
+
+  /* Only perform error checks if a callback has been
+   * registered. Otherwise, it's an unnecessary SPI
+   * transaction which consumes valuable processing
+   * time.
+   */
+  if (!_on_error && !_on_warning)
+    return;
+
+  /* Check if an error flag is set and - should an error flag
+   * be set - deal with it.
+   */
+  uint8_t const error_flag = _ctrl.error();
+
+  bool const is_error = (error_flag > EFLG_ERR_MASK) > 0;
+  if (is_error && _on_error)
+  {
+    _on_error(static_cast<EFLG>(error_flag & EFLG_ERR_MASK));
+
+    /* RX0OVR and RX1OVR need to be cleared manually,
+     * otherwise the error will persist and we will
+     * not be able to ever again obtain received
+     * CAN frames.
+     */
+    if (isBitSet(error_flag, bp(EFLG::RX0OVR)))
+      _ctrl.clearErrFlag(EFLG::RX0OVR);
+
+    if (isBitSet(error_flag, bp(EFLG::RX1OVR)))
+      _ctrl.clearErrFlag(EFLG::RX1OVR);
+  }
+
+  bool const is_warning = (error_flag > EFLG_WAR_MASK) > 0;
+  if (is_warning && _on_warning)
+    _on_warning(static_cast<EFLG>(error_flag & EFLG_WAR_MASK));
+
+  /* Finally clear the error interrupt flag so that we are not
+   * continuously caught in the ERROR handling loop.
+   */
+  _ctrl.clearIntFlag(CANINTF::ERRIF);
 }
 
 /**************************************************************************************

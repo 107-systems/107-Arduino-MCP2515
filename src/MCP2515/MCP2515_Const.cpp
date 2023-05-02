@@ -5,14 +5,11 @@
  * Contributors: https://github.com/107-systems/107-Arduino-MCP2515/graphs/contributors.
  */
 
-#ifndef MCP2515_MCP2515_CONTROL_H_
-#define MCP2515_MCP2515_CONTROL_H_
-
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include "MCP2515_Io.h"
+#include "MCP2515_Const.h"
 
 /**************************************************************************************
  * NAMESPACE
@@ -22,37 +19,27 @@ namespace MCP2515
 {
 
 /**************************************************************************************
- * CTOR/DTOR
+ * FUNCTION DEFINITION
  **************************************************************************************/
 
-class MCP2515_Control
+const char * toStr(EFLG const err_flag)
 {
-
-public:
-
-  MCP2515_Control(MCP2515_Io & io);
-
-
-  void transmit(TxB const txb, uint32_t const   id, uint8_t const * data, uint8_t const   len);
-  void receive (RxB const rxb, uint32_t       & id, uint8_t       * data, uint8_t       & len);
-
-  uint8_t error();
-
-  inline void    reset       ()                       { _io.reset(); }
-  inline uint8_t status      ()                       { return _io.status(); }
-  inline void    clearIntFlag(CANINTF const int_flag) { _io.clrBit(Register::CANINTF, bp(int_flag)); }
-  inline void    clearErrFlag(EFLG const err_flag)    { _io.clrBit(Register::EFLG, bp(err_flag)); }
-
-private:
-
-  MCP2515_Io & _io;
-
-};
+  switch(err_flag)
+  {
+    case EFLG::RX1OVR: return "RX1OVR"; break;
+    case EFLG::RX0OVR: return "RX0OVR"; break;
+    case EFLG::TXBO  : return "TXBO";   break;
+    case EFLG::TXEP  : return "TXEP";   break;
+    case EFLG::RXEP  : return "RXEP";   break;
+    case EFLG::TXWAR : return "TXWAR";  break;
+    case EFLG::RXWAR : return "RXWAR";  break;
+    case EFLG::EWARN : return "EWARN";  break;
+    default: __builtin_unreachable(); return ""; break;
+  }
+}
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* MCP2515 */
-
-#endif /* MCP2515_MCP2515_CONTROL_H_ */

@@ -38,7 +38,9 @@ ArduinoMCP2515 mcp2515([]() { digitalWrite(MKRCAN_MCP2515_CS_PIN, LOW); },
                        [](uint8_t const d) { return SPI.transfer(d); },
                        micros,
                        onReceiveBufferFull,
-                       nullptr);
+                       nullptr,
+                       [](MCP2515::EFLG const err_flag) { Serial.print("MCP2515::OnError, error code = "); Serial.println(MCP2515::toStr(err_flag)); },
+                       [](MCP2515::EFLG const err_flag) { Serial.print("MCP2515::OnError, error code = "); Serial.println(MCP2515::toStr(err_flag)); });
 
 /**************************************************************************************
  * SETUP/LOOP

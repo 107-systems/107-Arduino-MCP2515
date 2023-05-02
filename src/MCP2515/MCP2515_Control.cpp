@@ -107,6 +107,10 @@ void MCP2515_Control::receive(RxB const rxb, uint32_t & id, uint8_t * data, uint
   memcpy(data, rx_buffer.reg.data, std::min<uint8_t>(len, 8));
 }
 
+uint8_t MCP2515_Control::error()
+{
+  return _io.readRegister(Register::EFLG);
+}
 
 /**************************************************************************************
  * NAMESPACE
