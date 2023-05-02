@@ -251,7 +251,7 @@ constexpr auto bm(Enumeration const value) -> typename std::underlying_type<Enum
     return (1 << bp(value));
 }
 
-constexpr const char * toStr(EFLG const err_flag)
+static constexpr const char * toStr(EFLG const err_flag)
 {
   switch(err_flag)
   {
@@ -265,6 +265,7 @@ constexpr const char * toStr(EFLG const err_flag)
     case EFLG::EWARN : return "EWARN";  break;
     default: __builtin_unreachable(); break;
   }
+  return "";
 }
 
 /**************************************************************************************
