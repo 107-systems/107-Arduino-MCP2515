@@ -203,7 +203,7 @@ void ArduinoMCP2515::onExternalEventHandler()
   bool const is_error = (error_flag > EFLG_ERR_MASK) > 0;
   if (is_error && _on_error)
   {
-    _on_error(error_flag);
+    _on_error(static_cast<EFLG>(error_flag & EFLG_ERR_MASK));
 
     /* RX0OVR and RX1OVR need to be cleared manually,
      * otherwise the error will persist and we will
@@ -219,7 +219,7 @@ void ArduinoMCP2515::onExternalEventHandler()
 
   bool const is_warning = (error_flag > EFLG_WAR_MASK) > 0;
   if (is_warning && _on_warning)
-    _on_warning(error_flag);
+    _on_warning(static_cast<EFLG>(error_flag & EFLG_WAR_MASK));
 
   /* Finally clear the error interrupt flag so that we are not
    * continuously caught in the ERROR handling loop.

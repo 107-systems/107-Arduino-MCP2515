@@ -90,8 +90,8 @@ typedef std::function<void(uint32_t const, uint32_t const, uint8_t const *, uint
 #endif
 class ArduinoMCP2515;
 typedef std::function<void(ArduinoMCP2515 *)> OnTransmitBufferEmptyFunc;
-typedef std::function<void(uint8_t const)> OnCanErrorFunc;
-typedef std::function<void(uint8_t const)> OnCanWarningFunc;
+typedef std::function<void(MCP2515::EFLG const)> OnCanErrorFunc;
+typedef std::function<void(MCP2515::EFLG const)> OnCanWarningFunc;
 
 /**************************************************************************************
  * CLASS DECLARATION
