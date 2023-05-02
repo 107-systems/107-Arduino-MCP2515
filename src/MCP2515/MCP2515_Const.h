@@ -154,6 +154,7 @@ enum class STATUS : uint8_t
 
 enum class CANINTE : uint8_t
 {
+  ERRIE = 5,
   TX2IE = 4,
   TX1IE = 3,
   TX0IE = 2,

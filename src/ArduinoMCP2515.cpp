@@ -125,6 +125,13 @@ void ArduinoMCP2515::begin()
     _cfg.enableIntFlag(CANINTE::RX0IE);
     _cfg.enableIntFlag(CANINTE::RX1IE);
   }
+
+  /* Conditionally enable error interrupt
+   * only if we have error callbacks
+   * registered.
+   */
+  if (_on_error || _on_warning)
+    _cfg.enableIntFlag(CANINTE::ERRIE);
 }
 
 void ArduinoMCP2515::setBitRate(CanBitRate const bit_rate)
@@ -210,10 +217,14 @@ void ArduinoMCP2515::onExternalEventHandler()
       _ctrl.clearErrFlag(EFLG::RX1OVR);
   }
 
-
   bool const is_warning = (error_flag > EFLG_WAR_MASK) > 0;
   if (is_warning && _on_warning)
     _on_warning(error_flag);
+
+  /* Finally clear the error interrupt flag so that we are not
+   * continuously caught in the ERROR handling loop.
+   */
+  _ctrl.clearIntFlag(CANINTF::ERRIF);
 }
 
 /**************************************************************************************
