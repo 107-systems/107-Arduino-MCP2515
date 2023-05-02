@@ -40,7 +40,7 @@ public:
 
   inline void    reset       ()                       { _io.reset(); }
   inline uint8_t status      ()                       { return _io.status(); }
-  inline void    clearIntFlag(CANINTF const int_flag) {  _io.clrBit(Register::CANINTF, bp(int_flag)); }
+  inline void    clearIntFlag(CANINTF const int_flag) { _io.clrBit(Register::CANINTF, bp(int_flag)); }
   inline void    clearErrFlag(EFLG const err_flag)    { _io.clrBit(Register::EFLG, bp(err_flag)); }
 
 private:
