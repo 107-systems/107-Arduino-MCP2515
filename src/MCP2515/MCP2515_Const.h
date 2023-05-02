@@ -250,6 +250,22 @@ constexpr auto bm(Enumeration const value) -> typename std::underlying_type<Enum
     return (1 << bp(value));
 }
 
+constexpr const char * toStr(EFLG const err_flag)
+{
+  switch(err_flag)
+  {
+    case EFLG::RX1OVR: return "RX1OVR"; break;
+    case EFLG::RX0OVR: return "RX0OVR"; break;
+    case EFLG::TXBO  : return "TXBO";   break;
+    case EFLG::TXEP  : return "TXEP";   break;
+    case EFLG::RXEP  : return "RXEP";   break;
+    case EFLG::TXWAR : return "TXWAR";  break;
+    case EFLG::RXWAR : return "RXWAR";  break;
+    case EFLG::EWARN : return "EWARN";  break;
+    default: __builtin_unreachable; break;
+  }
+}
+
 /**************************************************************************************
  * CONSTANTS
  **************************************************************************************/
