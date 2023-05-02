@@ -195,7 +195,21 @@ void ArduinoMCP2515::onExternalEventHandler()
 
   bool const is_error = (error_flag > EFLG_ERR_MASK) > 0;
   if (is_error && _on_error)
+  {
     _on_error(error_flag);
+
+    /* RX0OVR and RX1OVR need to be cleared manually,
+     * otherwise the error will persist and we will
+     * not be able to ever again obtain received
+     * CAN frames.
+     */
+    if (isBitSet(error_flag, bp(EFLG::RX0OVR)))
+      _ctrl.clearErrFlag(EFLG::RX0OVR);
+
+    if (isBitSet(error_flag, bp(EFLG::RX1OVR)))
+      _ctrl.clearErrFlag(EFLG::RX1OVR);
+  }
+
 
   bool const is_warning = (error_flag > EFLG_WAR_MASK) > 0;
   if (is_warning && _on_warning)
