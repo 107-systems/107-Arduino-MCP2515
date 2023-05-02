@@ -263,7 +263,7 @@ constexpr const char * toStr(EFLG const err_flag)
     case EFLG::TXWAR : return "TXWAR";  break;
     case EFLG::RXWAR : return "RXWAR";  break;
     case EFLG::EWARN : return "EWARN";  break;
-    default: __builtin_unreachable; break;
+    default: __builtin_unreachable; return ""; break;
   }
 }
 
