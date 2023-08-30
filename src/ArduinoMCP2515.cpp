@@ -90,7 +90,7 @@ ArduinoMCP2515::ArduinoMCP2515(SpiSelectFunc select,
                                OnTransmitBufferEmptyFunc on_tx_buf_empty,
                                OnCanErrorFunc on_error,
                                OnCanWarningFunc on_warning)
-: _io{select, deselect, transfer}
+: _io{select, deselect, transfer, micros}
 , _cfg{_io, micros}
 , _ctrl{_io}
 , _micros{micros}

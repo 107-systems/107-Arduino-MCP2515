@@ -84,8 +84,8 @@ class MCP2515_Io
 {
 
 public:
-
-  MCP2515_Io(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransferFunc transfer);
+  using MicroSecondFunc = std::function<unsigned long()>;
+  MCP2515_Io(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransferFunc transfer, MicroSecondFunc micros);
 
 
   static uint8_t constexpr TX_BUF_SIZE = 5 + 8;
@@ -110,6 +110,7 @@ private:
   SpiSelectFunc _select;
   SpiDeselectFunc _deselect;
   SpiTransferFunc _transfer;
+  MicroSecondFunc _micros;
 
 };
 

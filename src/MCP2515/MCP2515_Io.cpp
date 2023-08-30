@@ -48,10 +48,11 @@ static Instruction const TABLE_READ_RX_BUFFER[] =
  * CTOR/DTOR
  **************************************************************************************/
 
-MCP2515_Io::MCP2515_Io(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransferFunc transfer)
+MCP2515_Io::MCP2515_Io(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransferFunc transfer, MicroSecondFunc micros)
 : _select{select}
 , _deselect{deselect}
 , _transfer{transfer}
+, _micros{micros}
 {
 
 }
@@ -67,6 +68,11 @@ void MCP2515_Io::reset()
   _select();
   _transfer(instruction);
   _deselect();
+
+  // Delay 10 ms
+  unsigned long startTime = _micros();
+  while (_micros() - startTime < 10000)
+    asm volatile("nop");
 }
 
 uint8_t MCP2515_Io::status()
