@@ -11,8 +11,6 @@
 
 #include "MCP2515_Io.h"
 
-#include <Arduino.h>
-
 #include <assert.h>
 
 /**************************************************************************************
@@ -69,8 +67,6 @@ void MCP2515_Io::reset()
   _select();
   _transfer(instruction);
   _deselect();
-
-  delay(10);
 }
 
 uint8_t MCP2515_Io::status()

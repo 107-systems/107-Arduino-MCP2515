@@ -91,7 +91,7 @@ ArduinoMCP2515::ArduinoMCP2515(SpiSelectFunc select,
                                OnCanErrorFunc on_error,
                                OnCanWarningFunc on_warning)
 : _io{select, deselect, transfer}
-, _cfg{_io}
+, _cfg{_io, micros}
 , _ctrl{_io}
 , _micros{micros}
 , _on_rx_buf_full{on_rx_buf_full}
@@ -238,6 +238,8 @@ bool ArduinoMCP2515::transmitCANFrame(uint32_t const id, uint8_t const * data, u
     _ctrl.transmit(TxB::TxB0, id, data, len);
     return true;
   }
+
+  return false;
 
 #if LIBCANARD
   /* Only use a single transmit buffer in order to prevent unintentional

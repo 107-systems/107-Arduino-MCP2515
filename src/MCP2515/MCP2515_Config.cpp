@@ -11,8 +11,6 @@
 
 #include "MCP2515_Config.h"
 
-#include <Arduino.h>
-
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -24,8 +22,9 @@ namespace MCP2515
  * CTOR/DTOR
  **************************************************************************************/
 
-MCP2515_Config::MCP2515_Config(MCP2515_Io & io)
+MCP2515_Config::MCP2515_Config(MCP2515_Io & io, MicroSecondFunc micros)
 : _io{io}
+, _micros{micros}
 {
 
 }
@@ -40,7 +39,7 @@ bool MCP2515_Config::setMode(Mode const mode)
 
   _io.modifyRegister(Register::CANCTRL, CANCTRL_REQOP_MASK, mode_val);
 
-  for(unsigned long const start = millis(); (millis() - start) < 10; )
+  for(unsigned long const start = _micros(); (_micros() - start) < 10000; )
   {
     uint8_t const canstat_op_mode = (_io.readRegister(Register::CANSTAT) & CANSTAT_OP_MASK);
     if(canstat_op_mode == mode_val) {
