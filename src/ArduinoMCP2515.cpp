@@ -12,6 +12,7 @@
 #include <107-Arduino-MCP2515.h>
 
 #include <algorithm>
+#include <assert.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -99,7 +100,7 @@ ArduinoMCP2515::ArduinoMCP2515(SpiSelectFunc select,
 , _on_error{on_error}
 , _on_warning{on_warning}
 {
-
+  assert(_micros != nullptr);
 }
 
 /**************************************************************************************

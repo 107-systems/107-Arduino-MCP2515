@@ -13,6 +13,7 @@
  **************************************************************************************/
 
 #include "MCP2515_Io.h"
+#include "MCP2515_Types.h"
 
 /**************************************************************************************
  * NAMESPACE
@@ -92,7 +93,6 @@ static CanBitRateConfig constexpr BitRate_1000kBPS_12MHz = {0x00, 0x88, 0x01};
 class MCP2515_Config
 {
 public:
-  using MicroSecondFunc = std::function<unsigned long()>;
   MCP2515_Config(MCP2515_Io & io, MicroSecondFunc micros);
 
 

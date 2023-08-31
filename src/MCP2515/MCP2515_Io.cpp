@@ -54,7 +54,7 @@ MCP2515_Io::MCP2515_Io(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransf
 , _transfer{transfer}
 , _micros{micros}
 {
-
+  assert(_micros != nullptr);
 }
 
 /**************************************************************************************

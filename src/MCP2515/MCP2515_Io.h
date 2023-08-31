@@ -19,6 +19,7 @@
 #include <functional>
 
 #include "MCP2515_Const.h"
+#include "MCP2515_Types.h"
 
 /**************************************************************************************
  * NAMESPACE
@@ -84,7 +85,6 @@ class MCP2515_Io
 {
 
 public:
-  using MicroSecondFunc = std::function<unsigned long()>;
   MCP2515_Io(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransferFunc transfer, MicroSecondFunc micros);
 
 
