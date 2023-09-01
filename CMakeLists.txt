@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.27.0)
 
 # Create Project
-project(107_arduino_mcp2515)
+project(107_ARDUINO_MCP2515)
 
 add_library(${PROJECT_NAME} STATIC
     "src/ArduinoMCP2515.cpp"
