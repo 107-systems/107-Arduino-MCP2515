@@ -5,6 +5,8 @@
  * Contributors: https://github.com/107-systems/107-Arduino-MCP2515/graphs/contributors.
  */
 
+#pragma once
+
 #include <functional>
 
 typedef std::function<unsigned long()> MicroSecondFunc;
