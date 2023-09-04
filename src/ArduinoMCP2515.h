@@ -18,7 +18,6 @@
 #include "MCP2515/MCP2515_Io.h"
 #include "MCP2515/MCP2515_Config.h"
 #include "MCP2515/MCP2515_Control.h"
-#include "MCP2515/MCP2515_Types.h"
 
 #undef min
 #undef max
@@ -36,6 +35,12 @@
 #else
 #  define LIBCANARD 0
 #endif
+
+/* Needs to be included after the libcanard checks in
+ * order to have the macro "LIBCANARD" available
+ * within MCP2515_Types.h.
+ */
+#include "MCP2515/MCP2515_Types.h"
 
 /**************************************************************************************
  * TYPEDEF
@@ -94,18 +99,18 @@ public:
   ArduinoMCP2515(MCP2515::SpiSelectFunc select,
                  MCP2515::SpiDeselectFunc deselect,
                  MCP2515::SpiTransferFunc transfer,
-                 MicroSecondFunc micros,
-                 OnReceiveBufferFullFunc on_rx_buf_full,
-                 OnTransmitBufferEmptyFunc on_tx_buf_empty,
-                 OnCanErrorFunc on_error,
-                 OnCanWarningFunc on_warning);
+                 MCP2515::MicroSecondFunc micros,
+                 MCP2515::OnReceiveBufferFullFunc on_rx_buf_full,
+                 MCP2515::OnTransmitBufferEmptyFunc on_tx_buf_empty,
+                 MCP2515::OnCanErrorFunc on_error,
+                 MCP2515::OnCanWarningFunc on_warning);
 
   ArduinoMCP2515(MCP2515::SpiSelectFunc select,
                  MCP2515::SpiDeselectFunc deselect,
                  MCP2515::SpiTransferFunc transfer,
-                 MicroSecondFunc micros,
-                 OnReceiveBufferFullFunc on_rx_buf_full,
-                 OnTransmitBufferEmptyFunc on_tx_buf_empty)
+                 MCP2515::MicroSecondFunc micros,
+                 MCP2515::OnReceiveBufferFullFunc on_rx_buf_full,
+                 MCP2515::OnTransmitBufferEmptyFunc on_tx_buf_empty)
   : ArduinoMCP2515{select, deselect, transfer, micros, on_rx_buf_full, on_tx_buf_empty, nullptr, nullptr}
   { }
 
@@ -136,11 +141,11 @@ private:
   MCP2515::MCP2515_Io _io;
   MCP2515::MCP2515_Config _cfg;
   MCP2515::MCP2515_Control _ctrl;
-  MicroSecondFunc _micros;
-  OnReceiveBufferFullFunc _on_rx_buf_full;
-  OnTransmitBufferEmptyFunc _on_tx_buf_empty;
-  OnCanErrorFunc _on_error;
-  OnCanWarningFunc _on_warning;
+  MCP2515::MicroSecondFunc _micros;
+  MCP2515::OnReceiveBufferFullFunc _on_rx_buf_full;
+  MCP2515::OnTransmitBufferEmptyFunc _on_tx_buf_empty;
+  MCP2515::OnCanErrorFunc _on_error;
+  MCP2515::OnCanWarningFunc _on_warning;
 
   bool transmitCANFrame        (uint32_t const id, uint8_t const * data, uint8_t const len);
   void onReceiveBuffer_0_Full  ();
