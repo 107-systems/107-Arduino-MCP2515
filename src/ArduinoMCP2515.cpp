@@ -86,21 +86,21 @@ inline bool isBitClr(uint8_t const reg_val, uint8_t const bit_pos)
 ArduinoMCP2515::ArduinoMCP2515(SpiSelectFunc select,
                                SpiDeselectFunc deselect,
                                SpiTransferFunc transfer,
-                               MicroSecondFunc micros,
+                               MicroSecondFunc micros_func,
                                OnReceiveBufferFullFunc on_rx_buf_full,
                                OnTransmitBufferEmptyFunc on_tx_buf_empty,
                                OnCanErrorFunc on_error,
                                OnCanWarningFunc on_warning)
-: _io{select, deselect, transfer, micros}
-, _cfg{_io, micros}
+: _io{select, deselect, transfer, micros_func}
+, _cfg{_io, micros_func}
 , _ctrl{_io}
-, _micros{micros}
+, _micros_func{micros_func}
 , _on_rx_buf_full{on_rx_buf_full}
 , _on_tx_buf_empty{on_tx_buf_empty}
 , _on_error{on_error}
 , _on_warning{on_warning}
 {
-  assert(_micros != nullptr);
+  assert(_micros_func != nullptr);
 }
 
 /**************************************************************************************
@@ -266,7 +266,7 @@ void ArduinoMCP2515::onReceiveBuffer_0_Full()
 {
   uint32_t id = 0;
   uint8_t data[8] = {0}, len = 0;
-  unsigned long const rx_timestamp_us = _micros();
+  unsigned long const rx_timestamp_us = _micros_func();
 
   _ctrl.receive(RxB::RxB0, id, data, len);
   _ctrl.clearIntFlag(CANINTF::RX0IF);
@@ -277,7 +277,7 @@ void ArduinoMCP2515::onReceiveBuffer_1_Full()
 {
   uint32_t id = 0;
   uint8_t data[8] = {0}, len = 0;
-  unsigned long const rx_timestamp_us = _micros();
+  unsigned long const rx_timestamp_us = _micros_func();
 
   _ctrl.receive(RxB::RxB1, id, data, len);
   _ctrl.clearIntFlag(CANINTF::RX1IF);

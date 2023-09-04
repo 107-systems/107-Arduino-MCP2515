@@ -11,9 +11,9 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <functional>
+#include <cstdint>
 
-#include "MCP2515_Const.h"
+#include <functional>
 
 /**************************************************************************************
  * NAMESPACE
@@ -26,17 +26,10 @@ namespace MCP2515
  * TYPEDEF
  **************************************************************************************/
 
-typedef std::function<unsigned long()> MicroSecondFunc;
-#if LIBCANARD
-typedef std::function<void(CanardFrame const & frame)> OnReceiveBufferFullFunc;
-#else
-typedef std::function<void(uint32_t const, uint32_t const, uint8_t const *, uint8_t const)> OnReceiveBufferFullFunc;
-#endif
-
-class ArduinoMCP2515;
-typedef std::function<void(ArduinoMCP2515 *)> OnTransmitBufferEmptyFunc;
-typedef std::function<void(EFLG const)> OnCanErrorFunc;
-typedef std::function<void(EFLG const)> OnCanWarningFunc;
+typedef std::function<void()>                 SpiSelectFunc;
+typedef std::function<void()>                 SpiDeselectFunc;
+typedef std::function<uint8_t(uint8_t const)> SpiTransferFunc;
+typedef std::function<unsigned long()>        MicroSecondFunc;
 
 /**************************************************************************************
  * NAMESPACE

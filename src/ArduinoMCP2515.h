@@ -16,6 +16,7 @@
 #include <stdbool.h>
 
 #include "MCP2515/MCP2515_Io.h"
+#include "MCP2515/MCP2515_Types.h"
 #include "MCP2515/MCP2515_Config.h"
 #include "MCP2515/MCP2515_Control.h"
 
@@ -35,12 +36,6 @@
 #else
 #  define LIBCANARD 0
 #endif
-
-/* Needs to be included after the libcanard checks in
- * order to have the macro "LIBCANARD" available
- * within MCP2515_Types.h.
- */
-#include "MCP2515/MCP2515_Types.h"
 
 /**************************************************************************************
  * TYPEDEF
@@ -88,6 +83,40 @@ enum class CanBitRate : size_t
 };
 
 /**************************************************************************************
+ * FORWARD DECLARATION
+ **************************************************************************************/
+
+class ArduinoMCP2515;
+
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+namespace MCP2515
+{
+
+/**************************************************************************************
+ * TYPEDEF
+ **************************************************************************************/
+
+#if LIBCANARD
+typedef std::function<void(CanardFrame const & frame)> OnReceiveBufferFullFunc;
+#else
+typedef std::function<
+void(uint32_t const, uint32_t const, uint8_t const *, uint8_t const)> OnReceiveBufferFullFunc;
+#endif
+
+typedef std::function<void(ArduinoMCP2515 *)> OnTransmitBufferEmptyFunc;
+typedef std::function<void(EFLG const)> OnCanErrorFunc;
+typedef std::function<void(EFLG const)> OnCanWarningFunc;
+
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+} /* MCP2515 */
+
+/**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
@@ -99,7 +128,7 @@ public:
   ArduinoMCP2515(MCP2515::SpiSelectFunc select,
                  MCP2515::SpiDeselectFunc deselect,
                  MCP2515::SpiTransferFunc transfer,
-                 MCP2515::MicroSecondFunc micros,
+                 MCP2515::MicroSecondFunc micros_func,
                  MCP2515::OnReceiveBufferFullFunc on_rx_buf_full,
                  MCP2515::OnTransmitBufferEmptyFunc on_tx_buf_empty,
                  MCP2515::OnCanErrorFunc on_error,
@@ -108,12 +137,15 @@ public:
   ArduinoMCP2515(MCP2515::SpiSelectFunc select,
                  MCP2515::SpiDeselectFunc deselect,
                  MCP2515::SpiTransferFunc transfer,
-                 MCP2515::MicroSecondFunc micros,
+                 MCP2515::MicroSecondFunc micros_func,
                  MCP2515::OnReceiveBufferFullFunc on_rx_buf_full,
                  MCP2515::OnTransmitBufferEmptyFunc on_tx_buf_empty)
-  : ArduinoMCP2515{select, deselect, transfer, micros, on_rx_buf_full, on_tx_buf_empty, nullptr, nullptr}
+  : ArduinoMCP2515{select, deselect, transfer, micros_func, on_rx_buf_full, on_tx_buf_empty, nullptr, nullptr}
   { }
 
+
+  ArduinoMCP2515(ArduinoMCP2515 &&) = delete;
+  ArduinoMCP2515(ArduinoMCP2515 const &) = delete;
 
   void begin();
 
@@ -141,7 +173,7 @@ private:
   MCP2515::MCP2515_Io _io;
   MCP2515::MCP2515_Config _cfg;
   MCP2515::MCP2515_Control _ctrl;
-  MCP2515::MicroSecondFunc _micros;
+  MCP2515::MicroSecondFunc _micros_func;
   MCP2515::OnReceiveBufferFullFunc _on_rx_buf_full;
   MCP2515::OnTransmitBufferEmptyFunc _on_tx_buf_empty;
   MCP2515::OnCanErrorFunc _on_error;

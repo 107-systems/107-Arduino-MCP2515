@@ -32,10 +32,6 @@ namespace MCP2515
  * TYPEDEF
  **************************************************************************************/
 
-typedef std::function<void()>                 SpiSelectFunc;
-typedef std::function<void()>                 SpiDeselectFunc;
-typedef std::function<uint8_t(uint8_t const)> SpiTransferFunc;
-
 enum class TxB : uint8_t
 {
   TxB0 = 0,
@@ -85,7 +81,7 @@ class MCP2515_Io
 {
 
 public:
-  MCP2515_Io(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransferFunc transfer, MicroSecondFunc micros);
+  MCP2515_Io(SpiSelectFunc const select, SpiDeselectFunc const deselect, SpiTransferFunc const transfer, MicroSecondFunc const micros_func);
 
 
   static uint8_t constexpr TX_BUF_SIZE = 5 + 8;
@@ -107,10 +103,10 @@ public:
 
 private:
 
-  SpiSelectFunc _select;
-  SpiDeselectFunc _deselect;
-  SpiTransferFunc _transfer;
-  MicroSecondFunc _micros;
+  SpiSelectFunc const _select;
+  SpiDeselectFunc const _deselect;
+  SpiTransferFunc const _transfer;
+  MicroSecondFunc const _micros_func;
 
 };
 
