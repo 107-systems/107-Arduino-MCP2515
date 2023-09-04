@@ -1,10 +1,11 @@
 ##########################################################################
-
-cmake_minimum_required(VERSION 3.27.0)
+cmake_minimum_required(VERSION 3.22.0)
 ##########################################################################
 project(107_ARDUINO_MCP2515)
 ##########################################################################
-add_library(${PROJECT_NAME} STATIC
+set(LIB_MCP2515_TARGET ${PROJECT_NAME})
+##########################################################################
+add_library(${LIB_MCP2515_TARGET} STATIC
     "src/ArduinoMCP2515.cpp"
     "src/MCP2515/MCP2515_Config.cpp"
     "src/MCP2515/MCP2515_Const.cpp"
@@ -12,7 +13,7 @@ add_library(${PROJECT_NAME} STATIC
     "src/MCP2515/MCP2515_Io.cpp"
 )
 ##########################################################################
-target_include_directories(${PROJECT_NAME} PUBLIC
+target_include_directories(${LIB_MCP2515_TARGET} PUBLIC
     "src"
 )
 ##########################################################################
