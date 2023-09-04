@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.22.0)
 ##########################################################################
 project(107_ARDUINO_MCP2515)
 ##########################################################################
-set(LIB_MCP2515_TARGET ${PROJECT_NAME})
+set(LIB_MCP2515_TARGET mcp2515)
 ##########################################################################
 add_library(${LIB_MCP2515_TARGET} STATIC
     "src/ArduinoMCP2515.cpp"
