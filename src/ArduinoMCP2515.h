@@ -125,21 +125,21 @@ class ArduinoMCP2515
 
 public:
 
-  ArduinoMCP2515(MCP2515::SpiSelectFunc select,
-                 MCP2515::SpiDeselectFunc deselect,
-                 MCP2515::SpiTransferFunc transfer,
-                 MCP2515::MicroSecondFunc micros_func,
-                 MCP2515::OnReceiveBufferFullFunc on_rx_buf_full,
-                 MCP2515::OnTransmitBufferEmptyFunc on_tx_buf_empty,
-                 MCP2515::OnCanErrorFunc on_error,
-                 MCP2515::OnCanWarningFunc on_warning);
+  ArduinoMCP2515(MCP2515::SpiSelectFunc const select,
+                 MCP2515::SpiDeselectFunc const deselect,
+                 MCP2515::SpiTransferFunc const transfer,
+                 MCP2515::MicroSecondFunc const micros_func,
+                 MCP2515::OnReceiveBufferFullFunc const on_rx_buf_full,
+                 MCP2515::OnTransmitBufferEmptyFunc const on_tx_buf_empty,
+                 MCP2515::OnCanErrorFunc const on_error,
+                 MCP2515::OnCanWarningFunc const on_warning);
 
-  ArduinoMCP2515(MCP2515::SpiSelectFunc select,
-                 MCP2515::SpiDeselectFunc deselect,
-                 MCP2515::SpiTransferFunc transfer,
-                 MCP2515::MicroSecondFunc micros_func,
-                 MCP2515::OnReceiveBufferFullFunc on_rx_buf_full,
-                 MCP2515::OnTransmitBufferEmptyFunc on_tx_buf_empty)
+  ArduinoMCP2515(MCP2515::SpiSelectFunc const select,
+                 MCP2515::SpiDeselectFunc const deselect,
+                 MCP2515::SpiTransferFunc const transfer,
+                 MCP2515::MicroSecondFunc const micros_func,
+                 MCP2515::OnReceiveBufferFullFunc const on_rx_buf_full,
+                 MCP2515::OnTransmitBufferEmptyFunc const on_tx_buf_empty)
   : ArduinoMCP2515{select, deselect, transfer, micros_func, on_rx_buf_full, on_tx_buf_empty, nullptr, nullptr}
   { }
 
@@ -173,11 +173,11 @@ private:
   MCP2515::MCP2515_Io _io;
   MCP2515::MCP2515_Config _cfg;
   MCP2515::MCP2515_Control _ctrl;
-  MCP2515::MicroSecondFunc _micros_func;
-  MCP2515::OnReceiveBufferFullFunc _on_rx_buf_full;
-  MCP2515::OnTransmitBufferEmptyFunc _on_tx_buf_empty;
-  MCP2515::OnCanErrorFunc _on_error;
-  MCP2515::OnCanWarningFunc _on_warning;
+  MCP2515::MicroSecondFunc const _micros_func;
+  MCP2515::OnReceiveBufferFullFunc const _on_rx_buf_full;
+  MCP2515::OnTransmitBufferEmptyFunc const _on_tx_buf_empty;
+  MCP2515::OnCanErrorFunc const _on_error;
+  MCP2515::OnCanWarningFunc const _on_warning;
 
   bool transmitCANFrame        (uint32_t const id, uint8_t const * data, uint8_t const len);
   void onReceiveBuffer_0_Full  ();

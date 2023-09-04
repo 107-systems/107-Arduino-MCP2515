@@ -83,14 +83,14 @@ inline bool isBitClr(uint8_t const reg_val, uint8_t const bit_pos)
  * CTOR/DTOR
  **************************************************************************************/
 
-ArduinoMCP2515::ArduinoMCP2515(SpiSelectFunc select,
-                               SpiDeselectFunc deselect,
-                               SpiTransferFunc transfer,
-                               MicroSecondFunc micros_func,
-                               OnReceiveBufferFullFunc on_rx_buf_full,
-                               OnTransmitBufferEmptyFunc on_tx_buf_empty,
-                               OnCanErrorFunc on_error,
-                               OnCanWarningFunc on_warning)
+ArduinoMCP2515::ArduinoMCP2515(SpiSelectFunc const select,
+                               SpiDeselectFunc const deselect,
+                               SpiTransferFunc const transfer,
+                               MicroSecondFunc const micros_func,
+                               OnReceiveBufferFullFunc const on_rx_buf_full,
+                               OnTransmitBufferEmptyFunc const on_tx_buf_empty,
+                               OnCanErrorFunc const on_error,
+                               OnCanWarningFunc const on_warning)
 : _io{select, deselect, transfer, micros_func}
 , _cfg{_io, micros_func}
 , _ctrl{_io}
