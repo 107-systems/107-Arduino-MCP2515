@@ -27,16 +27,20 @@ jobs:
           - fqbn: arduino:samd:mkrzero
             platforms: |
               - name: arduino:samd
+            artifact-name-suffix: arduino-samd-mkrzero
           - fqbn: rp2040:rp2040:rpipico
             platforms: |
               - name: rp2040:rp2040
                 source-url: https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+            artifact-name-suffix: rp2040-rp2040-rpipico
           - fqbn: arduino:renesas_portenta:portenta_c33
             platforms: |
               - name: arduino:renesas_portenta
+            artifact-name-suffix: arduino-renesas_portenta-portenta_c33
           - fqbn: arduino:renesas_uno:minima
             platforms: |
               - name: arduino:renesas_uno
+            artifact-name-suffix: arduino-renesas_uno-minima
 
     steps:
       - name: Checkout
@@ -59,5 +63,6 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.SKETCHES_REPORTS_PATH }}
+          if-no-files-found: error
           path: ${{ env.SKETCHES_REPORTS_PATH }}
+          name: sketches-report-${{ matrix.board.artifact-name-suffix }}
