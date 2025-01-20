@@ -8,7 +8,7 @@
 [![Check keywords.txt](https://github.com/107-systems/107-Arduino-MCP2515/actions/workflows/check-keywords-txt.yml/badge.svg)](https://github.com/107-systems/107-Arduino-MCP2515/actions/workflows/check-keywords-txt.yml)
 [![General Formatting Checks](https://github.com/107-systems/107-Arduino-MCP2515/workflows/General%20Formatting%20Checks/badge.svg)](https://github.com/107-systems/107-Arduino-MCP2515/actions?workflow=General+Formatting+Checks)
 [![Spell Check](https://github.com/107-systems/107-Arduino-MCP2515/workflows/Spell%20Check/badge.svg)](https://github.com/107-systems/107-Arduino-MCP2515/actions?workflow=Spell+Check)
-[![Build Status](https://github.com/Ross-Robotics/107-Arduino-MCP2515/workflows/Smoke%20Test/badge.svg)](https://github.com/Ross-Robotics/107-Arduino-MCP2515/actions?query=workflow%3A"Smoke+Test")
+[![Build Status](https://github.com/Ross-Robotics/107-Arduino-MCP2515/workflows/Smoke%20Test/badge.svg)](https://github.com/Ross-Robotics/107-Arduino-MCP2515/actions?workflow=Smoke+Test)
 
 <p align="center">
   <a href="https://github.com/107-systems/l3xz"><img src="https://raw.githubusercontent.com/107-systems/.github/main/logo/l3xz-logo-memento-mori-github.png" width="30%"></a>
