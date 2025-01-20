@@ -1,4 +1,4 @@
-name: Build
+name: Smoke Test
 
 on:
   push:
