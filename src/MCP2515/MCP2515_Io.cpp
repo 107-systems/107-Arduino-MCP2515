@@ -11,8 +11,6 @@
 
 #include "MCP2515_Io.h"
 
-#include <Arduino.h>
-
 #include <assert.h>
 
 /**************************************************************************************
@@ -50,10 +48,11 @@ static Instruction const TABLE_READ_RX_BUFFER[] =
  * CTOR/DTOR
  **************************************************************************************/
 
-MCP2515_Io::MCP2515_Io(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransferFunc transfer)
+MCP2515_Io::MCP2515_Io(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransferFunc transfer, MicroSecondFunc micros)
 : _select{select}
 , _deselect{deselect}
 , _transfer{transfer}
+, _micros{micros}
 {
 
 }
@@ -70,7 +69,12 @@ void MCP2515_Io::reset()
   _transfer(instruction);
   _deselect();
 
-  delay(10);
+  /* Delay 10 ms. */
+  auto const start_time = _micros();
+  while ((_micros() - start_time) < (10*1000UL))
+  {
+    asm volatile("nop");
+  }
 }
 
 uint8_t MCP2515_Io::status()
