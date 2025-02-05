@@ -18,6 +18,7 @@
 #include "MCP2515/MCP2515_Io.h"
 #include "MCP2515/MCP2515_Config.h"
 #include "MCP2515/MCP2515_Control.h"
+#include "MCP2515/MCP2515_Types.h"
 
 #undef min
 #undef max
@@ -82,17 +83,6 @@ enum class CanBitRate : size_t
   BR_1000kBPS_12MHZ
 };
 
-typedef std::function<unsigned long()> MicroSecondFunc;
-#if LIBCANARD
-typedef std::function<void(CanardFrame const & frame)> OnReceiveBufferFullFunc;
-#else
-typedef std::function<void(uint32_t const, uint32_t const, uint8_t const *, uint8_t const)> OnReceiveBufferFullFunc;
-#endif
-class ArduinoMCP2515;
-typedef std::function<void(ArduinoMCP2515 *)> OnTransmitBufferEmptyFunc;
-typedef std::function<void(MCP2515::EFLG const)> OnCanErrorFunc;
-typedef std::function<void(MCP2515::EFLG const)> OnCanWarningFunc;
-
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
@@ -106,6 +96,7 @@ public:
                  MCP2515::SpiDeselectFunc deselect,
                  MCP2515::SpiTransferFunc transfer,
                  MicroSecondFunc micros,
+                 MilliSecondFunc millis,
                  OnReceiveBufferFullFunc on_rx_buf_full,
                  OnTransmitBufferEmptyFunc on_tx_buf_empty,
                  OnCanErrorFunc on_error,
@@ -115,9 +106,10 @@ public:
                  MCP2515::SpiDeselectFunc deselect,
                  MCP2515::SpiTransferFunc transfer,
                  MicroSecondFunc micros,
+                 MilliSecondFunc millis,
                  OnReceiveBufferFullFunc on_rx_buf_full,
                  OnTransmitBufferEmptyFunc on_tx_buf_empty)
-  : ArduinoMCP2515{select, deselect, transfer, micros, on_rx_buf_full, on_tx_buf_empty, nullptr, nullptr}
+  : ArduinoMCP2515{select, deselect, transfer, micros, millis, on_rx_buf_full, on_tx_buf_empty, nullptr, nullptr}
   { }
 
 

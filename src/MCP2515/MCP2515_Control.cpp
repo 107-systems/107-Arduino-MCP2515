@@ -11,11 +11,10 @@
 
 #include "MCP2515_Control.h"
 
-#include <Arduino.h>
-
 #undef min
 #undef max
 #include <algorithm>
+#include <cstring>
 
 /**************************************************************************************
  * NAMESPACE

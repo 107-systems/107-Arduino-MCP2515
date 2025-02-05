@@ -1,0 +1,29 @@
+name: Smoke Test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  repository_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install CMake
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: "~3.28.0"
+
+      - name: Configure the build
+        run: mkdir build && cmake -B build/ ./
+
+      - name: Build library
+        run: cmake --build build/
