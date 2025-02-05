@@ -22,6 +22,7 @@
  **************************************************************************************/
 
 typedef std::function<unsigned long()> MicroSecondFunc;
+typedef std::function<unsigned long()> MilliSecondFunc;
 #if LIBCANARD
 typedef std::function<void(CanardFrame const & frame)> OnReceiveBufferFullFunc;
 #else
