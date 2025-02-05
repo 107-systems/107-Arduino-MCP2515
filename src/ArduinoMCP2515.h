@@ -96,6 +96,7 @@ public:
                  MCP2515::SpiDeselectFunc deselect,
                  MCP2515::SpiTransferFunc transfer,
                  MicroSecondFunc micros,
+                 MilliSecondFunc millis,
                  OnReceiveBufferFullFunc on_rx_buf_full,
                  OnTransmitBufferEmptyFunc on_tx_buf_empty,
                  OnCanErrorFunc on_error,
@@ -105,9 +106,10 @@ public:
                  MCP2515::SpiDeselectFunc deselect,
                  MCP2515::SpiTransferFunc transfer,
                  MicroSecondFunc micros,
+                 MilliSecondFunc millis,
                  OnReceiveBufferFullFunc on_rx_buf_full,
                  OnTransmitBufferEmptyFunc on_tx_buf_empty)
-  : ArduinoMCP2515{select, deselect, transfer, micros, on_rx_buf_full, on_tx_buf_empty, nullptr, nullptr}
+  : ArduinoMCP2515{select, deselect, transfer, micros, millis, on_rx_buf_full, on_tx_buf_empty, nullptr, nullptr}
   { }
 
 

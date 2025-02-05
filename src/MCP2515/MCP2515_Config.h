@@ -93,7 +93,7 @@ static CanBitRateConfig constexpr BitRate_1000kBPS_12MHz = {0x00, 0x88, 0x01};
 class MCP2515_Config
 {
 public:
-  MCP2515_Config(MCP2515_Io & io, MicroSecondFunc micros);
+  MCP2515_Config(MCP2515_Io & io, MilliSecondFunc millis);
 
 
          bool setMode            (Mode const mode);
@@ -118,7 +118,7 @@ public:
 
 private:
   MCP2515_Io & _io;
-  MicroSecondFunc _micros;
+  MilliSecondFunc _millis;
 
   void setFilterId  (Register const rxf_n_sidh, uint32_t const id);
   void setFilterMask(Register const rxm_n_sidh, uint32_t const mask);

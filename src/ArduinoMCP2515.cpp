@@ -86,12 +86,13 @@ ArduinoMCP2515::ArduinoMCP2515(SpiSelectFunc select,
                                SpiDeselectFunc deselect,
                                SpiTransferFunc transfer,
                                MicroSecondFunc micros,
+                               MilliSecondFunc millis,
                                OnReceiveBufferFullFunc on_rx_buf_full,
                                OnTransmitBufferEmptyFunc on_tx_buf_empty,
                                OnCanErrorFunc on_error,
                                OnCanWarningFunc on_warning)
 : _io{select, deselect, transfer, micros}
-, _cfg{_io, micros}
+, _cfg{_io, millis}
 , _ctrl{_io}
 , _micros{micros}
 , _on_rx_buf_full{on_rx_buf_full}
