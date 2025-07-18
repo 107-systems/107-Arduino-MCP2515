@@ -42,6 +42,12 @@
  * TYPEDEF
  **************************************************************************************/
 
+#if LIBCANARD
+typedef std::function<void(CanardFrame const & frame)> OnReceiveBufferFullFunc;
+#else
+typedef std::function<void(uint32_t const, uint32_t const, uint8_t const *, uint8_t const)> OnReceiveBufferFullFunc;
+#endif
+
 enum class CanBitRate : size_t
 {
   BR_10kBPS_16MHZ = 0,
