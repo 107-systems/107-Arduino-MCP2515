@@ -48,47 +48,6 @@ typedef std::function<void(CanardFrame const & frame)> OnReceiveBufferFullFunc;
 typedef std::function<void(uint32_t const, uint32_t const, uint8_t const *, uint8_t const)> OnReceiveBufferFullFunc;
 #endif
 
-enum class CanBitRate : size_t
-{
-  BR_10kBPS_16MHZ = 0,
-  BR_20kBPS_16MHZ,
-  BR_50kBPS_16MHZ,
-  BR_100kBPS_16MHZ,
-  BR_125kBPS_16MHZ,
-  BR_250kBPS_16MHZ,
-  BR_500kBPS_16MHZ,
-  BR_800kBPS_16MHZ,
-  BR_1000kBPS_16MHZ,
-
-  BR_10kBPS_8MHZ,
-  BR_20kBPS_8MHZ,
-  BR_50kBPS_8MHZ,
-  BR_100kBPS_8MHZ,
-  BR_125kBPS_8MHZ,
-  BR_250kBPS_8MHZ,
-  BR_500kBPS_8MHZ,
-  BR_800kBPS_8MHZ,
-  BR_1000kBPS_8MHZ,
-
-  BR_10kBPS_10MHZ,
-  BR_20kBPS_10MHZ,
-  BR_50kBPS_10MHZ,
-  BR_100kBPS_10MHZ,
-  BR_125kBPS_10MHZ,
-  BR_250kBPS_10MHZ,
-  BR_500kBPS_10MHZ,
-  BR_1000kBPS_10MHZ,
-
-  BR_10kBPS_12MHZ,
-  BR_20kBPS_12MHZ,
-  BR_50kBPS_12MHZ,
-  BR_100kBPS_12MHZ,
-  BR_125kBPS_12MHZ,
-  BR_250kBPS_12MHZ,
-  BR_500kBPS_12MHZ,
-  BR_1000kBPS_12MHZ
-};
-
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
