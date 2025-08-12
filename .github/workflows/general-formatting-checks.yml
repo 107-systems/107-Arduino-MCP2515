@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # https://github.com/per1234/formatting-checks
       - name: Check for files starting with a blank line
