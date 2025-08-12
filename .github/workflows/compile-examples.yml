@@ -44,7 +44,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install ESP32 platform dependencies
         if: startsWith(matrix.board.fqbn, 'esp32:esp32')
